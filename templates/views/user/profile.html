@@ -1,0 +1,251 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Perfil de @{{ user.username }}{% endblock %}
+
+{% block header %}
+    <style type="text/css">
+        body{
+            background-image: url("{{ url_for('static', filename='img/product/80/banner_blurred.jpg') }}");
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container user-profile-wrapper">
+        <div class="v5-user-profile user-profile-container z-depth-3">
+            <div class="v5-user-header">
+                {% if userrequests|length > 0 %}
+                    <div class="v5-user-last-purchase" style="background-image: url('/static/img/product/{{ userrequests[0].products[0].product.id }}/banner_blurred.jpg'); background-color: #43A047 !important;"> </div>
+                {% elif paidrequests|length > 0 %}
+                    <div class="v5-user-last-purchase" style="background-image: url('static/img/product/{{ paidrequests[0].products[0].product.id }}/banner_blurred.jpg'); background-color: #43A047 !important;"> </div>
+                {% else %}
+                    <div class="v5-user-last-purchase" style="background-color: #43A047 !important;"> </div>
+                {% endif %}
+
+                <div class="v5-user-image">
+                    <img class="z-depth-2" src="{{ user.avatar_url }}">
+                </div>
+
+                <div class="v5-user-username">
+                    <a href="/user/{{ user.username }}">@{{ user.username }}</a>
+                </div>
+
+                <div class="v5-purchase-credits">
+                    <button class="v5-purchase-credits-button btn waves-light waves-effect green darken-2">
+                        Cargar créditos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="v5-user-info user-profile-container z-depth-3">
+            <div class="user-info-title text-gray">Nombre y apellido</div>
+
+            <div class="user-info">
+                {{ user.name }} {{ user.last_name }}
+            </div>
+
+            <div class="user-info-title gray-text">Email</div>
+
+            <div class="user-info">
+                {{ user.email }}
+            </div>
+
+            <div class="user-info">
+                <div class="user-info-title gray-text">Cuenta de Steam</div>
+                <a href="http://steamcommunity.com/profiles/{{ user.steam }}/">{{ user.steam }}</a>
+            </div>
+
+            <div class="user-info">
+                <div class="user-info-title gray-text">Créditos</div>
+                <div class="user-money green-text">${{ (user.money + user.wallet)|price_format }} créditos</div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs">
+                        <li class="tab col s3">
+                            <a class="active" href="#notifications">Notificaciones</a>
+                        </li>
+
+                        <li class="tab col s3">
+                            <a href="#orders">
+                                Pedidos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="notifications" class="col s12">
+                    <div class="user-notifications-container">
+                        {% include "views/user/notifications.html" %}
+                    </div>
+                </div>
+
+                <div id="orders" class="col s12">
+                    <div class="user-orders-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#Identificador</th>
+                                    <th>Fecha generacion</th>
+                                    <th>Fecha cobrado</th>
+                                    <th>Productos</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for userrequest in userrequests %}
+                                    <tr {%- if userrequest.accepted -%}
+                                        class="accepted"
+                                    {% elif not userrequest.visible and not userrequest.accepted %}
+                                        class="denied"
+                                    {% endif %}>
+                                        <td><a href="/historial/A-{{ userrequest.id }}">#A-{{ userrequest.id }}</a></td>
+                                        <td>{{ userrequest.date|date_format }}</td>
+                                        <td>{% if userrequest.paid_date %}{{ userrequest.paid_date|date_format }}{% else %}Pago no ha ingresado{% endif %}</td>
+                                        <td>
+                                            {% for relation in userrequest.products %}
+                                                <a href="/comprar/{{ relation.product.app_id or relation.product.sub_id }}">{{ relation.product.title }}</a> (<span class="green-text darken-2">${{ relation.price|price_format }} ARS</span>)<br>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="green-text darken-2">${{ userrequest.price|price_format }} ARS</td>
+                                    </tr>
+                                {% endfor %}
+
+                                {% for creditrequest in creditrequests %}
+                                    <tr {%- if creditrequest.accepted -%}
+                                            class="accepted"
+                                        {% elif not creditrequest.visible and not creditrequest.accepted %}
+                                            class="denied"
+                                        {% endif %}>
+
+                                        <td><a href="/historial/B-{{ creditrequest.id }}">#B-{{ creditrequest.id }}</a></td>
+                                        <td>{{ creditrequest.date|date_format }}</td>
+                                        <td>{% if creditrequest.paid_date %}{{ creditrequest.paid_date|date_format }}{% else %}Pago no ha ingresado{% endif %}</td>
+
+                                        <td>
+                                            Carga de créditos por: ${{ creditrequest.amount|price_format }}
+                                        </td>
+
+                                        <td class="green-text darken-2">${{ creditrequest.amount|price_format }} ARS</td>
+                                    </tr>
+                                {% endfor %}
+
+                                {% for paidrequest in paidrequests %}
+                                    <tr {%- if paidrequest.accepted -%}
+                                            class="accepted"
+                                        {% elif not paidrequest.visible and not paidrequest.accepted %}
+                                            class="denied"
+                                        {% endif %}>
+
+                                        <td><a href="/historial/C-{{ paidrequest.id }}">#C-{{ paidrequest.id }}</a></td>
+
+                                        {% if paidrequest.date %}
+                                            <td>{{ paidrequest.date|date_format }}</td>
+                                            <td>{{ paidrequest.date|date_format }}</td>
+                                        {% else %}
+                                            <td></td><td></td>
+                                        {% endif %}
+                                        <td>
+                                            {% for relation in paidrequest.products %}
+                                                <a href="/comprar/{{ relation.product.app_id or relation.product.sub_id }}">{{ relation.product.title }}</a> (<span class="green-text darken-2">${{ relation.price|price_format }} ARS</span>)<br>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="green-text darken-2">${{ (paidrequest.price or 0)|price_format }} créditos</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                      </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $('ul.tabs').tabs();
+
+        $('.v5-purchase-credits').on('click', function(){
+            swal({
+                type: "input",
+                title: 'Carga de créditos',
+                text: 'Los créditos sirven como fondos en ARS (Pesos Argentinos) en tu cuenta. Pueden ser utilizados para comprar productos más rápidamente sin tener que esperar lapsos de cobros.',
+                showCancelButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+                inputPlaceholder: "Ingresar cantidad (Minimo $5)"
+            },
+            function(inputValue){
+                if (inputValue === false) return false;
+
+                if (inputValue === "") {
+                    swal.showInputError("Debes ingresar una cantidad");
+                    return false;
+                }
+
+                if (!parseInt(inputValue)){
+                    swal.showInputError("La cantidad debe ser un número");
+                    return false;
+                }
+
+                var input_number = parseInt(inputValue);
+
+                if (input_number < 5) {
+                    swal.showInputError("La cantidad debe ser mayor a 5");
+                    return false;
+                }
+
+                if (input_number > 5000) {
+                    swal.showInputError("La cantidad debe ser menor a 5000");
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/ajax/store/creditrequest/generate/',
+                    type: 'POST',
+                    data:{
+                        amount: input_number
+                    },
+                    success: function(data){
+                        var json_data = JSON.parse(data);
+
+                        swal({
+                            title: 'Pedido #B-' + json_data['creditrequest'] + ' generado',
+                            text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b><br>Los créditos serán añadidos a tu cuenta automáticamente cuando nuestro sistema detecte el pago. Los pagos demoran entre 24-48hs hábiles en ingresar',
+                            type: 'success',
+                            confirmButtonText: 'Ver boleta para imprimir',
+                            cancelButtonText: 'Cerrar',
+                            html: true,
+                            closeOnConfirm: false,
+                            closeOnCancel: true,
+                            showCancelButton: true,
+                        },
+                        function(){
+                            window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
+                        });
+                    },
+                    error: function(data){
+                        var json_data = JSON.parse(data.responseText);
+
+                        if (json_data['status'] == 0) {
+                            swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
+                        } else if (json_data['status'] == 1) {
+                            swal('Monto incorrect', 'Debes ingresar un monto mayor a 5 y menor a 5000', 'error');
+                        } else if (json_data['status'] == 2 || json_data['status'] == 3) {
+                            swal(
+                                'Error con CuentaDigital',
+                                'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
+                                'error'
+                            );
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

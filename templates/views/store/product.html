@@ -1,0 +1,391 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - {{ product.title }} {% if product.price %}- ${{ product.price.price|price_format }}{% endif %}{% endblock %}
+
+{% block header %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.es.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {% if product['assets'].get('background', False) %}
+        <style type="text/css">
+            body{
+                background-image: url("../../static/img/product/{{ product.id }}/{{ product['assets']['background'] }}");
+                background-attachment: fixed;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    {% else %}
+        <style type="text/css">
+            body{
+                background-image: url("../../static/img/blue_body_repeat.jpg");
+                background-attachment: fixed;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    {% endif %}
+
+    <div class="container">
+        <div class="v5-product-view">
+            {% if product['assets'].get('screenshots', False) %}
+                <div class="slider">
+                    <ul class="slides">
+                        {% for screenshot in product['assets']['screenshots'] %}
+                            <li>
+                                <img src="../../static/img/product/{{ product.id }}/{{ screenshot }}">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <script type="text/javascript">
+                    $('.slider').slider({height: 220, indicators: false});
+                </script>
+            {% endif %}
+
+            {% if product.product_type == 2 %}
+                <div class="v5-product-instant-delivery white-text">
+                    <div class="v5-product-instant-delivery-body">
+                        <div class="v5-product-instant-delivery-title">
+                            <i class="material-icons">flash_on</i> ¡Este producto se entrega inmediatamente!
+                        </div>
+
+                        <div class="v5-product-instant-delivery-description">
+                            Hay <strong>123456</strong> códigos/links de activación disponibles de entrega inmediata<br>
+                            <i>(Al abonar se creará una nueva nota en el pedido indicando el código o link de activación)</i>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% for spec in product.get('specs') %}
+                {% if spec.get('steam_id') == 21 %}
+                    <div class="v5-product-dlc white-text">
+                        <div class="v5-product-dlc-body">
+                            <div class="v5-product-dlc-title">
+                                ¡Este producto es un DLC! <i>(Contenido descargable)</i>
+                            </div>
+
+                            <div class="v5-product-dlc-description">
+                                <i>
+                                    Para activarlo se requiere un juego base
+                                </i>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if product.is_promotional %}
+                <script type="text/javascript">
+                    swal({
+                        type: "warning",
+                        title: "¡Este producto requiere una reserva!",
+                        text: "Requerimos de que al realizar el pago <span style=\"color:#000000;font-weight:bold;\">*en efectivo*</span> de este producto nos envíes una reserva mostrando tu recibo de pago. ¡Haciendo esto te podemos guardar una copia al precio de oferta!<div>LA RESERVA DEBE SER ENVIADA ANTES DE:<br/> <span style=\"color:red;font-weight: bold\">{{ product.get('promotion').get('ending_date')|date_format }}</span></div>",
+                        html: true
+                    });
+                </script>
+
+                <div class="v5-product-promotion white-text">
+                    <div class="v5-product-promotion-body">
+                        <div class="v5-product-promotion-title">
+                            ¡Este producto se encuentra en oferta!
+                        </div>
+
+                        <i>(Requerimos que reserves tu pedido si abonás en efectivo)</i>
+
+                        <div class="v5-product-promotion-timeuntil">
+                            <i>
+                                La oferta finalizará
+                                <span class="timeago" title="{{ product.get('promotion').get('ending_date') }}"></span>
+
+                                <br/>
+
+                                <i>
+                                    <span class="glyphicon glyphicon-time"> </span>
+                                    La fecha exacta será: <strong>{{ product.get('promotion').get('ending_date')|date_format }}</strong>
+                                </i>
+                            </i>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="v5-product-main-view">
+                <div class="v5-product-back-button">
+                    <a onclick="history.back() || (document.location.href = '/comprar/');" class="waves-light waves-effect text-darken-2 green-text">
+                        < Volver al catálogo
+                    </a>
+                </div>
+
+                <div class="v5-product-view-hud">
+                    <div class="row">
+                        <div class="col m6 s12">
+                            <div class="v5-product-left-hud left-align">
+                                <div class="v5-product-hud-title">
+                                    {{ product.title }}
+                                </div>
+
+                                <div class="v5-product-store-link">
+                                    {% if product.store_url %}
+                                        <a href="{{ product.store_url }}" target="_blank" class="text-darken-2 green-text">
+                                            Ver en tienda
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col m6 s12">
+                            <div class="v5-product-right-hud right-align">
+                                <div class="v5-product-price text-darken-2 green-text">
+                                    {% if product.price %}
+                                        ${{ product.price.price|price_format }} ARS
+                                    {% else %}
+                                        Sin precios activos actualmente
+                                    {% endif %}
+                                </div>
+
+                                <div class="v5-product-section">
+                                    <a href="{{ url_for('views.store.store_catalog') }}#{{ product.section.title }}" class="text-darken-2 blue-text" target="_blank">
+                                        {{ product.section.title }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="v5-product-body">
+                        <div class="v5-product-body-hud">
+                            <div class="row">
+                                <div class="col m7 s12">
+                                    <div class="v5-product-description-title">
+                                        Descripción
+                                    </div>
+
+                                    <div class="v5-product-description preline">
+                                        {{ product.description }}
+                                    </div>
+
+                                    <div class="v5-product-price-container">
+                                        <div class="v5-product-description-title">
+                                            Precio
+                                        </div>
+
+                                        <div class="v5-product-price text-darken-2 green-text">
+                                            {% if product.price %}
+                                                ${{ product.price.price|price_format }} ARS
+                                            {% else %}
+                                                Sin precios activos
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    {% if product.price %}
+                                        <div class="row">
+                                            <div class="col m6 s12">
+                                                <div class="v5-product-button">
+                                                    <button class="btn-large waves-light waves-effect green darken-2 v5-purchase-button">
+                                                        Comprar
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="col m6 s12">
+                                                <div class="v5-product-button">
+                                                    <button class="v5-add-to-cart btn-large waves-light waves-effect blue darken-3" data-productid="{{ product.id }}">
+                                                        Añadir al carrito
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="v5-payment-container" style="display: none;">
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <div class="v5-product-button">
+                                                        <button class="v5-invoice-button btn-large waves-light waves-effect green darken-2 v5-invoice-button">
+                                                            Generar boleta
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    {% if (user.money + user.wallet) >= product.get('price').get('price') %}
+                                                        <div class="v5-product-button">
+                                                            <button class="v5-credit-invoice btn btn-large waves-effect waves-light cyan darken-3">
+                                                                Abonar con créditos (${{ product.price.price|price_format }} créditos)
+                                                            </button>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col m5 hide-on-small-only">
+                                    <div class="v5-product-description-title">
+                                        Caracteristicas
+                                    </div>
+
+                                    {% for spec in product.get('specs') %}
+                                        {% if spec.get('visible') %}
+                                            <a style="margin-top: 5px;" class="btn tooltipped green darken-2" data-position="bottom" data-delay="10" data-tooltip="{{ spec.get('title') }}">
+                                                <img src="{{ spec.get('icon') }}" alt="">
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if product.get('run_stock') and product.get('stock') > 0 %}
+                                        <div class="v5-product-stock red white-text lighten-1">
+                                            Hay {{ product.get('stock') }} unidades en stock disponibles.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        jQuery.timeago.settings.allowFuture = true;
+
+       jQuery(document).ready(function() {
+            $("span.timeago").timeago();
+        });
+
+       {% if product.get('price') and product.get('price').get('price_type') != 2 %}
+           $('.v5-invoice-button').on('click', function(){
+               swal({
+                    title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} ARS",
+                    text: "Al generar una boleta en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>.",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    cancelButtonText: "Cancelar",
+                    showLoaderOnConfirm: true,
+                    html: true,
+                },
+                function(){
+                    $.ajax({
+                        url: '/ajax/store/userrequest/generate/',
+                        type: 'POST',
+                        data:{
+                            product_id: {{ product.get('id') }}
+                        },
+                        success: function(data){
+                            var json_data = JSON.parse(data);
+                            var alert_message = '';
+
+                            {% if product.get('is_promotional') %}
+                                var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="#" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, ¡de otra manera nos veremos obligados a devolverte el monto abonado!';
+                            {% endif %}
+
+                            swal(
+                                {
+                                    title: '¡Pedido #A-' + json_data['userrequest'] + ' generado!',
+                                    text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b>' + alert_message,
+                                    type: 'success',
+                                    html: true,
+                                    confirmButtonText: 'Ver boleta para imprimir',
+                                    cancelButtonText: 'Cerrar',
+                                    closeOnConfirm: false,
+                                    closeOnCancel: true,
+                                    showCancelButton: true,
+                                },
+                                function(){
+                                    window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
+                                    {% if product.get('is_promotional') %}
+                                        swal({title: 'Un recordatorio', text: alert_message, html: true});
+                                    {% endif %}
+                                }
+                            );
+                        },
+                        error: function(data){
+                            var json_data = JSON.parse(data.responseText);
+
+                            if (json_data['status'] == 0) {
+                                swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
+                            } else if (json_data['status'] == 1) {
+                                swal('Producto no encontrado', 'No hemos encontrado el producto que has solicitado', 'error');
+                            } else if (json_data['status'] == 2) {
+                                swal('Producto no disponible', 'El producto que has solicitado ya no se encuentra disponible', 'error');
+                            } else if (json_data['status'] == 3) {
+                                swal('Precio no disponible', 'No se encuentra un precio activo para el producto solicitado', 'error');
+                            } else if (json_data['status'] == 4 || json_data['status'] == 5) {
+                                swal(
+                                    'Error con CuentaDigital',
+                                    'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
+                                    'error'
+                                );
+                            }
+                        }
+                    });
+                });
+            });
+        {% endif %}
+
+        {% if product.get('price') and (user.money + user.wallet) >= product.get('price').get('price') %}
+            $('.v5-credit-invoice').on('click', function(){
+                swal({
+                    title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} créditos",
+                    text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ product.get('price').get('price')|price_format }} de créditos de tu usuario</b>",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    cancelButtonText: "Cancelar",
+                    confirmButtonText: "Autorizar compra por ${{ product.get('price').get('price')|price_format }}",
+                    showLoaderOnConfirm: true,
+                    html: true,
+                },
+                function(){
+                    $.ajax({
+                        url: '/ajax/store/paidrequest/generate/',
+                        type: 'POST',
+                        data:{
+                            product_id: {{ product.get('id') }}
+                        },
+                        success: function(data){
+                            var json_data = JSON.parse(data);
+
+                            swal({
+                                title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',
+                                text: 'En las próximas 1hs a 48hs estaremos procesando tu pedido. En caso de que se haya encontrado en "Entrega Inmediata" entonces se creará una nota con tu código/link de activación en tu pedido.',
+                                type: 'success',
+                                showCancelButton: true,
+                                html: true,
+                                cancelButtonText: "Cerrar"
+                            });
+                        },
+                        error: function(data){
+                            var json_data = JSON.parse(data.responseText);
+
+                            if (json_data['status'] == 0) {
+                                swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
+                            } else if (json_data['status'] == 1) {
+                                swal('Producto no encontrado', 'No hemos encontrado el producto que has solicitado', 'error');
+                            } else if (json_data['status'] == 2) {
+                                swal('Producto no disponible', 'El producto que has solicitado ya no se encuentra disponible', 'error');
+                            } else if (json_data['status'] == 3) {
+                                swal('Precio no disponible', 'No se encuentra un precio activo para el producto solicitado', 'error');
+                            } else if (json_data['status'] == 4) {
+                                swal('Créditos insuficientes', 'No dispones de créditos suficientes para realizar esta acción', 'error');
+                            } else if (json_data['status'] == 5) {
+                                swal('Producto fuera de stock', 'Se ha agotado el stock del producto solicitado', 'error');
+                            }
+                        }
+                    });
+                });
+            });
+        {% endif %}
+    </script>
+{% endblock %}

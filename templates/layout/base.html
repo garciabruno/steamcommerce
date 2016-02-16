@@ -1,0 +1,40 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta charset="utf-8">
+        <meta content="ExtremeGaming Argentina" name="author">
+
+        <meta content="Sitio de venta de juegos Steam en efectivo (PagoFacil, RapiPago, PagoExpress, BrapoPagos, Ripsa)" name="description">
+
+        <meta content="extreme,gaming,juegos,games,venta,compra,precios,noticias,blog,gaming news,news,steam,origin,orm,valve,ubisoft,sony,counter,strike,counter-strike 1.6,1.6,global offesive,csgo,cs:go,go,comprar,how to,tutoriales,faq,rapipago,pagofacil,mercadopago,dineromail,cuenta digital,boleta,generar,original,nosteam,no-steam,far cry,battlefield,call,of,duty,fifa,2013,2012,ofertas,gratis,barato,team,fortress,2,bethesda,pack,promociones,descargas,pedidos,ordenar,order,nuevos,ventas" name="keywords">
+
+        <meta name="google-site-verification" content="tJi0XeRBs3o1fVd2bWJzhcKPE3Pq7K1fmY_FHWOF7aI" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {% set cache_break = config.CACHE_BREAK_RAND %}
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/materialize.min.css') }}?{{ config.CACHE_BREAK_RAND }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/s-commerce.css') }}?{{ config.CACHE_BREAK_RAND }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sweetalert.css') }}?{{ config.CACHE_BREAK_RAND }}">
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}?{{ config.CACHE_BREAK_RAND }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert.min.js') }}?{{ config.CACHE_BREAK_RAND }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}?{{ config.CACHE_BREAK_RAND }}"></script>
+
+        {% block header %} {% endblock %}
+
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+
+    <body>
+        {% include "layout/navbar.html" %}
+
+        {% block body %} {% endblock %}
+    </body>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/s-commerce.js') }}?{{ config.CACHE_BREAK_RAND }}"></script>
+</html>

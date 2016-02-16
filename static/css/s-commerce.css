@@ -1,0 +1,274 @@
+body{
+    color: #666666;
+}
+
+hr {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+
+    border-color: #eee;
+    border-image: none;
+    border-style: solid none none;
+    border-width: 1px 0 0;
+}
+
+.navbar-item{
+    margin-top: 5px;
+}
+
+.navbar-item a{
+    text-decoration: none;
+    color: rgba(184, 175, 195, 0.85);
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.v5-products{
+    margin-top: 15px;
+}
+
+.v5-product{
+    margin-top: 10px;
+}
+
+.v5-product-image img{
+    width: 100%;
+    /*height: 140px;*/
+}
+
+.v5-catalog-title{
+    text-align: center;
+    color: white;
+}
+
+.v5-product-store-hud{
+    background-color: white;
+    padding: 15px;
+}
+
+.v5-store-button a,
+.v5-product-button button,
+.v5-store-button button{
+    width: 100%;
+}
+
+.v5-product-button button{
+    margin-top: 5px;
+}
+
+.v5-catalog-buttons{
+    margin-top: 15px;
+}
+
+.v5-catalog-buttons a{
+    color: #fff;
+    font-family: "Varela Round",sans-serif;
+    font-weight: bold;
+    letter-spacing: 1px;
+    width: 100%;
+}
+
+.v5-catalog-section a{
+    margin: 5px 0;
+}
+
+.v5-product-main-view,
+.main-view{
+    padding: 20px;
+    background-color: white;
+}
+
+.v5-product-right-hud,
+.v5-product-store-link{
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.v5-product-hud-title,
+.v5-product-price{
+    font-size: 25px !important;
+    font-style: bold;
+    color: #666666;
+}
+
+.preline{
+    white-space: pre-line;
+}
+
+.v5-product-description-title{
+    text-transform: uppercase;
+    font-size: 17px;
+}
+
+.v5-product-price-container{
+    margin: 10px 0;
+}
+
+.v5-store-section-button{
+    margin: 5px;
+}
+
+.v5-product-instant-delivery{
+    text-align: center;
+    padding: 15px;
+    background-color: #286090;
+}
+
+.v5-product-dlc{
+    text-align: center;
+    padding: 15px;
+    background: #874A95;
+}
+
+.v5-product-promotion{
+    text-align: center;
+    padding: 15px;
+    background: #CE4844;
+}
+
+.v5-product-instant-delivery-title,
+.v5-produduct-dlc-title,
+.v5-product-promotion-title{
+    font-size: 20px;
+}
+
+.product-result{
+    padding: 20px;
+}
+
+.product-result .row{
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+}
+
+.product-result .v5-product-hud-title{
+    color: white;
+    font-weight: bold;
+}
+
+.product-result-image{
+    margin-top: 20px;
+}
+
+.brand-logo{
+    margin-right: 35px;
+}
+
+.v6-annoucement{
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.v5-cart-title{
+    font-size: 35px;
+}
+
+.v5-cart-item{
+    margin-bottom: 10px;
+}
+
+.v5-cart-item .row{
+    margin-bottom: 0;
+}
+
+.v5-promotion-product-image img{
+    width: 100%;
+}
+
+.v5-product-stock{
+    padding: 10px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.user-profile-wrapper{
+    width: 60%;
+}
+
+.v5-user-profile{
+    margin-top: 20px;
+    background-color: white;
+}
+
+.v5-user-image{
+    text-align: center;
+}
+
+.v5-user-image img{
+    border-radius: 100px;
+    border: 2px solid white;
+    height: 140px;
+    position: relative;
+    top: -50px;
+    width: 140px;
+}
+
+.v5-user-last-purchase{
+    min-height: 200px;
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+    position: relative;
+}
+
+.v5-user-info{
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+}
+
+.v5-user-username{
+    font-size: 30px;
+    text-align: center;
+}
+
+.v5-user-image{
+    height: 110px;
+}
+
+.user-info{
+    font-size: 20px;
+}
+
+.user-info-title{
+    text-transform: uppercase;
+    font-size: 15px;
+}
+
+.v5-purchase-credits{
+    padding: 10px;
+}
+
+.v5-purchase-credits{
+    text-align: center;
+}
+
+.user-notifications-container{
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.user-notification-date-bubble{
+    border-radius: 100px;
+    text-align: center;
+    width: 75px;
+    margin-top: 30%;
+    padding: 10px;
+}
+
+.accepted{
+    background: #DFF0D8 !important;
+}
+
+.denied{
+    background: #F2DEDE !important;
+}
+
+.show-catalog{
+    text-align: center;
+    padding: 10px;
+}

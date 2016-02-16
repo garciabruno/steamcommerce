@@ -1,0 +1,71 @@
+{% for rows in promotion_products|batch(3, {}) %}
+    <div class="row">
+        {% for promotion_product in rows %}
+            {% if promotion_product|length > 0 %}
+                <div class="col s12 m4">
+                    <div class="v5-product-image">
+                        {% if promotion_product.get('product').get('assets') and promotion_product.get('product').get('assets').get('front', False) %}
+                            <img src="../../static/img/product/{{  promotion_product.get('product').get('id') }}/{{ promotion_product.get('product').get('assets').get('front') }}" alt="">
+                        {% endif %}
+                    </div>
+
+                    {% if promotion_product['product'].is_promotional %}
+                        <div class="v5-product-promotion white-text">
+                            <div class="v5-product-promotion-body">
+                                <div class="v5-product-promotion-title">
+                                    ¡Este producto se encuentra en oferta!
+                                </div>
+
+                                <div class="v5-product-promotion-timeuntil">
+                                    <i>
+                                        <span class="glyphicon glyphicon-time"> </span>
+                                        La fecha de finalización será: <strong>{{ promotion_product['storepromotion']['ending_date']|date_format }}</strong>
+                                        (<span class="timeago" title="{{ promotion_product['storepromotion']['ending_date'] }}"></span>)
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="v5-product-store-hud">
+                        <div class="v5-product-hud-title">
+                            {{ promotion_product['product']['title'] }}
+                        </div>
+
+                        <div class="v5-product-prices">
+                            <div class="v5-product-price text-darken-2 green-text">
+                                {% if promotion_product['product']['price'] %}
+                                    ${{ promotion_product['product']['price']['price']|price_format }} ARS
+                                {% else %}
+                                    Sin precios activos actualmente
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="v5-product-store-buttons">
+                        <div class="v5-store-button">
+                            <a href="/comprar/{{ promotion_product['product']['app_id'] or promotion_product['product']['sub_id'] }}/" class="waves-effect waves-light btn-large green darken-2">
+                                Ver producto
+                            </a>
+                        </div>
+
+                        <div class="v5-store-button">
+                            <button class="v5-add-to-cart waves-effect waves-light btn-large blue darken-3" data-productid="{{ promotion_product.get('product').get('id') }}">
+                                Añadir al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+
+<script type="text/javascript">
+    jQuery.timeago.settings.allowFuture = true;
+
+    jQuery(document).ready(function() {
+        $("span.timeago").timeago();
+    });
+</script>

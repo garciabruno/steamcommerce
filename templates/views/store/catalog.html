@@ -1,0 +1,280 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Catálogo {% endblock %}
+
+{% block header %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.es.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <style type="text/css">
+        body{
+            background-image: url("{{ url_for('static', filename='img/product/80/banner_blurred.jpg') }}");
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+    <div class="slider">
+        <ul class="slides">
+            {% for slider in sliders %}
+                <li>
+                    <img src="../../static/img/slider/{{ slider.id }}/{{ slider.id }}.{{ slider.extension }}">
+
+                    <div class="caption center-align">
+                        <h3>{{ slider.title}}</h3>
+                        <h5 class="light grey-text text-lighten-3">{{ slider.content|safe }}</h5>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        $('.slider').slider({full_width: true, height: 250});
+    </script>
+
+    <div class="container">
+        <!-- <div class="v6-annoucement light-blue darken-3 white-text">
+            Anuncio del Staff:<br/>
+
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima quae reiciendis quas nemo cum saepe dolor, odio nostrum deserunt, earum libero nihil quo quibusdam autem exercitationem, eaque magnam voluptatem rerum!<br/>
+
+            Staff ExtremeGaming
+        </div> -->
+    </div>
+
+    <div class="container" style="width: 85%;">
+        <div class="v5-catalog-buttons">
+            <div class="row">
+                <div class="col s12">
+                    <ul class="tabs green">
+                        <li class="tab col s3">
+                            <a href="#catalog" class="active green white-text">
+                                Catálogo
+                            </a>
+                        </li>
+
+                        <li class="tab col s3">
+                            <a href="#offers" class="green white-text">
+                                Ofertas ({{ promotions|length }})
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <style type="text/css">
+                    .indicator{
+                        background-color: white !important;
+                    }
+                </style>
+            </div>
+        </div>
+
+        <div class="v5-catalog-search-bar">
+            <nav id="search_form">
+                <div class="nav-wrapper light-blue darken-3">
+                    <form>
+                        <div class="input-field">
+                            <input placeholder="Buscar un producto" id="search" type="search" required>
+                            <label for="search"><i class="material-icons">search</i></label>
+                            <i class="material-icons">close</i>
+                        </div>
+                    </form>
+                </div>
+            </nav>
+
+            <div class="container" id="results" style="width: 85%; display: none;">
+                <div class="show-catalog">
+                    <button id="show_catalog" class="btn btn-large waves-effect waves-light light-blue darken-2">
+                        Mostrar catálogo nuevamente
+                    </button>
+                </div>
+
+                <div class="search-text red white-text" style="display: none; padding: 10px;">
+                    Mostrando resultados para "<span class="search-text-title"></span>"
+                </div>
+
+                <div class="search-loader" style="text-align: center; padding: 10px; display: none;">
+                    <div class="preloader-wrapper active">
+                        <div class="spinner-layer spinner-green-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="products-results">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="catalog" style="width: 85%;">
+        <div class="row">
+            <div class="col s12 input-field">
+                <div class="white" style="padding: 10px;">
+                    <select class="v5-catalog-sections">
+                        {% for section in sections %}
+                            <option class="v5-catalog-section" value="{{ section.id }}">{{ section.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="v5-products" id="{{ sections[0].title }}" data-sectionid="{{ sections[0].id }}">
+            {% include "views/store/products.html" %}
+        </div>
+
+        {% for section in sections[1:] %}
+            <div class="v5-products" id="{{ section.title }}" data-sectionid="{{ section.id }}" style="display: none;">
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="container" id="offers" style="width: 85%;">
+        <div class="row">
+            <div class="col s12 input-field">
+                <div class="white" style="padding: 10px;">
+                    <select class="v5-catalog-sections">
+                        {% for promotion in promotions %}
+                            <option class="v5-promotion-section" value="{{ promotion.id }}">{{ promotion.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        {% if promotions|length > 0 %}
+            <div class="v5-promotion-products" id="{{ promotions[0].title }}" data-promotionid="{{ promotions[0].id }}">
+                {% include "views/store/promotion-products.html" %}
+            </div>
+
+            {% for promotion in promotions[1:] %}
+                <div class="v5-promotion-products" id="{{ promotion.title }}" data-sectionid="{{ promotion.id }}" style="display: none;">
+
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        $('select').material_select();
+    </script>
+
+    <script type="text/javascript">
+        var pages = {};
+        var is_loading = false;
+        var offset = 100;
+
+        var Store = function() {
+            var self = this;
+
+            this.get_section_page = function(section_id) {
+                var pathname = document.location.pathname.match('/pagina/([0-9]+)');
+
+                if (pathname == null) {
+                    if (pages[section_id] == undefined) {
+                        pages[section_id] = 0;
+                    }
+                } else {
+                    if (pages[section_id] == undefined) {
+                        pages[section_id] = parseInt(pathname[1]);
+                    }
+                }
+
+                return pages[section_id];
+            };
+
+            this.get_active_section = function(){
+                return $('select').find('option.v5-catalog-section:selected').val()
+            };
+
+            this.load_next_page = function() {
+                var current_section = self.get_active_section();
+
+                if (pages[current_section] === false) {
+                    return;
+                }
+
+                var new_page = self.get_section_page(current_section) + 1;
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/ajax/store/products/page/' + current_section + '/' + new_page,
+                    success: function(data){
+                        window.history.replaceState(
+                            {page: new_page},
+                            'Página ' + new_page,
+                            '/comprar/pagina/' + new_page
+                        );
+
+                        $('.v5-products[data-sectionid="' + current_section + '"]').append(data);
+                        pages[current_section]++;
+                    },
+                    error: function(data){
+                        if (data.status == 404 && !(pages[current_section] === false)) {
+                            Materialize.toast(
+                                'Oops! No encontramos la siguiente página. Hasta acá llegamos 😕', 5000
+                            );
+
+                            pages[current_section] = false;
+                        }
+                    }
+                });
+            };
+        };
+
+        function load_next_page() {
+            var catalog_visible = $('#catalog').is(':visible') || $('#offers').is(':visible');
+
+            if (!is_loading && catalog_visible) {
+                is_loading = true;
+
+                var store = new Store();
+                store.load_next_page();
+
+                setTimeout(function(){
+                    is_loading = false;
+                }, 2000);
+            }
+        }
+
+        $(document).scroll(function(){
+            if ($('.tabs').find('.active').attr('href') != '#offers') {
+                if($(window).scrollTop() + offset >= $(document).height() - $(window).height()){
+                    load_next_page();
+                }
+            }
+        });
+
+        $('select.v5-catalog-sections').on('change', function(){
+            var $this = $(this);
+            var section_id = $this.find(':selected').val();
+
+            if ($('.tabs').find('.active').attr('href') != '#offers') {
+                $('.v5-products').hide();
+
+                if (pages[section_id] == undefined) {
+                    pages[section_id] = 0;
+                }
+
+                load_next_page();
+
+                $('.v5-products[data-sectionid="' + section_id + '"]').show();
+            }
+        });
+    </script>
+{% endblock %}
