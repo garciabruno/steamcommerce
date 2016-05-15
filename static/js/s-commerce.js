@@ -25,9 +25,16 @@ $('.v5-remove-from-cart').on('click', function(){
             relation_id: $this.data('relationid')
         },
         success: function(data){
+            response = $.parseJSON(data);
+
             $this.data('loading', 0);
 
             $('.v5-cart-item[data-relationid="' + $this.data('relationid') + '"]').fadeOut();
+
+            $('.v5-cart-hud-container').fadeOut();
+            $('.v5-cart-hud-container').html('');
+            $('.v5-cart-hud-container').html(response['hud']);
+            $('.v5-cart-hud-container').fadeIn();
 
             Materialize.toast('Producto removido del carrito', 1500);
         },
@@ -39,7 +46,7 @@ $('.v5-remove-from-cart').on('click', function(){
 });
 
 
-$('.v5-add-to-cart').on('click', function(){
+$('.s-commerce-cart-button').on('click', function(){
     var $this = $(this);
     var is_loading = $this.data('loading');
 
@@ -49,7 +56,7 @@ $('.v5-add-to-cart').on('click', function(){
         return;
     }
 
-    Materialize.toast('Añadiendo al carrito ...', 2000);
+    //Materialize.toast('Añadiendo al carrito ...', 2000);
 
     $.ajax({
         url: '/ajax/store/cart/add/',
@@ -59,19 +66,23 @@ $('.v5-add-to-cart').on('click', function(){
         },
         success: function(data){
             $this.data('loading', 0);
-            Materialize.toast('Producto añadido a tu carrito', 1500);
+            //Materialize.toast('Producto añadido a tu carrito', 1500);
         },
         error: function(data){
             $this.data('loading', 0);
 
             var json_data = JSON.parse(data.responseText);
 
-            if (json_data['errors'] == 'cart_full') {
-                Materialize.toast('Tu carrito se encuentra lleno', 1000);
-            } else if (json_data['errors'] == 'product_not_available', 1000) {
-                Materialize.toast('El producto no se encuentra disponible', 1000);
-            } else {
-                Materialize.toast('No se pudo añadir al carrito, intentelo nuevamente', 1000);
+            if (json_data['status'] == 1) {
+                //Materialize.toast('El producto no se encuentra disponible', 1000);
+            } else if (json_data['status'] == 2) {
+                //Materialize.toast('El producto no contiene precios activos', 1000);
+            } else if (json_data['status'] == 3) {
+                //Materialize.toast('Este producto no puede ser añadido al carrito', 1000);
+            } else if (json_data['status'] == 4) {
+                //Materialize.toast('Tu carrito se encuentra lleno', 1000);
+            } else if (json_data['status'] == 5) {
+                //Materialize.toast('Occurió un error desconocido al añadir al carrito, intentalo nuevamente', 1000);
             }
         }
     });
