@@ -130,7 +130,7 @@
                     {% endif %}
 
                     {% if log.action == 16 %}
-                        denegó el pedido de compra <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a>
+                        denegó el pedido de compra <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a> ({{ log.paidrequest.reason }})
                     {% endif %}
 
                     ({{ log.timestamp|timesince }})
