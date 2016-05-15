@@ -12,9 +12,11 @@
 
         {{ url_for('static', filename='css/bootstrap.min.css')|css_file|safe }}
         {{ url_for('static', filename='css/s-admin.css')|css_file|safe }}
+        {{ url_for('static', filename='css/notification.css')|css_file|safe }}
 
         {{ url_for('static', filename='js/jquery-2.1.4.min.js')|js_file|safe }}
         {{ url_for('static', filename='js/clipboard.min.js')|js_file|safe }}
+        {{ url_for('static', filename='js/jquery.notification.js')|js_file|safe }}
 
         {% block header %}{% endblock %}
 
@@ -27,5 +29,6 @@
         {% block body %} {% endblock %}
 
         {{ url_for('static', filename='js/bootstrap.min.js')|js_file|safe }}
+        {{ url_for('static', filename='js/s-admin.js')|js_file|safe }}
     </body>
 </html>
