@@ -1,0 +1,125 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Testimonios{% endblock %}
+
+{% macro print_background(product_id, asset) %}
+    <div class="s-commerce-testimonial" style="
+            background: -moz-linear-gradient(top, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 100%), url('/static/img/product/{{ product_id }}/{{ asset }}');
+            background: -webkit-linear-gradient(top, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 100%), url('/static/img/product/{{ product_id }}/{{ asset }}');
+            background: linear-gradient(to bottom, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 100%), url('/static/img/product/{{ product_id }}/{{ asset }}');
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc1c262f', endColorstr='#1c262f',GradientType=0 ); /* IE6-9 */
+            background-repeat: repeat-x;
+            background-size: cover;
+            background-position: center center;
+            margin-bottom: 30px;
+    ">
+{% endmacro %}
+
+{% macro default_background() %}
+    <div class="s-commerce-testimonial" style="background-repeat: repeat-x;
+            background-attachment: fixed;
+            background-size: cover;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0) url('/static/img/blue_body_repeat.jpg') no-repeat center center">
+{% endmacro %}
+
+{% block body %}
+    <div class="s-commerce-testimonials">
+        <div class="container">
+            <div class="s-commerce-testimonials-list">
+                {% for row in testimonials|batch(3, {}) %}
+                    <div class="row">
+                        {% for testimonial in row %}
+                            <div class="col-md-5">
+                                {% if testimonial['userrequest'] %}
+                                    {% if testimonial['userrequest']['relations']|length > 0 %}
+                                        {% set product = testimonial['userrequest']['relations'][0]['product'] %}
+
+                                        {% if product['assets']['background'] %}
+                                            {{ print_background(product['id'], product['assets']['background']) }}
+                                        {% else %}
+                                            {{ default_background() }}
+                                        {% endif %}
+                                    {% else %}
+                                        {{ default_background() }}
+                                    {% endif %}
+                                {% elif testimonial['paidrequest'] %}
+                                    {% if testimonial['paidrequest']['relations']|length > 0 %}
+                                        {% set product = testimonial['paidrequest']['relations'][0]['product'] %}
+
+                                        {% if product['assets']['background'] %}
+                                            {{ print_background(product['id'], product['assets']['background']) }}
+                                        {% else %}
+                                            {{ default_background() }}
+                                        {% endif %}
+                                    {% else %}
+                                        {{ default_background() }}
+                                    {% endif %}
+                                {% endif %}
+
+                                    <div class="s-commerce-testimonial-content">
+                                        <div class="s-commerce-testimonial-product-title">
+                                            {% if testimonial['userrequest'] %}
+                                                {% if testimonial['userrequest']['relations']|length > 0 %}
+                                                    {% set product = testimonial['userrequest']['relations'][0]['product'] %}
+
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">{{ product['title'] }}</a>
+
+                                                    {% if testimonial['userrequest']['relations']|length - 1 > 0 %}
+                                                        y {{ testimonial['userrequest']['relations']|length -1 }} productos más
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% elif testimonial['paidrequest'] %}
+                                                {% if testimonial['paidrequest']['relations']|length > 0 %}
+                                                    {% set product = testimonial['paidrequest']['relations'][0]['product'] %}
+
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">{{ product['title'] }}</a>
+
+                                                    {% if testimonial['paidrequest']['relations']|length - 1 > 0 %}
+                                                        y {{ testimonial['paidrequest']['relations']|length -1 }} productos más
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="s-commerce-testimonial-body">
+                                            {{ testimonial['content'] }}
+                                        </div>
+                                    </div>
+
+                                    <div class="s-commerce-testimonial-hud">
+                                        <div class="s-commerce-testimonial-user">
+                                            <div class="s-commerce-testimonial-user-image">
+                                                <img src="{{ testimonial['user']['avatar_url'] }}">
+                                            </div>
+
+                                            <a href="{% if testimonial['user']['steam'] %}https://steamcommunity.com/profiles/{{ testimonial['user']['steam'] }}/{% endif %}" target="_blank">
+                                                @{{ testimonial['user']['username'] }}
+                                            </a>
+                                        </div>
+
+                                        <div class="s-commerce-testimonial-timestamp">
+                                            {% if testimonial['userrequest'] %}
+                                                {% set request = testimonial['userrequest'] %}
+
+                                                {% if request['accepted_date'] and request['paid_date'] %}
+                                                    Compra enviada {{ request['accepted_date'] - request['paid_date'] }}
+                                                {% endif %}
+                                            {% elif testimonial['paidrequest'] %}
+                                                {% set request = testimonial['paidrequest'] %}
+
+                                                {% if request['accepted_date'] and request['date'] %}
+                                                    Compra enviada {{ request['accepted_date'] - request['date'] }}
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
