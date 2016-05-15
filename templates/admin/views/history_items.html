@@ -1,0 +1,46 @@
+{% macro parse_history_state(history_state) %}
+    {% if history_state == 1 %}
+        Pedido generado
+    {% elif history_state == 2 %}
+        Pago ingresado
+    {% elif history_state == 3 %}
+        Pedido aceptado
+    {% elif history_state == 4 %}
+        Pedido denegado
+    {% endif %}
+{% endmacro %}
+
+{% macro parse_history_class_state(history_state) %}
+    {% if history_state == 1 %}
+        default
+    {% elif history_state == 2 %}
+        warning
+    {% elif history_state == 3 %}
+        success
+    {% elif history_state == 4 %}
+        danger
+    {% endif %}
+{% endmacro %}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Fecha de evento</th>
+            <th>Tipo de evento</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for history_item in history_items %}
+            <tr class="{{ parse_history_class_state(history_item['state']) }}">
+                <td>
+                    {{ history_item['date']|date_format }}
+                </td>
+
+                <td>
+                    {{ parse_history_state(history_item['state']) }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

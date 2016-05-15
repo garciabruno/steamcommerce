@@ -1,0 +1,31 @@
+<!doctype html>
+
+{% include "layout/macros.html" %}
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta charset="utf-8"/>
+
+        <meta name="google-site-verification" content="tJi0XeRBs3o1fVd2bWJzhcKPE3Pq7K1fmY_FHWOF7aI" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+        {{ url_for('static', filename='css/bootstrap.min.css')|css_file|safe }}
+        {{ url_for('static', filename='css/s-admin.css')|css_file|safe }}
+
+        {{ url_for('static', filename='js/jquery-2.1.4.min.js')|js_file|safe }}
+        {{ url_for('static', filename='js/clipboard.min.js')|js_file|safe }}
+
+        {% block header %}{% endblock %}
+
+        <title>{% block title %} {% endblock %}</title>
+    </head>
+
+    <body>
+        {% include "admin/layout/navbar.html" %}
+
+        {% block body %} {% endblock %}
+
+        {{ url_for('static', filename='js/bootstrap.min.js')|js_file|safe }}
+    </body>
+</html>

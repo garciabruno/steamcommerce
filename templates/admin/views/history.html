@@ -1,0 +1,282 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - Pedido #{{ request_type }}-{{ request['id'] }}{% endblock %}
+
+{% block body %}
+    <div class="admin-history">
+        <div class="container">
+            <div class="request-title">
+                <h3>Historial de pedido #{{ request_type }}-{{ request['id'] }}</h3>
+            </div>
+
+            <div class="request-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="request-hud">
+                            <div class="request-buttons">
+                                {% if not request['accepted'] and request['visible'] %}
+                                    <div class="btn btn-lg btn-success">
+                                        Aceptar
+                                    </div>
+                                {% endif %}
+
+                                {% if request['visible'] and not request['accepted '] %}
+                                    <div class="btn btn-lg btn-danger">
+                                        Denegar
+                                    </div>
+                                {% endif %}
+
+                                {% if request_type != 'C' and not request['paid'] %}
+                                    <div class="btn btn-lg btn-warning">
+                                        Marcar como cobrado
+                                    </div>
+                                {% endif %}
+
+                                {% if request['visible'] and not request['accepted '] %}
+                                    <input type="text" class="form-control" placeholder="Motivo de denegación">
+                                {% endif %}
+                            </div>
+
+                            {% if request['assigned'] %}
+                                <div class="request-assigment">
+                                    <div class="well">
+                                        <img src="{{ request['assigned']['avatar_url'] }}" alt="">
+                                        Asignado a <a href="#">{{ request['assigned']['username'] }}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if not request['visible'] and not request['accepted'] %}
+                                <div class="request-assigment">
+                                    <div class="well">
+                                        Pedido denegado. Motivo de denegación: {{ request['reason'] }}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="request-assigment">
+                                <select class="form-control">
+                                    {% for admin in admins %}
+                                        {% if g.user.id == admin.id %}
+                                            <option selected="selected" value="{{ admin.id }}">@{{ admin.username }}</option>
+                                        {% else %}
+                                            <option value="{{ admin.id }}">@{{ admin.username }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-default">Asignar</button>
+                                    </div>
+
+                                    {% if request['assigned'] %}
+                                        <div class="col-md-6">
+                                            <button class="btn btn-danger">Quitar asignación</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if request['accepted'] and request['accepted_by'] %}
+                                 <div class="request-assigment">
+                                    <div class="well">
+                                        <div>
+                                            <img src="{{ request['accepted_by']['avatar_url'] }}" alt="">
+                                            Aceptado por <a href="#">{{ request['accepted_by']['username'] }}</a>
+                                        </div>
+
+                                        {% if request['accepted_date'] %}
+                                            {{ request['accepted_date']|timesince }} ({{ request['accepted_date']|date_format }})
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if request['promotion'] %}
+                                <div class="request-assigment">
+                                    <div class="well">
+                                        <strong>Requiere reserva</strong>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if request_type == 'A' and request['promotion'] %}
+                                 <div class="request-assigment">
+                                    <div class="well">
+                                        {% if request['informed'] %}
+                                            <div class="text text-success">Reserva presentada</div>
+
+                                            {% if request['url'] %}
+                                                <a href="/static/userrequests/{{ request['url'] }}">Ver imagen de reserva</a>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text text-danger">Reserva no presentada</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="request-history">
+                            <div class="request-relations">
+                                <div class="request-relation">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Sección</th>
+                                                <th>Producto</th>
+                                                <th>Precio</th>
+                                                <th>Acción</th>
+                                                <th>Administrador</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {% for relation in request['relations'] %}
+                                                <tr>
+                                                    <td>
+                                                        {{ relation['product']['section']['title'] }}
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
+                                                            {{ relation['product']['title'] }}
+                                                        </a>
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="s-commerce-relation-product-price">${{ relation['price']|price_format }}</span>
+                                                    </td>
+
+                                                    <td>
+                                                        {% if relation['sent'] %}
+                                                            <span class="btn btn-danger">No enviado</span>
+                                                        {% else %}
+                                                            <span class="btn btn-success">Enviado</span>
+                                                        {% endif %}
+                                                    </td>
+
+                                                    <td>
+
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="relations-total">
+                                Total: <span class="s-commerce-relation-product-price">${{ request['price']|price_format }}</span>
+                            </div>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre y Apellido</th>
+                                        <th>Usuario</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span>{{ request['user']['name'] }}</span>
+                                            <span>{{ request['user']['last_name'] }}</span>
+                                        </td>
+
+                                        <td>
+                                            <a href="https://steamcommunity.com/profiles/{{ request['user']['steam'] }}">@{{ request['user']['username'] }}</a>
+                                        </td>
+
+                                        <td>
+                                            <div>
+                                                <button class="btn btn-clipboard" data-clipboard-text="{{ request['user']['email'] }}">
+                                                    {{ request['user']['email'] }}
+                                                </button>
+                                            </div>
+
+                                            <script type="text/javascript">
+                                                new Clipboard('.btn-clipboard');
+                                            </script>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Código de barras</th>
+                                        <th>Usuario</th>
+                                        <th>Fecha de generación</th>
+                                        <th>Fecha de pago</th>
+                                        <th>Fecha de aceptación</th>
+                                        <th>Testimonio</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {{ request['bar_code'] or 'No disponible' }}
+                                        </td>
+
+                                        <td>
+                                            <a href="https://steamcommunity.com/profiles/{{ request['user']['steam'] }}">@{{ request['user']['username'] }}</a>
+                                        </td>
+
+                                        <td>
+                                            {{ request['date']|date_format }}
+                                        </td>
+
+                                        <td>
+                                            {% if request_type != 'C' and request['paid_date'] %}
+                                                {{ request['paid_date']|date_format }}
+                                            {% else %}
+                                                {{ request['date']|date_format }}
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if request['accepted_date'] %}
+                                                {{ request['accepted_date']|date_format }}
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            {% include "admin/views/history_items.html" %}
+
+                            {% if session.get('user') == 1 %}
+                                {{ url_for('static', filename='css/jquery.json-viewer.css')|css_file|safe }}
+                                {{ url_for('static', filename='js/jquery.json-viewer.js')|js_file|safe }}
+
+                                <pre id="json-renderer"></pre>
+
+                                <script type="text/javascript">
+                                    $('#json-renderer').jsonViewer({{ request|as_json|safe }});
+                                </script>
+
+                                <pre id="json-renderer-history"></pre>
+
+                                <script type="text/javascript">
+                                    $('#json-renderer-history').jsonViewer({{ history_items|as_json|safe }});
+                                </script>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

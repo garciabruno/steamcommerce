@@ -1,0 +1,63 @@
+<div class="s-commerce-paidrequests-paid">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>#C</th>
+                <th>Sección</th>
+                <th>Productos</th>
+                <th>Fecha de pago</th>
+                <th>Asignado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for request in paidrequests %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('admin.views.admin_request', history_identifier=('C-' + request['id']|string)) }}">#C-{{ request['id'] }}</a>
+                    </td>
+
+
+                    <td>
+                        {% for relation in request['relations'] %}
+                            <div class="s-commerce-relation-product-section">
+                                {{ relation['product']['section']['title'] }}
+                            </div>
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        {% for relation in request['relations'] %}
+                            <div class="s-commerce-relation{% if relation['sent'] %} relation-sent{% endif %}">
+                                <span class="s-commerce-relation-product-title">
+                                    <a href="{{ url_for('views.store.store_app_id', app_id=(relation['product']['app_id'] or relation['product']['sub_id'])) }}">{{ relation['product']['title'] }}</a>
+                                </span>
+
+                                <span class="s-commerce-relation-product-price">
+                                    (${{ relation['price']|price_format }})
+                                </span>
+                            </div>
+                        {% endfor %}
+
+                        <span class="s-commerce-relation-product-price">
+                            <p>Total: ${{ request['price']|price_format }}</p>
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ request['date']|date_format }}
+                    </td>
+
+                    <td>
+                        {% if request['assigned'] %}
+                            <div class="s-commerce-paidrequest-user">
+                                <img src="{{ request['assigned']['avatar_url'] }}">
+                                <a href="#">@{{ request['assigned']['username'] }}</a>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,83 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - Pedidos{% endblock %}
+
+{% block header %}
+    {{ url_for('static', filename='js/jquery.dataTables.min.js')|js_file|safe }}
+{% endblock %}
+
+{% block body %}
+<div class="admin-dashboard">
+        <div class="container">
+            <div class="admin-tabs">
+                <div class="tabbeable">
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="active">
+                            <a data-toggle="tab" href="#tab1">Pedidos de boleta <span class="badge alert-danger">{{ counters['userrequests'] }}</span></a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" href="#tab2">Pedidos de créditos <span class="badge alert-danger">{{ counters['paidrequests'] }}</span></a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" href="#tab3">Pedidos para reservar <span class="badge alert-info">{{ counters['informed'] }}</span></a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" href="#tab4">Resumenes</a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" href="#tab5">Herramientas</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="tab1" class="tab-pane active">
+                            {% include "admin/views/userrequests.html" %}
+                        </div>
+
+                        <div id="tab2" class="tab-pane">
+                            {% include "admin/views/paidrequests.html" %}
+                        </div>
+
+                        <div id="tab3" class="tab-pane">
+                            {% include "admin/views/informed.html" %}
+                        </div>
+
+                        <div id="tab4" class="tab-pane">
+                            {% include "admin/views/resumes_all.html" %}
+                        </div>
+
+                        <div id="tab5" class="tab-pane">
+                            Herramientas
+                        </div>
+
+                        <script type="text/javascript">
+                            $('.s-commerce-paidrequests-paid table').dataTable({
+                                paging: false,
+                                autoWidth: false
+                            });
+
+                            $('.s-commerce-userrequests-paid table').dataTable({
+                                paging: false,
+                                autoWidth: false
+                            });
+
+                            $('.s-commerce-userrequests-informed table').dataTable({
+                                paging: false,
+                                autoWidth: false
+                            });
+
+                            $('.s-commerce-resumes-all table').dataTable({
+                                paging: false,
+                                autoWidth: false
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

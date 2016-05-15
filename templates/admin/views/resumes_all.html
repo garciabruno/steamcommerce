@@ -1,0 +1,31 @@
+<div class="s-commerce-resumes-all">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for resume in resumes_all %}
+                <tr>
+                    <td>
+                        {{ resume['count'] }}
+                    </td>
+
+                    <td>
+                        <span class="s-commerce-relation-product-title">
+                            <a href="{{ url_for('views.store.store_app_id', app_id=(resume['product']['app_id'] or resume['product']['sub_id'])) }}">{{ resume['product']['title'] }}</a>
+                        </span>
+                    </td>
+
+                    <td>
+                        <a href="{{ resume['product']['store_url'] }}">{{ resume['product']['store_url'] }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
