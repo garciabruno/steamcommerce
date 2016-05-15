@@ -1,56 +1,24 @@
-{% for rows in products|batch(4, {}) %}
+{% for row in products|batch(4, {}) %}
     <div class="row">
-        {% for product in rows %}
-            {% if product|length > 0 %}
-                <div class="col s12 m6 l3">
-                    <div class="v5-product">
-                        {% if product.product_type == 2 %}
-                            <div class="v5-product-instant-delivery white-text">
-                                <div class="v5-product-instant-delivery-body">
-                                    <div class="v5-product-instant-delivery-title">
-                                        <i class="material-icons">flash_on</i> ¡Este producto se entrega inmediatamente!
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        <div class="v5-product-image">
-                            {% if product.get('assets') and product.get('assets').get('front', False) %}
-                                <img src="../../static/img/product/{{ product.id }}/{{ product['assets']['front'] }}" alt="">
-                            {% endif %}
-                        </div>
-
-                        <div class="v5-product-store-hud">
-                            <div class="v5-product-hud-title">
-                                {{ product.title }}
-                            </div>
-
-                            <div class="v5-product-prices">
-                                <div class="v5-product-price text-darken-2 green-text">
-                                    {% if product.price %}
-                                        ${{ product.price.price|price_format }} ARS
-                                    {% else %}
-                                        Sin precios activos actualmente
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="v5-product-store-buttons">
-                            <div class="v5-store-button">
-                                <a href="/comprar/{{ product.app_id or product.sub_id }}/" class="waves-effect waves-light btn-large green darken-2">
-                                    Ver producto
-                                </a>
-                            </div>
-
-                            <div class="v5-store-button">
-                                <button class="v5-add-to-cart waves-effect waves-light btn-large blue darken-3" data-productid="{{ product.id }}">
-                                    Añadir al carrito
-                                </button>
-                            </div>
+        {% for product in row %}
+            <div class="col-md-4" style="padding-left: {% if loop.first %}15px;{% else %}5px;{% endif %} padding-right: 5px;">
+                <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ product['app_id'] or product['sub_id'] }}/capsule_616x353.jpg');">
+                    <div class="s-commerce-product-hud">
+                        <div class="s-commerce-product-title">
+                            {{ product['title'] }}
                         </div>
                     </div>
-                {% endif %}
+
+                    <div class="s-commerce-product-buttons">
+                        <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-product-price">
+                            {% if product['price'] %}
+                                ${{ product['price']['price']|price_format }}
+                            {% else %}
+                                No activo
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
             </div>
         {% endfor %}
     </div>
