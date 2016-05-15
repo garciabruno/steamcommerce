@@ -4,3 +4,4 @@
 config.py
 static/img/product/*
 static/img/slider/*
+logs/*
