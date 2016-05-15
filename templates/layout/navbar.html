@@ -1,44 +1,64 @@
-<nav class="green darken-1">
-    <div class="nav-wrapper">
-        <a href="/" class="right brand-logo">
-            ExtremeGaming
-            <small style="font-size: 12px;">V6.0.1 Beta</small>
-        </a>
+<div class="s-commerce-navbar">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-16">
+                <span class="s-commerce-left-navbar">
+                    <span class="s-commerce-logo">
+                        <a href="{{ url_for('views.store.store_catalog') }}">Extreme<strong>Gaming</strong></a>
+                    </span>
 
-        <ul id="nav-mobile" class="hide-on-med-and-down">
-            <li>
-                <a href="{{ url_for('views.store.store_catalog') }}">Catálogo</a>
-            </li>
+                    <a href="{{ url_for('views.store.store_catalog') }}" class="s-commerce-navbar-item {% if active_section == 'catalog'%}active{% endif %}">
+                        Catálogo
+                    </a>
 
-            <li>
-                <a href="/testimonios">Testimonios</a>
-            </li>
+                    <a href="{{ url_for('views.store.store_offers') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'offers'%}active{% endif %}">
+                        Ofertas
+                    </a>
 
-            <li>
-                <a href="/testimonios">Preguntas Frecuentes</a>
-            </li>
+                    <a href="{{ url_for('views.testimonials.testimonials_root') }}" class="s-commerce-navbar-item {% if active_section == 'testimonials' %}active{% endif %}">
+                        Testimonios
+                    </a>
 
-            <li>
-                <a href="/testimonios">Como comprar</a>
-            </li>
+                    <a href="#" class="s-commerce-navbar-item">
+                        Preguntas frecuentes
+                    </a>
 
-            <li>
-                <a href="/perfil">
-                    Perfil
-                </a>
-            </li>
+                    {% if g.user and g.user.admin %}
+                        <a href="{{ url_for('admin.views.admin_root') }}" class="s-commerce-navbar-item">
+                            Admin
+                        </a>
+                    {% endif %}
+                </span>
 
-            <li>
-                <a href="/carrito">
-                    Carrito
-                </a>
-            </li>
+                <div class="s-commerce-user-nav pull-right">
+                    {% if g.user %}
+                        <span class="s-commerce-user-nav-wallet">
+                            ${{ (g.user.money + g.user.wallet)|price_format }}
+                        </span>
 
-            <li>
-                <a href="https://www.facebook.com/ExtremeGamingSTEAM">
-                    Facebook ExtremeGaming
-                </a>
-            </li>
-        </ul>
+                        <span class="s-commerce-user-nav-wallet-text">
+                            Billetera
+                        </span>
+
+                        <span class="s-commerce-user-nav-image">
+                            <img src="{{ g.user.avatar_url }}">
+                        </span>
+
+                        <span class="s-commerce-user-nav-notifications">
+                            <i class="glyphicon glyphicon-bell"></i>
+
+                            <span class="s-commerce-notification-counter">15</span>
+                        </span>
+
+                        <span class="s-commerce-user-nav-cart">
+                            <i class="class glyphicon glyphicon-shopping-cart"></i>
+                            <span class="s-commerce-cart-counter">5</span>
+                        </span>
+                    {% else %}
+                        Login
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-</nav>
+</div>
