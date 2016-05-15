@@ -1,0 +1,70 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            {% include "views/store/search.html" %}
+        </div>
+
+        <div class="col-md-13">
+            <div class="s-commerce-offers">
+                {% if promotions|length > 0 %}
+                    <span class="s-commerce-offers-title">
+                        Ofertas destacadas: {{ promotions[0].title }}
+                    </span>
+
+                    {% if active_section != 'offers' %}
+                        <a class="s-commerce-offers-button pull-right" href="{{ url_for('views.store.store_offers') }}">
+                            Ver todas ({{promotions|length }})
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+                <div class="s-commerce-offers-featured">
+                    {% if promotion_products|length > 0 %}
+                        {% for row in promotion_products[:4]|batch(2, {}) %}
+                            <div class="row">
+                                {% for promotion_product in row %}
+                                    <div class="col-md-8">
+                                        <div class="s-commerce-offer-product-wrapper">
+                                            <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product['product'].get('app_id') or promotion_product['product'].get('sub_id'))) }}">
+                                                {% if promotion_product['product']['app_id'] %}
+                                                    <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ promotion_product['product']['app_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
+                                                {% else %}
+                                                    <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/subs/{{ promotion_product['product']['sub_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
+                                                {% endif %}
+
+                                                    <div class="s-commerce-offer-product-hud">
+                                                        <div class="s-commerce-offer-product-title">
+                                                            {{ promotion_product['product']['title'] }}
+                                                        </div>
+
+                                                        <div class="s-commerce-offer-product-description">
+                                                            {{ promotion_product['product']['description']}}
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="s-commerce-offer-buttons">
+                                                        <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=(promotion_product['product'].get('app_id') or promotion_product['product'].get('sub_id'))) }}">
+                                                            {% if promotion_product['price'] %}
+                                                                ${{ promotion_product['price']|price_format }}
+                                                            {% else %}
+                                                                No activo
+                                                            {% endif %}
+                                                        </a>
+
+                                                        <span class="s-commerce-offer-cart-button pull-right">
+                                                            Agregar al carrito
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="s-commerce-search-container">
+    <div class="s-commerce-search-form">
+        <input type="text" class="form-control" placeholder="Buscar productos">
+    </div>
+
+    <div class="s-commerce-search-sections-title">
+        Secciones
+    </div>
+
+    <div class="s-commerce-search-sections">
+        {% for section in sections %}
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"{% if loop.first %} checked="checked"{% endif %}> {{ section.title }}
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="s-commerce-search-price-title">
+        Precio
+    </div>
+
+    <div class="s-commerce-search-price-range">
+
+    </div>
+
+    <div class="s-commerce-specs-title">
+        Características
+    </div>
+
+    <div class="s-commerce-search-specs">
+        <select class="form-control">
+            <option selected="selected">Todas</option>
+            <option>Multijugador</option>
+            <option>Anime</option>
+            <option>Open World</option>
+            <option>Sandox</option>
+            <option>Thirdperson</option>
+        </select>
+    </div>
+
+    <script type="text/javascript">
+        $('.s-commerce-search-price-range').jRange({
+            from: 0,
+            to: 500,
+            step: 1,
+            scale: [0,250,500],
+            format: '$%s',
+            width: $('.s-commerce-search-price-title').width(),
+            showLabels: true,
+            isRange : true
+        });
+    </script>
+</div>

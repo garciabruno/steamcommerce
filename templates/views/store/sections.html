@@ -1,0 +1,21 @@
+<div class="s-commerce-sections">
+    <div class="container">
+        {% for section in sections %}
+            {% if section.section_type != 2 %}
+                <span class="s-commerce-section-item {% if loop.first %}active{% endif %}" data-sectionurl="{{ section.short_url }}">
+                    {{ section.title }}
+                </span>
+            {% endif %}
+        {% endfor %}
+
+        {% if sections|length > 0 %}
+            <script type="text/javascript">
+                // window.history.replaceState(
+                //     {},
+                //     'Sección {{ sections[0].title }}',
+                //     '/s/{{ sections[0].short_url }}/1'
+                // );
+            </script>
+        {% endif %}
+    </div>
+</div>
