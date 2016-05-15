@@ -1,0 +1,75 @@
+.admin-log-activity{
+    margin-top: 20px;
+}
+
+.admin-log-avatar img{
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+}
+
+.admin-log{
+    padding: 5px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.admin-log-owner{
+    border-bottom: 2px solid #5cb85c;
+}
+
+.admin-log:hover{
+    background-color: #EEEEEE;
+}
+
+.s-commerce-userrequests-paid,
+.s-commerce-paidrequests-paid,
+.s-commerce-userrequests-informed,
+.s-commerce-resumes-all{
+    margin-top: 20px;
+}
+
+.relation-sent{
+    text-decoration: line-through;
+}
+
+.s-commerce-relation-product-price{
+    color: #3c763d;
+}
+
+.s-commerce-userrequest-user img,
+.s-commerce-paidrequest-user img,
+.request-assigment img{
+    width: 30px;
+    height: 30px;
+}
+
+.request-body{
+    margin-top: 10px;
+}
+
+.request-buttons > .btn{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.relations-total{
+    margin-bottom: 15px;
+}
+
+.request-assigment{
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.request-assigment img{
+    border-radius: 300px;
+    margin-right: 5px;
+}
+
+.request-user-resume{
+    margin: 10px 0;
+}
+
+.request-assigment .btn{
+    margin-top: 10px;
+}
