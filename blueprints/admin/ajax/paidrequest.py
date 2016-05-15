@@ -45,7 +45,7 @@ def ajax_paidrequest_accept():
 
     adminlog.AdminLog().push(
         constants.ADMINLOG_PAIDREQUEST_ACCEPTED, **{
-            'userrequest': request_id,
+            'paidrequest': request_id,
             'user': user_id
         }
     )
