@@ -26,8 +26,8 @@
                                     </div>
                                 {% endif %}
 
-                                {% if request_type != 'C' and not request['paid'] %}
-                                    <div class="btn btn-lg btn-warning">
+                                {% if request_type != 'C' and not request['paid'] and request['visible'] %}
+                                    <div class="btn btn-lg btn-warning pay_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
                                         Marcar como cobrado
                                     </div>
                                 {% endif %}
@@ -67,12 +67,12 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <button class="btn btn-default">Asignar</button>
+                                        <button class="assign_request btn btn-default" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">Asignar</button>
                                     </div>
 
                                     {% if request['assigned'] %}
                                         <div class="col-md-6">
-                                            <button class="btn btn-danger">Quitar asignación</button>
+                                            <button class="deassign_request btn btn-danger" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">Quitar asignación</button>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -261,13 +261,15 @@
                                 {{ url_for('static', filename='css/jquery.json-viewer.css')|css_file|safe }}
                                 {{ url_for('static', filename='js/jquery.json-viewer.js')|js_file|safe }}
 
-                                <pre id="json-renderer"></pre>
+                                <button class="btn btn-default" onclick="$('.json').toggle();">Mostrar JSON</button>
+
+                                <pre id="json-renderer" class="json" style="display: none;"> </pre>
 
                                 <script type="text/javascript">
                                     $('#json-renderer').jsonViewer({{ request|as_json|safe }});
                                 </script>
 
-                                <pre id="json-renderer-history"></pre>
+                                <pre id="json-renderer-history" class="json" style="display: none;"> </pre>
 
                                 <script type="text/javascript">
                                     $('#json-renderer-history').jsonViewer({{ history_items|as_json|safe }});
