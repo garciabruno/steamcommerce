@@ -1,17 +1,26 @@
 var ADMIN_ACCEPT_REQUEST_SELECTOR = '.accept_request';
 var ADMIN_DENY_REQUEST_SELECTOR = '.deny_request';
 var ADMIN_DENY_REASON_SELECTOR = '#deny_reason';
+var ADMIN_ASSIGN_REQUEST_SELECTOR = '.assign_request';
+var ADMIN_ASSIGN_REQUEST_OPTION = '.request-assigment select option:selected';
+var ADMIN_PAY_REQUEST_SELECTOR = '.pay_request';
+var ADMIN_DEASSIGN_REQUEST_SELECTOR = '.deassign_request';
 
 var MESSAGE_REQUEST_ACCEPTED = 'Pedido aceptado exitosamente';
 var MESSAGE_REQUEST_DENIED = 'Pedido denegado exitosamente';
+var MESSAGE_REQUEST_ASSIGNED = 'Pedido asignado exitosamente';
+var MESSAGE_REQUEST_PAID = 'Pedido cobrado exitosamente';
+var MESSAGE_REQUEST_DEASSIGNED = 'Pedido desasignado exitosamente';
 
 var MESSAGE_REQUEST_BUTTON_DENIED = 'Pedido denegado';
 var MESSAGE_REQUEST_BUTTON_ACCEPTED = 'Pedido aceptado';
 
 var MESSAGE_REQUEST_ALREADY_DENIED = 'Este pedido ya se encuentra denegado';
 var MESSAGE_REQUEST_ALREADY_ACCEPTED = 'Este pedido ya se encuentra aceptado';
+var MESSAGE_REQUEST_ALREADY_PAID = 'Este pedido ya se encuentra cobrado';
 
 var MESSAGE_ERROR_GENERIC = 'Hubo un error al enviar la solicitud';
+var MESSAGE_LOADING_GENERIC = 'Cargando, espere un momento...';
 
 var Button = function(selector) {
     var self = this;
@@ -26,6 +35,8 @@ var Button = function(selector) {
 
         if (typeof(state['confirm']) == 'undefined') {
             $(selector).data('confirm', '1');
+
+            $(selector).data('original-html', $(selector).html());
             self.set_text('Confirmar');
 
             return false;
@@ -34,9 +45,12 @@ var Button = function(selector) {
         }
     };
 
-    this.to_loading = function() {
-        $(selector).data('original-html', $(selector).html());
-        $(selector).html('<i class="fa fa-spin fa-cog"></i>');
+    this.to_loading = function(restore) {
+        if (restore) {
+            $(selector).data('original-html', $(selector).html());
+        }
+
+        $(selector).html('<i class="glyphicon glyphicon-cog"></i>');
 
         $(selector).data('loading', 1);
     };
@@ -47,7 +61,7 @@ var Button = function(selector) {
         if (typeof(state) == 'undefined') {
             return false;
         } else {
-            return state;
+            return parseInt(state);
         }
     };
 
@@ -60,14 +74,13 @@ var Button = function(selector) {
         $(selector).data('loading', 0);
     };
 
-    this.set_text = function(text){
+    this.set_text = function(text) {
         $(selector).text(text);
     };
 };
 
 var Notification = function() {
     var self = this;
-
 
     this.push = function (message) {
         $.createNotification({
@@ -127,7 +140,7 @@ var Request = function(requestButton) {
 
         $.ajax({
             url: URL,
-            type:  'POST',
+            type: 'POST',
             data: {
                 request_id: request_id,
                 reason: reason || ''
@@ -153,16 +166,122 @@ var Request = function(requestButton) {
             }
         });
     };
+
+    this.assign_request = function(request_type, request_id, user_id) {
+        if (request_type == 'A') {
+            var URL = '/admin/ajax/userrequest/assign/to/';
+        } else {
+            var URL = '/admin/ajax/paidrequest/assign/to/';
+        }
+
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: {
+                request_id: request_id,
+                user_id: user_id
+            },
+            error: function(err) {
+                var notification = new Notification;
+                notification.push(MESSAGE_ERROR_GENERIC);
+
+                requestButton.restore_loading();
+            },
+            success: function(data) {
+                var notification = new Notification;
+                notification.push(MESSAGE_REQUEST_ASSIGNED);
+
+                requestButton.restore_loading();
+            }
+        });
+    };
+
+    this.deassign_request = function(request_type, request_id) {
+        if (request_type == 'A') {
+            var URL = '/admin/ajax/userrequest/deassign/';
+        } else {
+            var URL = '/admin/ajax/paidrequest/deassign/';
+        }
+
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: {
+                request_id: request_id
+            },
+            error: function(err) {
+                var notification = new Notification;
+                notification.push(MESSAGE_ERROR_GENERIC);
+
+                requestButton.restore_loading();
+            },
+            success: function(data) {
+                var notification = new Notification;
+                notification.push(MESSAGE_REQUEST_DEASSIGNED);
+
+                requestButton.restore_loading();
+            }
+        });
+    };
+
+    this.set_paid = function(request_type, request_id) {
+        if (request_type == 'A') {
+            var URL = '/admin/ajax/userrequest/set/paid/';
+        }
+
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: {
+                request_id: request_id
+            },
+            error: function(err) {
+                var errData = $.parseJSON(err.responseText);
+                var notification = new Notification;
+
+                if (errData['status'] == 0) {
+                    notification.push(MESSAGE_REQUEST_ALREADY_PAID);
+                } else {
+                    notification.push(MESSAGE_ERROR_GENERIC);
+                }
+
+                requestButton.restore_loading();
+            },
+            success: function(data) {
+                var notification = new Notification;
+
+                notification.push(MESSAGE_REQUEST_PAID);
+                requestButton.restore_loading();
+            }
+        });
+    }
 };
 
-$(ADMIN_ACCEPT_REQUEST_SELECTOR).on('click', function() {
-    var button = new Button(ADMIN_ACCEPT_REQUEST_SELECTOR);
+function parseAdminButton(selector) {
+    var button = new Button(selector);
 
     if (!button.confirm()) {
-        return;
+        return Error;
     }
 
-    button.to_loading();
+    if (button.is_loading()) {
+        var notification = new Notification;
+        notification.push(MESSAGE_LOADING_GENERIC);
+
+        return Error;
+    }
+
+    button.to_loading(false);
+
+    return button;
+}
+
+$(ADMIN_ACCEPT_REQUEST_SELECTOR).on('click', function() {
+    var button = parseAdminButton(ADMIN_ACCEPT_REQUEST_SELECTOR);
+
+    if (button == Error) {
+        return;
+    }
 
     var request = new Request(button);
     var state = button.get_state();
@@ -171,13 +290,11 @@ $(ADMIN_ACCEPT_REQUEST_SELECTOR).on('click', function() {
 });
 
 $(ADMIN_DENY_REQUEST_SELECTOR).on('click', function() {
-    var button = new Button(ADMIN_DENY_REQUEST_SELECTOR);
+    var button = parseAdminButton(ADMIN_DENY_REQUEST_SELECTOR);
 
-    if (!button.confirm()) {
+    if (button == Error) {
         return;
     }
-
-    button.to_loading();
 
     var request = new Request(button);
     var state = button.get_state();
@@ -185,4 +302,44 @@ $(ADMIN_DENY_REQUEST_SELECTOR).on('click', function() {
     var reason = $(ADMIN_DENY_REASON_SELECTOR).val()
 
     request.deny_request(state['requesttype'], state['requestid'], reason);
+});
+
+$(ADMIN_ASSIGN_REQUEST_SELECTOR).on('click', function(){
+    var button = parseAdminButton(ADMIN_ASSIGN_REQUEST_SELECTOR);
+
+    if (button == Error) {
+        return;
+    }
+
+    var request = new Request(button);
+    var state = button.get_state();
+    var user_id = $(ADMIN_ASSIGN_REQUEST_OPTION).val();
+
+    request.assign_request(state['requesttype'], state['requestid'], user_id);
+});
+
+$(ADMIN_PAY_REQUEST_SELECTOR).on('click', function() {
+    var button = parseAdminButton(ADMIN_PAY_REQUEST_SELECTOR);
+
+    if (button == Error) {
+        return;
+    }
+
+    var request = new Request(button);
+    var state = button.get_state();
+
+    request.set_paid(state['requesttype'], state['requestid']);
+});
+
+$(ADMIN_DEASSIGN_REQUEST_SELECTOR).on('click', function(){
+    var button = parseAdminButton(ADMIN_DEASSIGN_REQUEST_SELECTOR);
+
+    if (button == Error) {
+        return;
+    }
+
+    var request = new Request(button);
+    var state = button.get_state();
+
+    request.deassign_request(state['requesttype'], state['requestid']);
 });
