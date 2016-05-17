@@ -114,6 +114,28 @@ def ajax_paidrequest_assign():
     return {'success': True}
 
 
+@admin_ajax_paidrequest.route('/deassign/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_paidrequest_deassign():
+    form = admin_inputs.RequestIDInput(request)
+
+    if not form.validate():
+        return ({'success': False, 'errors': form.errors}, 422)
+
+    request_id = int(request.form.get('request_id'))
+    paidrequest_data = paidrequest.PaidRequest().get_paidrequest_by_id(
+        request_id
+    )
+
+    if not paidrequest_data['assigned']:
+        return ({'success': False, 'status': 0}, 500)
+
+    paidrequest.PaidRequest().assign(request_id, None)
+
+    return {'success': True}
+
+
 @admin_ajax_paidrequest.route('/assign/to/', methods=['POST'])
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
