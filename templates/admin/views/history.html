@@ -108,7 +108,7 @@
                                             <div class="text text-success">Reserva presentada</div>
 
                                             {% if request['url'] %}
-                                                <a href="/static/userrequests/{{ request['url'] }}">Ver imagen de reserva</a>
+                                                <a href="/static/userrequests/{{ request['url'] }}" target="_blank">Ver imagen de reserva</a>
                                             {% endif %}
                                         {% else %}
                                             <span class="text text-danger">Reserva no presentada</span>
