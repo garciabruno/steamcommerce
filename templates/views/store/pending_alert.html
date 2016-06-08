@@ -1,0 +1,31 @@
+<div class="s-commerce-pending-requests-alert">
+    <div class="container">
+        <div class="main">
+            <span class="pending-requests-title">¡Tienes pedidos pendientes sin reservar!</span>
+            <div class="pending-requests-speech">Tienes {{ g.pending_requests|length }} pedido(s) que requieren una reserva <strong>una vez que hayan sido abonados</strong></div>
+
+            <button class="btn btn-default" id="pending-requests-btn">Ver instrucciones para reservar</button>
+
+            <div class="pending-requests-ending">
+                Reservar un pedido es fácil:
+                <ul>
+                    <li>Debes abonar tu boleta antes del tiempo de finalización de la oferta correspondiente</li>
+                    <li>Debes preservar tu boleta con el respectivo comprobante de pago</li>
+                    <li>Una vez vez que abones tu boleta, debes subir al sitio una foto, tomada con tu celular o por scanner, de la boleta. <strong>No realizar esto antes de la finalización de la oferta resultará en la devolución del monto abonado en forma de créditos</strong></li>
+                </ul>
+            </div>
+
+            <div class="pending-requests-hotlink">
+                <a href="{{ url_for('views.store.store_reservations') }}" class="btn btn-default">
+                    Ver reservas pendientes
+                </a>
+            </div>
+
+            <script type="text/javascript">
+                $('#pending-requests-btn').on('click', function(){
+                    $('.pending-requests-ending').slideToggle('fast');
+                });
+            </script>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,150 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Nuevos testimonios{% endblock %}
+
+{% block body %}
+    <div class="s-commerce-new-testimonials-container">
+        <div class="container">
+            <div class="main">
+                <div class="s-commerce-new-testimonials">
+                    {% for testimonial in pending_testimonials %}
+                        <div class="s-commerce-new-testimonial" data-testimonialid="{{ testimonial['id'] }}">
+                            <div class="s-commerce-new-testimonial-title">
+                                {% if testimonial.get('userrequest') %}
+                                    {% set relations = testimonial.get('userrequest').get('relations') %}
+
+                                    Compra de {{ relations[0].get('product').get('title') }}
+                                    {% if relations|length > 1 %}
+                                        y {{ relations|length - 1 }} productos más
+                                    {% endif %}
+                                {% elif testimonial.get('paidrequest') %}
+                                    {% set relations = testimonial.get('paidrequest').get('relations') %}
+
+                                    Compra de {{ relations[0].get('product').get('title') }}
+                                    {% if relations|length > 1 %}
+                                        y {{ relations|length - 1 }} productos más
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+                            <div class="s-commerce-testimonials-highlights">
+                                <ul>
+                                    {% if testimonial.get('userrequest') %}
+                                        {% set time_diff = testimonial.get('userrequest').get('accepted_date') - testimonial.get('userrequest').get('paid_date') %}
+                                        {% set hours_diff = time_diff.total_seconds() / 60 / 60 %}
+
+                                        {% if hours_diff < 48 %}
+                                            <li>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                Tu pedido fue entregado en menos de 48hs luego de que haya ingresado el pago
+                                            </li>
+                                        {% endif %}
+                                    {% elif testimonial.get('paidrequest') %}
+                                        {% set time_diff = testimonial.get('paidrequest').get('accepted_date') - testimonial.get('paidrequest').get('date') %}
+                                        {% set hours_diff = time_diff.total_seconds() / 60 / 60 %}
+
+                                        {% if hours_diff < 48 %}
+                                            <li>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                Tu pedido fue entregado en menos de 48hs luego de que haya ingresado el pago
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    <li>Pedido entregado en {{ time_diff }} luego de que haya ingresado el pago</li>
+                                </ul>
+                            </div>
+
+                            <div class="s-commerce-testimonial-form" data-testimonialid="{{ testimonial.get('id') }}">
+                                <textarea class="form-control"></textarea>
+
+                                <button class="s-commerce-submit-testimonial btn btn-default" data-testimonialid="{{ testimonial.get('id') }}">
+                                    Enviar testimonio
+                                </button>
+
+                                <button class="s-commerce-skip-testimonial btn btn-default" data-testimonialid="{{ testimonial.get('id') }}">
+                                    Saltear este testimonio
+                                </button>
+                            </div>
+                        </div>
+
+                        <style type="text/css">
+                            {% if testimonial.get('userrequest') %}
+                                {% set product_id = testimonial.get('userrequest').get('relations')[0].get('product').get('id') %}
+                            {% elif testimonial.get('paidrequest') %}
+                                {% set product_id = testimonial.get('paidrequest').get('relations')[0].get('product').get('id') %}
+                            {% endif %}
+
+                            .s-commerce-new-testimonial[data-testimonialid="{{ testimonial['id'] }}"]{
+                                background: -moz-linear-gradient(top, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 19%, rgba(28,38,47,0.8) 27%, rgba(28,38,47,0.6) 28%, rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/banner_blurred.jpg");
+                                background: -webkit-linear-gradient(top, rgba(28,38,47,0.6) 0%,rgba(28,38,47,0.6) 19%,rgba(28,38,47,0.8) 27%,rgba(28,38,47,0.6) 28%,rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/banner_blurred.jpg");
+                                background: linear-gradient(to bottom, rgba(28,38,47,0.6) 0%,rgba(28,38,47,0.6) 19%,rgba(28,38,47,0.8) 27%,rgba(28,38,47,0.6) 28%,rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/banner_blurred.jpg");
+                                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc1c262f', endColorstr='#1c262f',GradientType=0 ); /* IE6-9 */
+                                background-repeat: repeat-x;
+                                background-attachment: fixed;
+                                background-size: cover;
+                            }
+                        </style>
+                    {% endfor %}
+
+                    <script type="text/javascript">
+                        $('.s-commerce-skip-testimonial').on('click', function(){
+                            var button = new Button($(this));
+
+                            if (!button.confirm()) {
+                                return;
+                            }
+
+                            button.to_loading(true);
+
+                            var testimonial_id = $(this).data('testimonialid');
+
+                            $.ajax({
+                                url: '/testimonial/skip/',
+                                type: 'POST',
+                                data:{
+                                    'testimonial_id': testimonial_id
+                                },
+                                success: function(data) {
+                                    var notification = new Notification();
+                                    notification.push('Testimonio eliminado satisfactoriamente');
+
+                                    $('.s-commerce-new-testimonial[data-testimonialid="' + testimonial_id + '"]').fadeOut();
+                                }
+                            });
+                        });
+
+                        $('.s-commerce-submit-testimonial').on('click', function(){
+                            var button = new Button($(this));
+
+                            if (!button.confirm()) {
+                                return;
+                            }
+
+                            button.to_loading(true);
+
+                            var testimonial_id = $(this).data('testimonialid');
+                            var content = $('.s-commerce-testimonial-form[data-testimonialid="' + testimonial_id + '"] textarea').val();
+
+                            $.ajax({
+                                url: '/testimonial/submit/',
+                                type: 'POST',
+                                data:{
+                                    'testimonial_id': testimonial_id,
+                                    'content': content
+                                },
+                                success: function(data) {
+                                    var notification = new Notification();
+                                    notification.push('Testimonio publicado satisfactoriamente');
+                                    $('.s-commerce-new-testimonial[data-testimonialid="' + testimonial_id + '"]').fadeOut();
+
+                                    swal('Testimonio publicado', 'Muchas gracias por tu contribución', 'success');
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

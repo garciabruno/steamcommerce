@@ -1,0 +1,65 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Reserva de pedidos{% endblock %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+    <div class="container">
+        <div class="main">
+            {% if not g.pending_requests %}
+                <div class="reservation-title" style="margin-top: 50px;">
+                    No tienes reservas pendientes
+                </div>
+            {% endif %}
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="reservation-body" style="margin-top: 50px; background: #FDB832; padding: 10px; color: #1C262F;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="s-commerce-reservations-container">
+                {% for request in g.pending_requests %}
+                    <div class="s-commerce-reservation">
+                        <div class="reservation-title">
+                            Pedido <a href="/historial/A-{{ request['id'] }}">#A-{{ request['id'] }}</a>
+                        </div>
+
+                        <div class="reservation-body">
+                            <ul>
+                                <li>Oferta correspondiente: {{ request['promotion']['title'] }}</li>
+                                <li>Fecha de finalización: {{ request['promotion']['ending_date']|date_format }}
+                            </ul>
+
+                            Adjuntar boleta con comprobante:
+                        </div>
+
+                        <div class="reservation-form">
+                            <form method="POST" enctype="multipart/form-data" action="{{ url_for('views.store.store_reservations') }}">
+                                <div class="form-group">
+                                    <label for="InputFile">Imagen</label>
+                                    <input type="file" name="image" id="InputFile" accept="image/*">
+
+                                    <p class="help-block">Adjuntar imagen de boleta pagada con comprobante de pago (Max 5 MB)</p>
+                                </div>
+
+                                <input type="hidden" value="{{ request['id'] }}" name="request_id">
+
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-success" value="Reservar pedido">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
