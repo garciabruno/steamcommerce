@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:Utf-8 -*-
 
+from flask import session
 from flask import request
 from flask import Blueprint
 
+from steamcommerce_api.api import user
 from steamcommerce_api.api import creditrequest
 
 from inputs import store_inputs
@@ -13,10 +15,10 @@ ajax_creditrequest = Blueprint('ajax.store.creditrequest', __name__)
 
 
 @ajax_creditrequest.route('/generate/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_creditrequest_generate():
-    user_id = 1
-    email = 'admin@extremegaming-arg.com.ar'
+    curr_user = user.User().get_by_id(session.get('user'))
     form = store_inputs.CreditRequestInput(request)
 
     if not form.validate():
@@ -28,8 +30,8 @@ def ajax_creditrequest_generate():
         return ({'success': False, 'status': 1}, 500)
 
     invoice = creditrequest.CreditRequest().generate(
-        user_id,
-        email,
+        curr_user.id,
+        curr_user.email,
         amount
     )
 
