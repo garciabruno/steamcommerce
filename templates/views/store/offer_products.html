@@ -1,25 +1,31 @@
-{% for row in promotion_products|batch(4, {}) %}
-    <div class="row">
-        {% for promotion_product in row %}
-            <div class="col-md-4" style="padding-left: {% if loop.first %}15px;{% else %}5px;{% endif %} padding-right: 5px;">
-                <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ promotion_product['product']['app_id'] or promotion_product['product']['sub_id'] }}/capsule_616x353.jpg');">
-                    <div class="s-commerce-product-hud">
-                        <div class="s-commerce-product-title">
-                            {{ promotion_product['product']['title'] }}
+<div id="products-page-{{ page }}-{{ section_id }}" class="products-page">
+    {% for row in promotion_products|batch(4, {}) %}
+        <div class="row">
+            {% for promotion_product in row %}
+                {% if promotion_product %}
+                    <div class="col-md-4" style="padding-left: {% if loop.first %}15px;{% else %}5px;{% endif %} padding-right: 5px;">
+                        <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ promotion_product['product']['app_id'] or promotion_product['product']['sub_id'] }}/capsule_616x353.jpg');">
+                            <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('product').get('app_id') or promotion_product.get('product').get('sub_id'))) }}">
+                                <div class="s-commerce-product-hud">
+                                    <div class="s-commerce-product-title">
+                                        {{ promotion_product['product']['title'] }}
+                                    </div>
+                                </div>
+
+                                <div class="s-commerce-product-buttons">
+                                    <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product['product'].get('app_id') or promotion_product['product'].get('sub_id'))) }}" class="s-commerce-product-price">
+                                        {% if promotion_product['product']['price'] %}
+                                            ${{ promotion_product['product']['price']['price']|price_format }}
+                                        {% else %}
+                                            No activo
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            </a>
                         </div>
                     </div>
-
-                    <div class="s-commerce-product-buttons">
-                        <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product['product'].get('app_id') or promotion_product['product'].get('sub_id'))) }}" class="s-commerce-product-price">
-                            {% if promotion_product['product']['price'] %}
-                                ${{ promotion_product['product']['price']['price']|price_format }}
-                            {% else %}
-                                No activo
-                            {% endif %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
