@@ -2,8 +2,10 @@
 # -*- coding:Utf-8 -*-
 
 from flask import request
+from flask import session
 from flask import Blueprint
 
+from steamcommerce_api.api import user
 from steamcommerce_api.api import cart
 from steamcommerce_api.api import product
 from steamcommerce_api.api import history
@@ -19,11 +21,10 @@ ajax_userrequest = Blueprint('ajax.store.userrequest', __name__)
 
 
 @ajax_userrequest.route('/generate/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_userrequest_generate():
-    user_id = 1
-    email = 'admin@extremegaming-arg.com.ar'
-
+    curr_user = user.User().get_by_id(session.get('user'))
     form = store_inputs.UserRequestInput(request)
 
     if not form.validate():
@@ -45,12 +46,17 @@ def ajax_userrequest_generate():
         return ({'success': False, 'status': 4}, 500)
 
     price = product_data.get('price').get('price')
-    promotion = True if product_data.get('promotion') else False
+
+    promotion = None
+
+    if product_data.get('promotion'):
+        if product_data.get('promotion').get('ending_date'):
+            promotion = product_data.get('promotion').get('id')
 
     invoice = userrequest.UserRequest().generate(
-        user_id,
+        curr_user.id,
         price,
-        email,
+        curr_user.email,
         [product_data.get('id')],
         promotion=promotion
     )
@@ -70,17 +76,19 @@ def ajax_userrequest_generate():
         constants.HISTORY_USERREQUEST_TYPE
     )
 
+    invoice.update({'promotional': promotion is not None})
+
     return invoice
 
 
 @ajax_userrequest.route('/cart/generate/')
+@route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_userrequest_cart_generate():
-    user_id = 1
-    email = 'admin@extremegaming-arg.com.ar'
+    curr_user = user.User().get_by_id(session.get('user'))
 
-    cart.Cart().process_cart(user_id)
-    user_cart = cart.Cart().get_user_cart(user_id)
+    cart.Cart().process_cart(curr_user.id)
+    user_cart = cart.Cart().get_user_cart(curr_user.id)
 
     if len(user_cart.get('items')) == 0:
         return ({'success': False, 'status': 0}, 500)
@@ -90,14 +98,20 @@ def ajax_userrequest_cart_generate():
 
     cart_items = user_cart.get('items')
 
-    promotion = any(
-        [x.get('product').get('is_promotional') for x in cart_items]
-    )
+    promotion = None
+    item_index = 0
+
+    while item_index < len(cart_items) and promotion is None:
+        cart_item_product = cart_items[item_index].get('product')
+
+        if cart_item_product.get('promotion'):
+            if cart_item_product.get('promotion').get('ending_date'):
+                promotion = cart_item_product.get('promotion').get('id')
 
     invoice = userrequest.UserRequest().generate(
-        user_id,
+        curr_user.id,
         user_cart.get('prices').get('normal'),
-        email,
+        curr_user.email,
         [x.get('product').get('id') for x in cart_items],
         promotion=promotion
     )
@@ -111,7 +125,7 @@ def ajax_userrequest_cart_generate():
         if invoice.get('status') == 1:
             return ({'success': False, 'status': 4}, 500)
 
-    cart.Cart().empty_user_cart(user_id)
-    invoice.update({'promotional': promotion})
+    cart.Cart().empty_user_cart(curr_user.id)
+    invoice.update({'promotional': promotion is not None})
 
     return invoice
