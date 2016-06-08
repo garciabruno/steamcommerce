@@ -1,0 +1,39 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - Panel{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="main">
+            <div class="row">
+                <div class="col-md-2">
+                    {% include "admin/panel/side-nav.html" %}
+                </div>
+
+                <div class="col-md-14">
+                    <div class="admin-tabs">
+                        <div class="tabbleable">
+                            <ul class="nav nav-tabs nav-justified">
+                                {% for model in models %}
+                                    {% if model.Admin.name %}
+                                        <li {% if loop.first %}class="active"{% endif %}>
+                                            <a href="#tab{{ loop.index }}" data-toggle="tab">
+                                                {{ model.Admin.name }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="tab1" class="tab-pane active">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

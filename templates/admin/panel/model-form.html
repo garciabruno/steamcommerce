@@ -1,0 +1,31 @@
+{% extends "admin/layout/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Admin - {{ model_name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="main">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="row">
+                <div class="col-md-2">
+                    {% include "admin/panel/side-nav.html" %}
+                </div>
+
+                <div class="col-md-14">
+                    {{ wtf.quick_form(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

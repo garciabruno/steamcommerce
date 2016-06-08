@@ -1,0 +1,142 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - {{ model_name }}{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="main">
+            <div class="row">
+                <div class="col-md-2">
+                    {% include "admin/panel/side-nav.html" %}
+                </div>
+
+                <div class="col-md-14">
+                    <div class="model-table">
+                        <a href="/admin/panel/model/add/{{ model_name }}" class="btn btn-success">Agregar</a>
+
+                        <table class="table table-bordered" style="margin-top: 10px; background-color: white;">
+                            <thead>
+                                <tr>
+                                    <th><label>Acciones</label></th>
+
+                                    {% for field in form %}
+                                        <th>{{ field.description or field.label }}</th>
+                                    {%- endfor %}
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for item in query -%}
+                                    <tr>
+                                        <td>
+                                            {% if 'edit' in model.Admin.actions %}
+                                                <a href="/admin/panel/model/edit/{{ model.Admin.url }}/{{ item.id }}">
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </a>
+                                            {%- endif %}
+
+                                            {% if 'remove' in model.Admin.actions %}
+                                                <a href="/admin/panel/model/remove/{{ model.Admin.url }}/{{ item.id }}">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </a>
+                                            {%- endif %}
+                                        </td>
+
+                                        {% for field in form %}
+                                            {% if field.type == 'BooleanField' %}
+                                                {% if item[field.name] %}
+                                                    <td>
+                                                        <span class="text text-success">
+                                                            <i class="glyphicon glyphicon-ok"></i>
+                                                        </span>
+                                                    </td>
+                                                {% else %}
+                                                    <td>
+                                                        <span class="text text-danger">
+                                                            <i class="glyphicon glyphicon-remove"></i>
+                                                        </span>
+                                                    </td>
+                                                {%- endif %}
+                                            {% elif field.type == 'TextField' or field.type == 'TextAreaField' %}
+                                                {% if item[field.name] and item[field.name]|length > 20 %}
+                                                    <td>{{ item[field.name][:20] }}...</td>
+                                                {%- else %}
+                                                    <td>{{ item[field.name] or '' }}</td>
+                                                {%- endif %}
+                                            {% else %}
+                                                <td>
+                                                    {{ item[field.name] }}
+                                                </td>
+                                            {%- endif %}
+                                        {%- endfor %}
+                                    </tr>
+                                {%- endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <nav>
+                        <ul class="pagination">
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page - 1 }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page - 5 }}">{{ page - 5 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page - 4 }}">{{ page - 4 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page - 3 }}">{{ page - 3 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page - 2 }}">{{ page - 2 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page - 1 }}">{{ page - 1 }}</a>
+                            </li>
+
+                            <li class="active">
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page }}">{{ page }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page + 1 }}">{{ page + 1 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page + 2 }}">{{ page + 2 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page + 3 }}">{{ page + 3 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page + 4 }}">{{ page + 4 }}</a>
+                            </li>
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page + 5 }}">{{ page + 5 }}</a>
+                            </li>
+
+
+                            <li>
+                                <a href="/admin/panel/model/{{ model_name }}?page={{ page + 1 }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
