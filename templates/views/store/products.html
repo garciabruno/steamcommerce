@@ -1,25 +1,31 @@
-{% for row in products|batch(4, {}) %}
-    <div class="row">
-        {% for product in row %}
-            <div class="col-md-4" style="padding-left: {% if loop.first %}15px;{% else %}5px;{% endif %} padding-right: 5px;">
-                <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ product['app_id'] or product['sub_id'] }}/capsule_616x353.jpg');">
-                    <div class="s-commerce-product-hud">
-                        <div class="s-commerce-product-title">
-                            {{ product['title'] }}
+<div id="products-page-{{ page }}-{{ section_id }}" class="products-page">
+    {% for row in products|batch(4, {}) %}
+        <div class="row">
+            {% for product in row %}
+                {% if product %}
+                    <div class="col-md-4" style="padding-left: {% if loop.first %}15px;{% else %}5px;{% endif %} padding-right: 5px;">
+                        <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/{{ 'apps' if product['app_id'] else 'subs' }}/{{ product['app_id'] or product['sub_id'] }}/capsule_616x353.jpg');">
+                            <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+                                <div class="s-commerce-product-hud">
+                                    <div class="s-commerce-product-title">
+                                        {{ product['title'] }}
+                                    </div>
+                                </div>
+
+                                <div class="s-commerce-product-buttons">
+                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-product-price">
+                                        {% if product['price'] %}
+                                            ${{ product['price']['price']|price_format }}
+                                        {% else %}
+                                            No activo
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            </a>
                         </div>
                     </div>
-
-                    <div class="s-commerce-product-buttons">
-                        <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-product-price">
-                            {% if product['price'] %}
-                                ${{ product['price']['price']|price_format }}
-                            {% else %}
-                                No activo
-                            {% endif %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
