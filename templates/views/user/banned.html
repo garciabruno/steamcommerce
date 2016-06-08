@@ -1,0 +1,31 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Cuenta Suspendida{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="main">
+            <div class="s-commerce-banned-account">
+                <div class="s-commerce-banned-title">
+                    Tu cuenta de ExtremeGaming se encuentra suspendida <strong>permanentemente</strong></h1>
+                </div>
+
+                <div class="s-commerce-banned-reason">
+                    {% if user.ban_reason %}
+                        Motivo de la suspensión: {{ user.ban_reason }}
+                    {% endif %}
+                </div>
+
+                <div class="s-commerce-banned-speech">
+                    Infrigir con los Términos y Condiciones de ExtremeGaming resulta en la suspensión permanente de tu cuenta. <br>
+                    ExtremeGaming se reserva el derecho de permitir o denegar el servicio a cualquier usuario. <br><br>
+
+                    <ul>
+                        <li>Todas las compras realizadas con anterior a la suspensión serán entregadas al último email asociado con la cuenta</li>
+                        <li>En el caso que el staff deniege una compra pendiente, el usuario recibirá la devolución de sus créditos en forma de Transferencia Bancaria</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

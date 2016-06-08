@@ -1,0 +1,27 @@
+{% extends "layout/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}ExtremeGaming - Finalizar registro{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="main">
+            <div class="s-commerce-register-account">
+                <img class="s-commerce-registration-image" src="{{ user.avatar_url }}">
+
+                <div class="s-commerce-register-title">
+                    Bienvenido a <span class="brand">ExtremeGaming</span>, {{ user.name }}. ¡Estás a un paso de finalizar tu registro!
+                </div>
+
+                <div class="s-commerce-registration-speech">
+                    Lo <strong>único</strong> que necesitamos para tu registro es un email válido en el que quieras recibir tus productos.<br>
+                    También puedes optar por suscribirte a nuestra lista de emails donde recibirás las mejores actualizaciónes sobre ofertas, noticias y más.
+                </div>
+
+                <div class="s-commerce-registration-form">
+                    {{ wtf.quick_form(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

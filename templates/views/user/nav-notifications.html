@@ -1,0 +1,40 @@
+{% macro get_notification_body(notification) %}
+    {% if notification.action == 1 %}
+        Se aceptó el pedido <a href="/historial/A-{{ notification.userrequest.id }}">#A-{{ notification.userrequest.id }}</a>
+    {% elif notification.action == 2 %}
+        ${{ notification.creditrequest.amount|price_format }} créditos fueron agregados a su cuenta
+    {% elif notification.action == 3 %}
+        Has realizado la compra del producto <a href="/comprar/{{ notification.product.app_id or notification.product.sub_id }}">{{ notification.product.title }}</a>
+    {% elif notification.action == 4 %}
+        Se aceptó el pedido <a href="/historial/C-{{ notification.paidrequest.id }}">#C-{{ notification.paidrequest.id }}</a>
+    {% elif notification.action == 5 %}
+        Se denegó el pedido  <a href="/historial/C-{{ notification.paidrequest.id }}">#C-{{ notification.paidrequest.id }}</a>
+    {% elif notification.action == 6 %}
+        Se ha realizado un nuevo comentario en el ticket de soporte <a href="/ticket/{{ notification.ticket.id }}">#{{ notification.ticket.id }}</a>
+    {% elif notification.action == 7 %}
+        El ticket <a href="/ticket/{{ notification.ticket.id }}">#{{ notification.ticket.id }}</a> se ha cambiado a "Resuelto"
+    {% elif notification.action == 8 %}
+        Se denegó el pedido  <a href="/historial/A-{{ notification.userrequest.id }}">#A-{{ notification.userrequest.id }}</a>
+    {% elif notification.action == 9 %}
+        {% if notification.userrequest %}
+            {% set url = '/historial/A-{}'.format(notification.userrequest.id ) %}
+            {% set text = '#A-{}'.format(notification.userrequest.id) %}
+        {% elif notification.creditrequest %}
+            {% set url = '/historial/B-{}'.format(notification.creditrequest.id) %}
+            {% set text = '#B-{}'.format(notification.creditrequest.id) %}
+        {% elif notification.paidrequest %}
+            {% set url = '/historial/C-{}'.format(notification.paidrequest.id) %}
+            {% set text = '#C-{}'.format(notification.paidrequest.id) %}
+        {% endif %}
+
+        Un administrador ha adjuntado una nueva nota en el pedido <a href="{{ url }}">{{ text }}</a></a>
+    {% elif notification.action == 10 %}
+        Actualizó su dirección de email de: <strong>{{ notification.old_email }}</strong> a <strong>{{ notification.new_email }}</strong>
+    {% endif %}
+{% endmacro %}
+
+<ul class="cd-notifications-items">
+    {% for notification in g.notifications %}
+        <li class="s-commerce-notification {% if not notification.seen %}unseen{% endif %}">{{ get_notification_body(notification) }}</li>
+    {% endfor %}
+</ul>
