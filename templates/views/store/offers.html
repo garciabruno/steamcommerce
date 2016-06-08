@@ -1,14 +1,14 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-3">
-            {% include "views/store/search.html" %}
-        </div>
-
-        <div class="col-md-13">
+        <div class="col-md-16">
             <div class="s-commerce-offers">
                 {% if promotions|length > 0 %}
                     <span class="s-commerce-offers-title">
                         Ofertas destacadas: {{ promotions[0].title }}
+
+                        {% if promotions[0].ending_date %}
+                            (Finaliza {{ promotions[0].ending_date|date_format }})
+                        {% endif %}
                     </span>
 
                     {% if active_section != 'offers' %}
@@ -25,33 +25,33 @@
                                 {% for promotion_product in row %}
                                     <div class="col-md-8">
                                         <div class="s-commerce-offer-product-wrapper">
-                                            <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product['product'].get('app_id') or promotion_product['product'].get('sub_id'))) }}">
-                                                {% if promotion_product['product']['app_id'] %}
-                                                    <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ promotion_product['product']['app_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
+                                            <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
+                                                {% if promotion_product['app_id'] %}
+                                                    <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ promotion_product['app_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
                                                 {% else %}
-                                                    <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/subs/{{ promotion_product['product']['sub_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
+                                                    <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/subs/{{ promotion_product['sub_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
                                                 {% endif %}
 
                                                     <div class="s-commerce-offer-product-hud">
                                                         <div class="s-commerce-offer-product-title">
-                                                            {{ promotion_product['product']['title'] }}
+                                                            {{ promotion_product['title'] }}
                                                         </div>
 
                                                         <div class="s-commerce-offer-product-description">
-                                                            {{ promotion_product['product']['description']}}
+                                                            {{ promotion_product['description'][:200] }}
                                                         </div>
                                                     </div>
 
                                                     <div class="s-commerce-offer-buttons">
-                                                        <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=(promotion_product['product'].get('app_id') or promotion_product['product'].get('sub_id'))) }}">
+                                                        <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
                                                             {% if promotion_product['price'] %}
-                                                                ${{ promotion_product['price']|price_format }}
+                                                                ${{ promotion_product['price']['price']|price_format }}
                                                             {% else %}
                                                                 No activo
                                                             {% endif %}
                                                         </a>
 
-                                                        <span class="s-commerce-offer-cart-button pull-right">
+                                                        <span class="s-commerce-offer-cart-button pull-right" data-productid="{{ promotion_product['id'] }}">
                                                             Agregar al carrito
                                                         </span>
                                                     </div>
