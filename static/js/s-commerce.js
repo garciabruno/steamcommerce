@@ -1,22 +1,185 @@
-$('.v5-purchase-button').on('click', function(){
-    $('.v5-payment-container').slideDown();
+jQuery(document).ready(function($){
+    //if you change this breakpoint in the style.css file (or _layout.scss if you use SASS), don't forget to update this value as well
+    var $L = 1200,
+        $menu_navigation = $('#main-nav'),
+        $cart_trigger = $('#cd-cart-trigger'),
+        $hamburger_icon = $('#cd-hamburger-menu'),
+        $lateral_cart = $('#cd-cart'),
+        $shadow_layer = $('#cd-shadow-layer');
+
+    //open cart
+
+    $cart_trigger.on('click', function(event){
+        event.preventDefault();
+        //close lateral menu (if it's open)
+
+        $menu_navigation.removeClass('speed-in');
+        toggle_panel_visibility($('#cd-cart'), $('#cd-shadow-layer'), $('body'));
+    });
+
+    //close lateral cart or lateral menu
+
+    $("body").on('click', '#cd-shadow-layer', function(){
+        $shadow_layer = $('#cd-shadow-layer');
+        $lateral_cart = $('#cd-cart,#cd-notifications');
+
+        $shadow_layer.removeClass('is-visible');
+        // firefox transitions break when parent overflow is changed, so we need to wait for the end of the trasition to give the body an overflow hidden
+        if( $lateral_cart.hasClass('speed-in') ) {
+            $lateral_cart.removeClass('speed-in').on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
+                $('body').removeClass('overflow-hidden');
+            });
+            $menu_navigation.removeClass('speed-in');
+        } else {
+            $menu_navigation.removeClass('speed-in').on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
+                $('body').removeClass('overflow-hidden');
+            });
+            $lateral_cart.removeClass('speed-in');
+        }
+    });
+
+    $('.s-commerce-user-nav-notifications').on('click', function(event){
+        event.preventDefault();
+
+        $menu_navigation.removeClass('speed-in');
+        toggle_panel_visibility($('#cd-notifications'), $('#cd-shadow-layer'), $('body'));
+
+        $.ajax({
+            'url': '/notifications/seen/'
+        });
+    });
 });
 
-$('.v5-invoice-confirm').on('click', function(){
-    //
-});
+function toggle_panel_visibility ($lateral_panel, $background_layer, $body) {
+    if($lateral_panel.hasClass('speed-in')) {
+        // firefox transitions break when parent overflow is changed, so we need to wait for the end of the trasition to give the body an overflow hidden
 
-$('.v5-remove-from-cart').on('click', function(){
-    var $this = $(this);
-    var is_loading = $this.data('loading');
+        $lateral_panel.removeClass('speed-in').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function() {
+            $body.removeClass('overflow-hidden');
+        });
 
-    if (is_loading == null){
-        $this.data('loading', 1);
-    } else if (is_loading){
-        return;
+        $background_layer.removeClass('is-visible');
+    } else {
+        $lateral_panel.addClass('speed-in').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
+            $body.addClass('overflow-hidden');
+        });
+
+        $background_layer.addClass('is-visible');
+    }
+}
+
+function move_navigation( $navigation, $MQ) {
+    if ( $(window).width() >= $MQ ) {
+        $navigation.detach();
+        $navigation.appendTo('header');
+    } else {
+        $navigation.detach();
+        $navigation.insertAfter('header');
+    }
+}
+
+ var Notification = function() {
+    var self = this;
+
+    this.push = function (message) {
+        $.createNotification({
+            content: message,
+            vertical: 'bottom',
+            duration: 3500
+        });
+
+        console.info(message);
+    };
+};
+
+var Button = function(selector) {
+    var self = this;
+    var selector = selector;
+
+    this.get_state = function() {
+        return $(selector).data();
+    };
+
+    this.confirm = function() {
+        var state = self.get_state();
+
+        if (typeof(state['confirm']) == 'undefined') {
+            $(selector).data('confirm', '1');
+
+            $(selector).data('original-html', $(selector).html());
+            self.set_text('Confirmar');
+
+            return false;
+        } else {
+            return true;
+        }
+    };
+
+    this.to_loading = function(restore) {
+        if (restore) {
+            $(selector).data('original-html', $(selector).html());
+        }
+
+        $(selector).html('<i class="glyphicon glyphicon-cog"></i>');
+
+        $(selector).data('loading', 1);
+    };
+
+    this.is_loading = function() {
+        var state = self.get_state()['loading'];
+
+        if (typeof(state) == 'undefined') {
+            return false;
+        } else {
+            return parseInt(state);
+        }
+    };
+
+    this.destroy = function() {
+        $(selector).remove();
+    };
+
+    this.restore_loading = function(){
+        $(selector).html($(selector).data('original-html'));
+        $(selector).data('loading', 0);
+    };
+
+    this.set_text = function(text) {
+        $(selector).text(text);
+    };
+};
+
+function parseButton(selector) {
+    var button = new Button(selector);
+
+    if (!button.confirm()) {
+        return Error;
     }
 
-    Materialize.toast('Eliminando del carrito ...', 1000);
+    if (button.is_loading()) {
+        var notification = new Notification;
+        notification.push(MESSAGE_LOADING_GENERIC);
+
+        return Error;
+    }
+
+    button.to_loading(false);
+
+    return button;
+}
+
+$('body').on('click', '.s-commerce-remove-cart-button', function(){
+    var $this = $(this);
+    var button = new Button($this);
+
+    if (button.is_loading()) {
+        var notification = new Notification;
+        notification.push(MESSAGE_LOADING_GENERIC);
+
+        return Error;
+    }
+
+    button.to_loading(true);
 
     $.ajax({
         url: '/ajax/store/cart/remove/',
@@ -24,39 +187,38 @@ $('.v5-remove-from-cart').on('click', function(){
         data:{
             relation_id: $this.data('relationid')
         },
-        success: function(data){
-            response = $.parseJSON(data);
-
+        success: function(data) {
             $this.data('loading', 0);
 
-            $('.v5-cart-item[data-relationid="' + $this.data('relationid') + '"]').fadeOut();
+            var count = parseInt($('.s-commerce-cart-counter').text());
 
-            $('.v5-cart-hud-container').fadeOut();
-            $('.v5-cart-hud-container').html('');
-            $('.v5-cart-hud-container').html(response['hud']);
-            $('.v5-cart-hud-container').fadeIn();
+            $('.s-commerce-cart-item[data-relationid="' + $this.data('relationid') + '"]').fadeOut();
+            $('.s-commerce-cart-item[data-relationid="' + $this.data('relationid') + '"]').remove();
 
-            Materialize.toast('Producto removido del carrito', 1500);
+            $('.s-commerce-cart-counter').text(count - 1);
+
+            $('.s-commerce-cart-hud').html(data);
         },
         error: function(data){
-            var json_data = JSON.parse(data.responseText);
             $this.data('loading', 0);
         }
     });
 });
 
 
-$('.s-commerce-cart-button').on('click', function(){
+$('.s-commerce-cart-button, .s-commerce-offer-cart-button').on('click', function() {
     var $this = $(this);
-    var is_loading = $this.data('loading');
+    var button = new Button($this);
+    var notification = new Notification;
 
-    if (is_loading == null){
-        $this.data('loading', 1);
-    } else if (is_loading){
-        return;
+    if (button.is_loading()) {
+        var notification = new Notification;
+        notification.push(MESSAGE_LOADING_GENERIC);
+
+        return Error;
     }
 
-    //Materialize.toast('Añadiendo al carrito ...', 2000);
+    button.to_loading(true);
 
     $.ajax({
         url: '/ajax/store/cart/add/',
@@ -66,7 +228,11 @@ $('.s-commerce-cart-button').on('click', function(){
         },
         success: function(data){
             $this.data('loading', 0);
-            //Materialize.toast('Producto añadido a tu carrito', 1500);
+            notification.push('Producto añadido a tu carrito');
+
+            $('.s-commerce-cart-container').html(data);
+
+            button.restore_loading();
         },
         error: function(data){
             $this.data('loading', 0);
@@ -74,103 +240,18 @@ $('.s-commerce-cart-button').on('click', function(){
             var json_data = JSON.parse(data.responseText);
 
             if (json_data['status'] == 1) {
-                //Materialize.toast('El producto no se encuentra disponible', 1000);
+                notification.push('El producto no se encuentra disponible');
             } else if (json_data['status'] == 2) {
-                //Materialize.toast('El producto no contiene precios activos', 1000);
+                notification.push('El producto no contiene precios activos');
             } else if (json_data['status'] == 3) {
-                //Materialize.toast('Este producto no puede ser añadido al carrito', 1000);
+                notification.push('No puedes añadir productos de entrega inmediata a tu carrito');
             } else if (json_data['status'] == 4) {
-                //Materialize.toast('Tu carrito se encuentra lleno', 1000);
-            } else if (json_data['status'] == 5) {
-                //Materialize.toast('Occurió un error desconocido al añadir al carrito, intentalo nuevamente', 1000);
+                notification.push('Tu carrito se encuentra lleno');
+            } else {
+                notification.push('No se pudo añadir al carrito, intentelo nuevamente');
             }
+
+            button.restore_loading();
         }
     });
-});
-
-$('#search').on('focusin', function(){
-    $('#catalog').fadeOut();
-    $('#offers').fadeOut();
-
-    $('#results').fadeIn();
-});
-
-$('#show_catalog').on('click', function(){
-    $('#results').fadeOut();
-
-    $('#catalog').fadeIn();
-});
-
-last_search = +new Date();
-is_searching = false;
-last_searched = '';
-
-function check_last_searched(){
-    var current_value = $('#search').val();
-
-    if (current_value != last_searched){
-        search_product(current_value);
-        last_searched = current_value;
-    }
-
-    setTimeout(function(){
-        check_last_searched()
-    }, 550);
-}
-
-check_last_searched();
-
-function search_product(title){
-    $.ajax({
-        url: '/ajax/store/search/products/',
-        type: 'POST',
-        data:{
-            title: title
-        },
-        success: function(data){
-            is_searching = false;
-            $('.search-text-title').text(title);
-            $('.search-loader').hide();
-
-            $('#products-results').html('');
-            $('#products-results').append(data);
-        },
-        error: function(data){
-            is_searching = false;
-            $('.search-loader').hide();
-        }
-    });
-}
-
-
-$('#search').on('input', function(){
-    console.log(last_search);
-    console.log(+new Date() - last_search)
-
-    if (+new Date() - last_search <= 300) {
-        return;
-    }
-
-    var $this = $(this);
-    var title = $this.val();
-
-    if (title.length < 3) {
-        return;
-    }
-
-    if (is_searching) {
-        return;
-    }
-
-    $('.search-text').show();
-    $('.search-loader').show();
-
-    last_search = +new Date();
-    is_searching = true;
-
-    search_product(title);
-});
-
-$('#search_form').on('submit', function(e){
-    e.preventDefault();
 });
