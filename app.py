@@ -8,10 +8,20 @@ External imports
 from flask import g
 from flask import Flask
 from flask import session
+from flask import request
+from flask import url_for
+from flask import redirect
+from flask import render_template
 
 from werkzeug.routing import BaseConverter
+from flask_bootstrap import Bootstrap
 
 from steamcommerce_api.utils import json_util
+
+from steamcommerce_api.api import cart
+from steamcommerce_api.api import notification
+from steamcommerce_api.api import userrequest
+
 import datetime
 
 '''
@@ -24,7 +34,6 @@ import config
 
 from blueprints.views.store import store
 from blueprints.views.user import user_view
-from blueprints.views.cart import cart_view
 from blueprints.views.testimonials import testimonials
 from blueprints.admin.views import admin_view
 
@@ -38,14 +47,16 @@ from blueprints.ajax.store.creditrequest import ajax_creditrequest
 from blueprints.admin.ajax.userrequest import admin_ajax_userrequest
 from blueprints.admin.ajax.paidrequest import admin_ajax_paidrequest
 
+from blueprints.admin.panel import admin_panel
+
 from steamcommerce_api.api import user
 from steamcommerce_api.core import models
 
 BLUEPRINTS = [
     store,
-    cart_view,
     user_view,
     admin_view,
+    admin_panel,
     testimonials,
     ajax_cart,
     ajax_search,
@@ -61,6 +72,8 @@ app = Flask(__name__)
 
 app.config.from_object(config)
 app.logger.addHandler(config.LOG_HANDLER)
+
+Bootstrap(app)
 
 app.logger.info('Staring steamcommerce')
 
@@ -108,6 +121,9 @@ for blueprint in BLUEPRINTS:
 
 @app.before_request
 def before_request():
+    if request.path[:7] == '/static':
+        return
+
     g.db = models.database
     g.db.connect()
 
@@ -122,10 +138,22 @@ def before_request():
 
             session.pop('user')
 
+        if not curr_user.email or len(curr_user.email) < 1:
+            register_url = url_for('views.user.user_register')
+
+            if request.url_rule and request.url_rule.rule != register_url:
+                return redirect(register_url)
+
+        if curr_user.is_banned:
+            session.pop('user')
+
+            return render_template('views/user/banned.html', user=curr_user)
+
         if session.get('admin') and curr_user:
             if not curr_user.admin:
                 # User had admin session but was not admin
                 # on the database. Kick the session
+
                 # TODO: Log event
 
                 session.pop('user')
@@ -133,11 +161,36 @@ def before_request():
 
                 curr_user = None
 
+        user_id = session.get('user')
+
+        cart.Cart().process_cart(user_id)
+        user_cart = cart.Cart().get_user_cart(user_id)
+        notifications = notification.Notification().get_for_user(user_id)
+
         g.user = curr_user
+        g.user_cart = user_cart
+
+        g.notification_counter = 0
+
+        for user_notification in notifications:
+            if not user_notification.seen:
+                g.notification_counter += 1
+
+        g.notifications = notifications[:10]
+
+        g.pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                user_id, lazy=True
+            )
 
 
 @app.after_request
 def after_request(response):
+    try:
+        getattr(g, 'db')
+    except AttributeError:
+        return response
+
     g.db.close()
 
     return response
@@ -162,7 +215,10 @@ def css_file(filepath):
 
 @app.template_filter()
 def js_file(filepath):
-    return u'<script type="text/javascript" src="{0}?{1}"></script>'.format(
+    JAVASCRIPT_FMT = u'<script type="text/javascript" src="{0}?{1}">\
+    </script>'
+
+    return JAVASCRIPT_FMT.format(
         filepath, config.CACHE_BREAK_RAND
     )
 
