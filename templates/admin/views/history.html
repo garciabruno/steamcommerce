@@ -1,4 +1,5 @@
 {% extends "admin/layout/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Admin - Pedido #{{ request_type }}-{{ request['id'] }}{% endblock %}
 
@@ -257,24 +258,38 @@
 
                             {% include "admin/views/history_items.html" %}
 
+                            {% for message in messages %}
+                                <div class="panel panel-default request_message">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Mensaje de @{{ message['user']['username'] }} el día {{ message['date'] }} ({{ message['date']|timesince }})</h3>
+                                    </div>
+
+                                    <div class="panel-body">{{ message['content'] }}</div>
+                                </div>
+                            {% endfor %}
+
+                            {{ wtf.quick_form(message_form, url_for("admin.views.admin_message_add")) }}
+
                             {% if session.get('user') == 1 %}
-                                {{ url_for('static', filename='css/jquery.json-viewer.css')|css_file|safe }}
-                                {{ url_for('static', filename='js/jquery.json-viewer.js')|js_file|safe }}
+                                <div class="hidden-admin-json" style="margin-top: 20px;">
+                                    {{ url_for('static', filename='css/jquery.json-viewer.css')|css_file|safe }}
+                                    {{ url_for('static', filename='js/jquery.json-viewer.js')|js_file|safe }}
 
-                                <button class="btn btn-default" onclick="$('.json').toggle();">Mostrar JSON</button>
+                                    <button class="btn btn-default" onclick="$('.json').toggle();">Mostrar JSON</button>
 
-                                <pre id="json-renderer" class="json" style="display: none;"> </pre>
+                                    <pre id="json-renderer" class="json" style="display: none;"> </pre>
 
-                                <script type="text/javascript">
-                                    $('#json-renderer').jsonViewer({{ request|as_json|safe }});
-                                </script>
+                                    <script type="text/javascript">
+                                        $('#json-renderer').jsonViewer({{ request|as_json|safe }});
+                                    </script>
 
-                                <pre id="json-renderer-history" class="json" style="display: none;"> </pre>
+                                    <pre id="json-renderer-history" class="json" style="display: none;"> </pre>
 
-                                <script type="text/javascript">
-                                    $('#json-renderer-history').jsonViewer({{ history_items|as_json|safe }});
-                                </script>
-                            {% endif %}
+                                    <script type="text/javascript">
+                                        $('#json-renderer-history').jsonViewer({{ history_items|as_json|safe }});
+                                    </script>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
