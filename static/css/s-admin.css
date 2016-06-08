@@ -73,3 +73,18 @@
 .request-assigment .btn{
     margin-top: 10px;
 }
+
+.request_message .panel-body{
+    white-space: pre-line;
+}
+
+.active-section,
+.button-obj{
+    margin-top: 10px;
+}
+
+.inactive-section,
+.button-span{
+    margin: 5px 5px;
+    display: inline-block;
+}
