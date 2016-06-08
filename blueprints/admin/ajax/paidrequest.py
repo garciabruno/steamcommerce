@@ -7,17 +7,21 @@ from flask import Blueprint
 
 from steamcommerce_api.api import history
 from steamcommerce_api.api import adminlog
+from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import paidrequest
+from steamcommerce_api.api import notification
 
 from utils import route_decorators
 from inputs import admin_inputs
 
+import datetime
 import constants
 
 admin_ajax_paidrequest = Blueprint('admin.ajax.paidrequest', __name__)
 
 
 @admin_ajax_paidrequest.route('/accept/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
 def ajax_paidrequest_accept():
@@ -50,10 +54,23 @@ def ajax_paidrequest_accept():
         }
     )
 
+    notification.Notification().push(
+        paidrequest_data['user']['id'],
+        constants.NOTIFICATION_PAIDREQUEST_ACCEPTED,
+        **{'paidrequest': paidrequest_data['id']}
+    )
+
+    testimonial.Testimonial().create(**{
+        'user': paidrequest_data['user']['id'],
+        'paidrequest': paidrequest_data['id'],
+        'date': datetime.datetime.now()
+    })
+
     return {'success': True}
 
 
 @admin_ajax_paidrequest.route('/deny/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
 def ajax_paidrequest_deny():
@@ -88,10 +105,17 @@ def ajax_paidrequest_deny():
         }
     )
 
+    notification.Notification().push(
+        paidrequest_data['user']['id'],
+        constants.NOTIFICATION_PAIDREQUEST_DENIED,
+        **{'paidrequest': paidrequest_data['id']}
+    )
+
     return {'success': True}
 
 
 @admin_ajax_paidrequest.route('/assign/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
 def ajax_paidrequest_assign():
@@ -115,6 +139,7 @@ def ajax_paidrequest_assign():
 
 
 @admin_ajax_paidrequest.route('/deassign/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
 def ajax_paidrequest_deassign():
@@ -137,6 +162,7 @@ def ajax_paidrequest_deassign():
 
 
 @admin_ajax_paidrequest.route('/assign/to/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
 def ajax_paidrequest_assign_to():
