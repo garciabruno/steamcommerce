@@ -1,55 +1,151 @@
-<div class="s-commerce-search-container">
-    <div class="s-commerce-search-form">
-        <input type="text" class="form-control" placeholder="Buscar productos">
-    </div>
+{% extends "layout/base.html" %}
 
-    <div class="s-commerce-search-sections-title">
-        Secciones
-    </div>
+{% block title %}ExtremeGaming - Buscador{% endblock %}
 
-    <div class="s-commerce-search-sections">
-        {% for section in sections %}
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"{% if loop.first %} checked="checked"{% endif %}> {{ section.title }}
-                </label>
+{% block header %}
+    <script type="text/html" id="hit-template">
+        <div class="col-md-4" style="margin-bottom: 11px; padding-right: 5px; padding-left: 5px;">
+            {% raw %}
+            <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/{{#app_id}}apps/{{app_id}}/{{/app_id}}{{#sub_id}}subs/{{sub_id}}/{{/sub_id}}/capsule_616x353.jpg');">
+                <a href="/comprar/{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}">
+                    <div class="s-commerce-product-hud">
+                        <div class="s-commerce-product-title">
+                            {{title}}
+                        </div>
+                    </div>
+
+                    <div class="s-commerce-product-buttons">
+                        <a href="{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}" class="s-commerce-product-price">
+                            ${{#price}}{{price}}.00{{/price}}
+                        </a>
+                    </div>
+                </a>
             </div>
-        {% endfor %}
-    </div>
+            {% endraw %}
+        </div>
+    </script>
 
-    <div class="s-commerce-search-price-title">
-        Precio
-    </div>
+    <script id="facetTemplate-template" language="x-template">
+    {% raw %}
+     <div class="s-facet {{#isRefined}}s-facet__selected{{/isRefined}}">
+     <div class="s-facet--name">{{{name}}}</div>
+     <div class="s-facet--count">{{count}}</div>
+     </div>
+    {% endraw %}
+    </script>
 
-    <div class="s-commerce-search-price-range">
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
+    <script src="http://cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.js"></script>
 
-    </div>
+    {{ url_for('static', filename='css/instantsearch.min.css')|css_file|safe }}
+    {{ url_for('static', filename='css/s-search.css')|css_file|safe }}
+{% endblock %}
 
-    <div class="s-commerce-specs-title">
-        Características
-    </div>
+{% block body %}
+    <div class="s-commerce-search-container">
+        <div class="container">
+            <div class="main">
+                <div class="s-commerce-search-box">
+                    <input id="search-input" type="text" class="form-control" placeholder="Buscar productos">
+                </div>
 
-    <div class="s-commerce-search-specs">
-        <select class="form-control">
-            <option selected="selected">Todas</option>
-            <option>Multijugador</option>
-            <option>Anime</option>
-            <option>Open World</option>
-            <option>Sandox</option>
-            <option>Thirdperson</option>
-        </select>
+                <div id="pagination"> </div>
+
+                <div class="row">
+                    <div class="col-md-5"><div id="price"> </div></div>
+                    <div class="col-md-5"><div id="sections"> </div></div>
+                    <div class="col-md-5"><div id="categories"> </div></div>
+                </div>
+
+                <div class="row">
+                    <div id="hits">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
-        $('.s-commerce-search-price-range').jRange({
-            from: 0,
-            to: 500,
-            step: 1,
-            scale: [0,250,500],
-            format: '$%s',
-            width: $('.s-commerce-search-price-title').width(),
-            showLabels: true,
-            isRange : true
+        var search = instantsearch({
+            appId: 'E91FESKM23',
+            apiKey: 'f088ba2d672864b43e59cf299679c6bb',
+            indexName: 'products',
+            urlSync: true
         });
+
+        function getTemplate(templateName) {
+            return $('#' + templateName + '-template').html();
+        }
+
+        search.addWidget(
+            instantsearch.widgets.searchBox(
+                {
+                    container: '#search-input',
+                    placeholder: 'Search for products'
+                }
+            )
+        );
+
+        search.addWidget(
+            instantsearch.widgets.hits({
+                container: '#hits',
+                hitsPerPage: 28,
+                templates: {
+                    item: getTemplate('hit'),
+                    empty: getTemplate('no-results')
+                }
+            })
+        );
+
+        search.addWidget(
+            instantsearch.widgets.pagination({
+                container: '#pagination'
+            })
+        );
+
+        search.addWidget(
+            instantsearch.widgets.rangeSlider({
+               container: '#price',
+                attributeName: 'price.price',
+                templates: {
+                    header: '<h5>Precio</h5>'
+                }
+            })
+        );
+
+        search.addWidget(
+            instantsearch.widgets.refinementList({
+                container: '#categories',
+                attributeName: 'tags.title',
+                limit: 10,
+                operator: 'and',
+                templates: {
+                    header: '<h5>Categorias</h5>',
+                    item: getTemplate('facetTemplate')
+                },
+                showMore: {
+                    limit: 1e3,
+                    templates: {
+                        inactive: ""
+                    }
+                },
+            })
+        );
+
+        search.addWidget(
+            instantsearch.widgets.refinementList({
+                container: '#sections',
+                attributeName: 'section.title',
+                limit: 10,
+                operator: 'and',
+                templates: {
+                    header: '<h5>Secciones</h5>',
+                    item: getTemplate('facetTemplate')
+                }
+            })
+        );
+
+        search.start();
     </script>
-</div>
+{% endblock %}
