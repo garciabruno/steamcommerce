@@ -1,130 +1,151 @@
-{% if user_cart.get('items')|length > 0 %}
-    <div class="v5-cart-buttons">
-        <button class="v5-cart-checkout btn btn-lg waves-effect waves-light green darken-2">
-            Generar boleta (${{ user_cart['prices']['normal']|price_format }} ARS)
-        </button>
-
-        {% if (user.wallet + user.money) >= user_cart['prices']['credit'] %}
-            <button class="v5-credit-checkout btn btn-lg waves-effect waves-light cyan darken-3">
-                Abonar con créditos (${{ user_cart['prices']['credit']|price_format }} créditos)
-            </button>
-        {% endif %}
+{% if g.user_cart.get('prices').get('normal') > 0 or g.user_cart.get('prices').get('credit') > 0 %}
+    <div class="cd-cart-total">
+        <p>En efectivo <span>${{ g.user_cart.get('prices').get('normal')|price_format }} ARS</span></p>
     </div>
 
-    <script type="text/javascript">
-        $('.v5-cart-checkout').on('click', function(){
-            swal({
-                title: "Confirmar compra de {{ user_cart.get('items')|length }} producto(s) por ${{ user_cart['prices']['normal']|price_format }} ARS",
-                text: "Al generar una boleta en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>.",
-                showCancelButton: true,
-                closeOnConfirm: false,
-                cancelButtonText: "Cancelar",
-                showLoaderOnConfirm: true,
-                html: true,
-            },
-                function(){
-                    $.ajax({
-                        url: '/ajax/store/userrequest/cart/generate/',
-                        type: 'GET',
-                        success: function(data){
-                            var json_data = JSON.parse(data);
-                            var alert_message = '';
+    <div class="cd-cart-total">
+        <p>Con fondos de tu cuenta <span>${{ g.user_cart.get('prices').get('credit')|price_format }} ARS</span></p>
+    </div>
 
-                            if (json_data['promotional']) {
-                                var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="#" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, ¡de otra manera nos veremos obligados a devolverte el monto abonado!';
-                            }
+    <a href="#" class="checkout-btn">Comprar</a>
+{% endif %}
 
-                            $('.v5-cart-item').fadeOut();
-                            $('.v5-cart-buttons').fadeOut();
+<script type="text/javascript">
+    function userrequest_cart_swal() {
+        swal({
+            title: "Confirmar compra de {{ g.user_cart.get('items')|length }} producto(s) por ${{ g.user_cart['prices']['normal']|price_format }} ARS",
+            text: "Al generar una boleta en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>.",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            cancelButtonText: "Cancelar",
+            showLoaderOnConfirm: true,
+            html: true,
+        },
+            function() {
+                $.ajax({
+                    url: '/ajax/store/userrequest/cart/generate/',
+                    type: 'GET',
+                    success: function(data){
+                        var json_data = data;
+                        var alert_message = '';
 
-                            swal(
-                                {
-                                    title: '¡Pedido #A-' + json_data['userrequest'] + ' generado!',
-                                    text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b>' + alert_message,
-                                    type: 'success',
-                                    confirmButtonText: 'Ver boleta para imprimir',
-                                    cancelButtonText: 'Cerrar',
-                                    closeOnConfirm: false,
-                                    closeOnCancel: true,
-                                    showCancelButton: true,
-                                    html: true,
-                                },
-                                function(){
-                                    window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
-                                    if (json_data['promotional']) {
-                                        swal({title: 'Un recordatorio', text: alert_message, html: true});
-                                    }
-                                }
-                            );
-                        },
-                        error: function(data){
-                            var json_data = JSON.parse(data.responseText);
-
-                            if (json_data['status'] == 0) {
-                                swal('Carrito vacío', 'Tu carrito se encuentra vacío, por favor añade algún producto e intentalo nuevamente', 'error');
-                            } else if (json_data['status'] == 1) {
-                                swal('Precios no disponibles', 'No se han podido encontrar precios activos para los productos en tu carrito', 'error');
-                            } else if (json_data['status'] == 3 || json_data['status'] == 4) {
-                                swal(
-                                    'Error con CuentaDigital',
-                                    'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
-                                    'error'
-                                );
-                            }
+                        if (json_data['promotional']) {
+                            var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="#" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, Â¡de otra manera nos veremos obligados a devolverte el monto abonado!';
                         }
-                    });
-                }
-            );
-        });
 
-        {% if (user.wallet + user.money) >= user_cart['prices']['credit'] %}
-            $('.v5-credit-checkout').on('click', function(){
-                swal({
-                    title: "Autorizar la compra de {{ user_cart.get('items')|length }} producto(s) por ${{ user_cart.get('prices').get('credit')|price_format }} créditos",
-                    text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ user_cart.get('prices').get('credit')|price_format }} de créditos de tu usuario</b>",
-                    html: true,
-                    showCancelButton: true,
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true,
-                    cancelButtonText: "Cancelar",
-                    confirmButtonText: "Autorizar compra por ${{ user_cart.get('prices').get('credit')|price_format }}",
-                },
-                function(){
-                    $.ajax({
-                        url: '/ajax/store/paidrequest/cart/generate/',
-                        type: 'POST',
-                        data:{
-                            'confirm': 1
-                        },
-                        success: function(data){
-                            var json_data = JSON.parse(data);
+                        $('.cd-cart-items').fadeOut();
+                        $('.cd-cart-total').fadeOut();
+                        $('.checkout-btn').fadeOut();
 
-                            $('.v5-cart-item').fadeOut();
-                            $('.v5-cart-buttons').fadeOut();
-
-                            swal({
-                                title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',
-                                text: 'En las próximas 1hs a 48hs estaremos procesando tu pedido.',
+                        swal(
+                            {
+                                title: '¡Pedido #A-' + json_data['userrequest'] + ' generado!',
+                                text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b>' + alert_message,
                                 type: 'success',
+                                confirmButtonText: 'Ver boleta para imprimir',
+                                cancelButtonText: 'Cerrar',
+                                closeOnConfirm: false,
+                                closeOnCancel: true,
                                 showCancelButton: true,
                                 html: true,
-                                cancelButtonText: "Cerrar"
-                            });
-                        },
-                        error: function(data){
-                            var json_data = JSON.parse(data.responseText);
-
-                            if (json_data['status'] == 0) {
-                                swal('Carrito vacío', 'Tu carrito se encuentra vacío.', 'error');
-                            } else if (json_data['status'] == 1) {
-                                swal('No hay precios activos', 'No se encontraron precios activos en los productos', 'error');
-                            } else if (json_data['status'] == 2) {
-                                swal('Créditos insuficientes', 'No dispones de suficientes créditos para realizar esta acción', 'error');
+                            },
+                            function(){
+                                window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
+                                if (json_data['promotional']) {
+                                    swal({title: 'Un recordatorio', text: alert_message, html: true});
+                                }
                             }
+                        );
+                    },
+                    error: function(data) {
+                        var json_data = JSON.parse(data.responseText);
+
+                        if (json_data['status'] == 0) {
+                            swal('Carrito vacÃ­o', 'Tu carrito se encuentra vacÃ­o, por favor aÃ±ade algÃºn producto e intentalo nuevamente', 'error');
+                        } else if (json_data['status'] == 1) {
+                            swal('Precios no disponibles', 'No se han podido encontrar precios activos para los productos en tu carrito', 'error');
+                        } else if (json_data['status'] == 3 || json_data['status'] == 4) {
+                            swal(
+                                'Error con CuentaDigital',
+                                'El sistema no se pudo comunicar con el servicio de terceros para la emisiÃ³n de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente mÃ¡s tarde.',
+                                'error'
+                            );
                         }
-                    });
+                    }
                 });
+            }
+        );
+    }
+
+
+    function paidrequest_cart_swal() {
+        swal({
+            title: "Autorizar la compra de {{ g.user_cart.get('items')|length }} producto(s) por ${{ g.user_cart.get('prices').get('credit')|price_format }} créditos",
+            text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ g.user_cart.get('prices').get('credit')|price_format }} de créditos de tu usuario</b>",
+            html: true,
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Autorizar compra por ${{ g.user_cart.get('prices').get('credit')|price_format }}",
+        },
+        function() {
+            $.ajax({
+                url: '/ajax/store/paidrequest/cart/generate/',
+                type: 'POST',
+                data:{
+                    'confirm': 1
+                },
+                success: function(data) {
+                    var json_data = data;
+
+                    $('.cd-cart-items').fadeOut();
+                    $('.cd-cart-total').fadeOut();
+                    $('.checkout-btn').fadeOut();
+
+                    swal({
+                        title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',
+                        text: 'En las próximas 1hs a 48hs estaremos procesando tu pedido.',
+                        type: 'success',
+                        showCancelButton: true,
+                        html: true,
+                        cancelButtonText: "Cerrar"
+                    });
+                },
+                error: function(data) {
+                    var json_data = JSON.parse(data.responseText);
+
+                    if (json_data['status'] == 0) {
+                        swal('Carrito vacío', 'Tu carrito se encuentra vací­o.', 'error');
+                    } else if (json_data['status'] == 1) {
+                        swal('No hay precios activos', 'No se encontraron precios activos en los productos', 'error');
+                    } else if (json_data['status'] == 2) {
+                        swal('Créditos insuficientes', 'No dispones de suficientes créditos para realizar esta acción', 'error');
+                    }
+                }
             });
-        {% endif %}
-    </script>
-{% endif %}
+        });
+    }
+
+    $('.checkout-btn').on('click', function() {
+            swal({
+                title: "Comprar {{ g.user_cart.get('items')|length }} producto(s) por ${{ g.user_cart.get('prices').get('credit')|price_format }} ARS",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                cancelButtonText: "Generar boleta",
+                html: "true",
+                text: "<style type=\"text/css\">.sweet-alert button.cancel{background-color: #2cb16e !important;}</style>",
+                confirmButtonColor: "#2cb16e",
+                confirmButtonText: "Pagar con créditos"
+            },
+            function(isConfirmed) {
+                if (!isConfirmed) {
+                    userrequest_cart_swal();
+                } else {
+                    paidrequest_cart_swal();
+                }
+            });
+       });
+</script>
