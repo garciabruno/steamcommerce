@@ -16,10 +16,9 @@
         {{ url_for('static', filename='css/bootstrap.min.css')|css_file|safe }}
         {{ url_for('static', filename='css/s-commerce.css')|css_file|safe }}
         {{ url_for('static', filename='css/sweetalert.css')|css_file|safe }}
+        {{ url_for('static', filename='css/notification.css')|css_file|safe }}
 
         {{ url_for('static', filename='js/jquery-2.1.4.min.js')|js_file|safe }}
-        {{ url_for('static', filename='js/bootstrap.min.js')|js_file|safe }}
-        {{ url_for('static', filename='js/sweetalert.min.js')|js_file|safe }}
 
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'/>
 
@@ -29,9 +28,17 @@
     </head>
 
     <body>
+        {% if g.user and g.pending_requests|length > 0 %}
+            {% include "views/store/pending_alert.html" %}
+        {% endif %}
+
         {% include "layout/navbar.html" %}
 
         {% block body %} {% endblock %}
+
+        {{ url_for('static', filename='js/bootstrap.min.js')|js_file|safe }}
+        {{ url_for('static', filename='js/sweetalert.min.js')|js_file|safe }}
+        {{ url_for('static', filename='js/jquery.notification.js')|js_file|safe }}
 
         {{ url_for('static', filename='js/s-commerce.js')|js_file|safe }}
     </body>
