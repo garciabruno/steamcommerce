@@ -63,3 +63,18 @@ class SearchInput(Inputs):
             validators.length_is_ok
         ]
     }
+
+
+class ProductsInput(Inputs):
+    form = {
+        'section': [
+            DataRequired(),
+            validators.is_int,
+            validators.is_unsigned
+        ],
+        'page': [
+            DataRequired(),
+            validators.is_int,
+            validators.is_unsigned
+        ]
+    }
