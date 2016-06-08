@@ -2,9 +2,12 @@
 # -*- coding:Utf-8 -*-
 
 from flask import session
+from flask import url_for
+from flask import request
 from flask import redirect
 
 from functools import wraps
+from steamcommerce_api.api import user
 
 import json
 
@@ -34,7 +37,13 @@ def is_logged_in(f):
     @wraps(f)
     def logged_in_inner(*args, **kwargs):
         if not session.get('user'):
-            return redirect('/')
+            return redirect(url_for('views.store.store_catalog'))
+
+        curr_user = user.User().get_by_id(session.get('user'))
+
+        if not curr_user.email or len(curr_user.email) < 1:
+            if request.url_rule.rule != url_for('views.user.user_register'):
+                return redirect(url_for('views.user.user_register'))
 
         return f(*args, **kwargs)
 
@@ -65,3 +74,42 @@ def ajax_is_admin(f):
         return f(*args, **kwargs)
 
     return ajax_is_admin_inner
+
+
+def ajax_is_logged_in(f):
+    @wraps(f)
+    def ajax_is_logged_in_inner(*args, **kwargs):
+        if not session.get('user'):
+            return (
+                json.dumps({'success': False, 'message': 'Not logged in'}),
+                403,
+                {'Content-Type': 'application/json'}
+            )
+
+        return f(*args, **kwargs)
+
+    return ajax_is_logged_in_inner
+
+
+def not_logged_in(f):
+    @wraps(f)
+    def not_logged_in_inner(*args, **kwargs):
+        if session.get('user'):
+            return redirect('/')
+
+        return f(*args, **kwargs)
+
+    return not_logged_in_inner
+
+
+def has_no_email(f):
+    @wraps(f)
+    def has_no_email_inner(*args, **kwargs):
+        curr_user = user.User().get_by_id(session.get('user'))
+
+        if not curr_user.email or len(curr_user.email) < 1:
+            return f(*args, **kwargs)
+
+        return redirect(url_for('views.store.store_catalog'))
+
+    return has_no_email_inner
