@@ -59,6 +59,20 @@
                         </div>
                     </div>
 
+                    {% if product.get('promotion') %}
+                        <div class="s-commerce-offer-hud">
+                            <span class="s-commerce-product-in-offer">
+                                ¡Producto en oferta!
+                            </span>
+
+                            {% if product.get('promotion').get('ending_date') or product.get('special_ending_date') %}
+                                <span class="s-commerce-product-offer-date">
+                                    Oferta valida hasta {{ product.get('promotion').get('ending_date')|date_format }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
                     <div class="s-commerce-product-body">
                         <div class="row">
                             <div class="col-md-10">
@@ -68,8 +82,25 @@
                                     </div>
 
                                     <div class="s-commerce-product-description">
+                                        {{ product['description'][:1024] }}
+                                    </div>
+
+                                    <div class="s-commerce-product-description s-commerce-product-description-full" style="display: none;">
                                         {{ product['description'] }}
                                     </div>
+
+                                    {% if product['description']|length > 1024 %}
+                                        <button class="s-commerce-read-more btn btn-default">Leer mas</button>
+                                    {% endif %}
+
+                                    <script type="text/javascript">
+                                        $('.s-commerce-read-more').on('click', function(){
+                                            $('.s-commerce-product-description').first().toggle();
+                                            $('.s-commerce-product-description-full').toggle();
+
+                                            $(this).text() == 'Leer mas' ? $(this).text('Leer menos') : $(this).text('Leer mas');
+                                        });
+                                    </script>
                                 </div>
                             </div>
 
@@ -93,21 +124,13 @@
                                 </div>
 
                                 <div class="s-commerce-product-categories">
-                                    <span class="s-commerce-category">
-                                        Survival
-                                    </span>
-
-                                    <span class="s-commerce-category">
-                                        Survival
-                                    </span>
-
-                                    <span class="s-commerce-category">
-                                        Survival
-                                    </span>
-
-                                    <span class="s-commerce-category">
-                                        Survival
-                                    </span>
+                                    {% for tag in product['tags'] %}
+                                        {% if tag['visible'] %}
+                                            <span class="s-commerce-category">
+                                                <a href="#">{{ tag['title'] }}</a>
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -135,8 +158,8 @@
                         </div>
                     {% else %}
                         <div class="s-commerce-product-login-button">
-                            <a href="#" class="s-commerce-purchase-button">
-                                Ingresa con tu cuenta de Steam para comprar
+                            <a href="{{ url_for('views.user.user_login') }}">
+                                Ingresa con tu cuenta de Steam para poder comprar
                             </a>
                         </div>
                     {% endif %}
@@ -153,7 +176,6 @@
         });
 
        {% if product.get('price') %}
-
            function userrequest_swal(){
                 swal({
                     title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} ARS",
@@ -172,7 +194,7 @@
                             product_id: {{ product.get('id') }}
                         },
                         success: function(data){
-                            var json_data = JSON.parse(data);
+                            var json_data = data;
                             var alert_message = '';
 
                             {% if product.get('is_promotional') %}
@@ -200,7 +222,7 @@
                             );
                         },
                         error: function(data){
-                            var json_data = JSON.parse(data.responseText);
+                            var json_data = $.parseJSON(data.responseText);
 
                             if (json_data['status'] == 0) {
                                 swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
@@ -243,7 +265,7 @@
                             product_id: {{ product.get('id') }}
                         },
                         success: function(data){
-                            var json_data = JSON.parse(data);
+                            var json_data = data;
 
                             swal({
                                 title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',
@@ -255,7 +277,7 @@
                             });
                         },
                         error: function(data){
-                            var json_data = JSON.parse(data.responseText);
+                            var json_data = $.parseJSON(data.responseText);
 
                             if (json_data['status'] == 0) {
                                 swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
@@ -266,7 +288,7 @@
                             } else if (json_data['status'] == 3) {
                                 swal('Precio no disponible', 'No se encuentra un precio activo para el producto solicitado', 'error');
                             } else if (json_data['status'] == 4) {
-                                swal('Créditos insuficientes', 'No dispones de créditos suficientes para realizar esta acción', 'error');
+                                swal('Créditos insuficientes', 'No dispones de fondos suficientes para realizar esta acción. Para cargar fondos a tu cuenta presiona en tu monto actual en la parte superior del sitio', 'error');
                             } else if (json_data['status'] == 5) {
                                 swal('Producto fuera de stock', 'Se ha agotado el stock del producto solicitado', 'error');
                             }
@@ -296,18 +318,6 @@
                     }
                 });
            });
-        {% endif %}
-
-       {% if product.get('price') and product.get('price').get('price_type') != 2 %}
-           $('.to-complete').on('click', function(){
-
-            });
-        {% endif %}
-
-        {% if product.get('price') and (user.money + user.wallet) >= product.get('price').get('price') %}
-            $('.v5-credit-invoice').on('click', function(){
-
-            });
         {% endif %}
     </script>
 {% endblock %}
