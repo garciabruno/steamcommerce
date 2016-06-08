@@ -2,6 +2,7 @@
 # -*- coding:Utf-8 -*-
 
 from flask import request
+from flask import session
 from flask import Blueprint
 
 from inputs import store_inputs
@@ -13,6 +14,7 @@ from steamcommerce_api.api import user
 from steamcommerce_api.api import cart
 from steamcommerce_api.api import history
 from steamcommerce_api.api import product
+from steamcommerce_api.api import notification
 from steamcommerce_api.api import paidrequest
 
 import constants
@@ -21,9 +23,10 @@ ajax_paidrequest = Blueprint('ajax.store.paidrequest', __name__)
 
 
 @ajax_paidrequest.route('/generate/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_paidrequest_generate():
-    user_id = 1
+    user_id = session.get('user')
     form = store_inputs.PaidRequestInput(request)
 
     if not form.validate():
@@ -67,12 +70,6 @@ def ajax_paidrequest_generate():
     if not invoice.get('success'):
         return (invoice, 500)
 
-    history.History().push(
-        constants.HISTORY_GENERATED_STATE,
-        invoice.get('paidrequest'),
-        constants.HISTORY_PAIDREQUEST_TYPE
-    )
-
     if user_data.money >= price:
         user.User().decrease_money(user_id, price)
     elif user_data.money > 0:
@@ -81,17 +78,33 @@ def ajax_paidrequest_generate():
     else:
         user.User().decrease_wallet(user_id, price)
 
+    history.History().push(
+        constants.HISTORY_GENERATED_STATE,
+        invoice.get('paidrequest'),
+        constants.HISTORY_PAIDREQUEST_TYPE
+    )
+
+    notification.Notification().push(
+        user_id,
+        constants.NOTIFICATION_PAIDREQUEST_DONE,
+        **{
+            'product': product_id,
+            'paidrequest': invoice['paidrequest'],
+        }
+    )
+
     return invoice
 
 
 @ajax_paidrequest.route('/cart/generate/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_paidrequest_cart_generate():
-    user_id = 1
+    user_id = session.get('user')
 
     cart.Cart().process_cart(user_id)
-    user_cart = cart.Cart().get_user_cart(user_id)
 
+    user_cart = cart.Cart().get_user_cart(user_id)
     user_data = user.User().get_by_id(user_id)
 
     if len(user_cart.get('items')) == 0:
@@ -129,5 +142,21 @@ def ajax_paidrequest_cart_generate():
         user.User().decrease_wallet(user_id, price)
 
     cart.Cart().empty_user_cart(user_id)
+
+    history.History().push(
+        constants.HISTORY_GENERATED_STATE,
+        invoice.get('paidrequest'),
+        constants.HISTORY_PAIDREQUEST_TYPE
+    )
+
+    for item in user_cart.get('items'):
+        notification.Notification().push(
+            user_id,
+            constants.NOTIFICATION_PAIDREQUEST_DONE,
+            **{
+                'product': item.get('product').get('id'),
+                'paidrequest': invoice['paidrequest']
+            }
+        )
 
     return invoice
