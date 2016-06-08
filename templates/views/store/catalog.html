@@ -3,6 +3,7 @@
 {% block header %}
     {{ url_for('static', filename='js/jquery.range-min.js')|js_file|safe }}
     {{ url_for('static', filename='css/jquery.range.css')|css_file|safe }}
+    {{ url_for('static', filename='js/jquery.bootpag.min.js')|js_file|safe }}
 {% endblock %}
 
 {% block title %}ExtremeGaming - Catálogo{% endblock %}
@@ -10,7 +11,31 @@
 {% block body %}
     {% include "views/store/sliders.html" %}
 
-    {% include "views/store/offers.html" %}
+    {% macro plural(singular, count) %}{{ singular }}{% if count > 1 %}s{% endif %}{% endmacro %}
+
+    {% if session.get('user') and pending_testimonials|length > 0 %}
+        <div class="container">
+            <div class="s-commerce-testimonials-alert">
+                <div class="main">
+                    <div class="testimonials-alert-title">
+                        ¡Tienes {{ pending_testimonials|length }} {{ plural('testimonio', pending_testimonials|length) }} {{ plural('pendiente', pending_testimonials|length) }}!
+                    </div>
+
+                    <div class="testimonials-alert-body">
+                        ¿Deseas dejar un testimonio de tus compras finalizadas? Tu opinión nos ayuda a mejorar el servicio
+                    </div>
+
+                    <div class="testimonials-button">
+                        <a href="{{ url_for('views.user.user_testimonials_new') }}" class="btn btn-default">Dejar {{ plural('testimonio', pending_testimonials|length) }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if active_section != 'offers' %}
+        {% include "views/store/offers.html" %}
+    {% endif %}
 
     <div class="s-commerce-products">
         <div class="container">
@@ -20,17 +45,81 @@
         </div>
 
         <div class="container">
-            <div class="s-commerce-products-list">
-                {% include "views/store/products.html" %}
-                {% include "views/store/offer_products.html" %}
+            <div class="s-commerce-section-selector">
+                <div class="row">
+                    <div class="col-md-2">
+                        <span class="s-commerce-section-title">Sección</span>
+                    </div>
+
+                    <div class="col-md-14">
+                        <select class="form-control">
+                            {% for section in sections %}
+                                <option value="{{ section.id }}">{{ section.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            {% for section in sections %}
+                <div class="s-commerce-products-list" data-sectionid="{{ section.id }}">
+                    {% if loop.first %}
+                        {% include "views/store/products.html" %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="s-commerce-products-selection">
+                <div id="page-selection"> </div>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
-        var pages = {};
-        var is_loading = false;
-        var offset = 100;
+        var INITIAL_MAX_PAGES = 10;
+
+        $('#page-selection').bootpag({
+            total: INITIAL_MAX_PAGES,
+            page: {{ page}},
+            wrapClass: 'pagination pagination-lg',
+            maxVisible: 10,
+            next: 'Siguiente',
+            prev: 'Anterior',
+            leaps: false
+
+        }).on('page', function(event, page) {
+            var store = new Store();
+            var section_id = store.get_active_section();
+
+            if ($('#products-page-' + page + '-' + section_id).length) {
+                $('.products-page').hide();
+                $('#products-page-' + page + '-' + section_id).show();
+            } else {
+                $('.products-page').hide();
+
+                var store = new Store();
+                store.load_next_page(section_id, page);
+            }
+        });
+
+        $('.s-commerce-section-selector select').on('change', function() {
+            var store = new Store();
+            var section_id = store.get_active_section();
+            var page = 1;
+
+            $('.products-page').hide();
+            $('#page-selection').bootpag({page: page});
+            $('#page-selection').bootpag({total: 10});
+
+            if ($('#products-page-' + page + '-' + section_id).length) {
+                $('#products-page-' + page + '-' + section_id).show();
+            } else {
+                var store = new Store();
+                store.load_next_page(section_id, page);
+            }
+        });
 
         var Store = function() {
             var self = this;
@@ -51,83 +140,35 @@
                 return pages[section_id];
             };
 
-            this.get_active_section = function(){
-                return $('select').find('option.v5-catalog-section:selected').val()
+            this.get_active_section = function() {
+                return $('.s-commerce-section-selector select').find('option:selected').val()
             };
 
-            this.load_next_page = function() {
-                var current_section = self.get_active_section();
-
-                if (pages[current_section] === false) {
-                    return;
-                }
-
-                var new_page = self.get_section_page(current_section) + 1;
-
+            this.load_next_page = function(section, page) {
                 $.ajax({
-                    type: 'GET',
-                    url: '/ajax/store/products/page/' + current_section + '/' + new_page,
+                    type: 'POST',
+                    url: '/products/',
+                    data:{
+                        section: section,
+                        page: page{% if active_section == 'offers' %},
+                        offers: true
+                        {% endif %}
+                    },
                     success: function(data){
-                        window.history.replaceState(
-                            {page: new_page},
-                            'Página ' + new_page,
-                            '/comprar/pagina/' + new_page
-                        );
+                        $('.s-commerce-products-list[data-sectionid="' + section + '"]').append(data);
 
-                        $('.v5-products[data-sectionid="' + current_section + '"]').append(data);
-                        pages[current_section]++;
+                        INITIAL_MAX_PAGES = INITIAL_MAX_PAGES + 10;
+                        $('#page-selection').bootpag({total: INITIAL_MAX_PAGES});
                     },
                     error: function(data){
-                        if (data.status == 404 && !(pages[current_section] === false)) {
-                            Materialize.toast(
-                                'Oops! No encontramos la siguiente página. Hasta acá llegamos 😕', 5000
-                            );
+                        $('#page-selection').bootpag({total: page - 1});
+                        $('#products-page-' + (page - 1) + '-' + section).show();
 
-                            pages[current_section] = false;
-                        }
+                        var notification = new Notification();
+                        notification.push('Hubo un problema al cargar la página nueva, intentalo nuevamente.');
                     }
                 });
             };
         };
-
-        function load_next_page() {
-            var catalog_visible = $('#catalog').is(':visible') || $('#offers').is(':visible');
-
-            if (!is_loading && catalog_visible) {
-                is_loading = true;
-
-                var store = new Store();
-                store.load_next_page();
-
-                setTimeout(function(){
-                    is_loading = false;
-                }, 2000);
-            }
-        }
-
-        $(document).scroll(function(){
-            if ($('.tabs').find('.active').attr('href') != '#offers') {
-                if($(window).scrollTop() + offset >= $(document).height() - $(window).height()){
-                    load_next_page();
-                }
-            }
-        });
-
-        $('select.v5-catalog-sections').on('change', function(){
-            var $this = $(this);
-            var section_id = $this.find(':selected').val();
-
-            if ($('.tabs').find('.active').attr('href') != '#offers') {
-                $('.v5-products').hide();
-
-                if (pages[section_id] == undefined) {
-                    pages[section_id] = 0;
-                }
-
-                load_next_page();
-
-                $('.v5-products[data-sectionid="' + section_id + '"]').show();
-            }
-        });
     </script>
 {% endblock %}
