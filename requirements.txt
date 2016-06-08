@@ -2,3 +2,4 @@ flask
 peewee
 wtforms
 flask-inputs
+flask-wtf
