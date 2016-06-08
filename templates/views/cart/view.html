@@ -1,66 +1,31 @@
-{% extends "layout/base.html" %}
+<div id="cd-shadow-layer"> </div>
 
-{% block title %}ExtremeGaming - Carrito ({{ user_cart.get('items')|length }}){% endblock %}
+<div id="cd-cart">
+    <div class="s-commerce-cart-title">Carrito (<span class="s-commerce-cart-counter">{{ g.user_cart.get('items')|length }}</span>)</div>
 
-{% block body %}
-    <style type="text/css">
-        body{
-            background-image: url("{{ url_for('static', filename='img/product/80/banner_blurred.jpg') }}");
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-    </style>
+    {% if g.user_cart.get('items')|length < 1 %}
+        <div class="s-commerce-cart-title">No hay productos en tu carrito :(</div>
+    {% endif %}
 
-    <div class="container">
-        <div class="main-view">
-            <div class="v5-cart-title">
-                Carrito de compras
-            </div>
+    <ul class="cd-cart-items">
+        {% for item in g.user_cart.get('items') %}
+            <li class="s-commerce-cart-item" data-relationid="{{ item.get('id') }}">
+                <div class="s-commerce-cart-item-title">{{ item.get('product').get('title') }}</div>
 
-            <div class="v5-product-back-button">
-                <a onclick="history.back() || (document.location.href = '/comprar/');" class="waves-light waves-effect text-darken-2 green-text">
-                    < Volver al catálogo
-                </a>
-            </div>
+                <div class="s-commerce-cart-item-price cd-price">
+                    ${{ item.get('product').get('price').get('price')|price_format }}
 
-            {% for item in user_cart.get('items') %}
-                <div class="v5-cart-item" data-relationid="{{ item.get('id') }}">
-                    <div class="row">
-                        <div class="col s6 m6">
-                            <div class="v5-product-cart-title">
-                                <a href="/comprar/{{ item.get('product').get('app_id') or item.get('product').get('sub_id') }}">
-                                    {{ item.get('product').get('title') }}
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col s6 m4">
-                            <div class="v5-product-price text-darken-2 green-text">
-                                ${{ item.get('product').get('price').get('price')|price_format }} ARS
-                            </div>
-
-                            {% if item.get('product').get('price').get('price_type') == 2 %}
-                                <span class="red-text text-darken-3">* Unicamente abonable por créditos</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="col s12 m2">
-                            <div class="v5-remove-from-cart btn waves-effect waves-light red darken-2" data-relationid="{{ item.get('id') }}">
-                                <i class="material-icons">delete</i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
+                    {% if item.get('product').get('price').get('price_type') == 2 %}
+                        <i class="text text-danger">* Unicamente abonable con fondos de tu cuenta</i>
+                    {% endif %}
                 </div>
-            {% endfor %}
 
-            <span class="red-text text-darken-3">* Los productos únicamente abonables por créditos no se incluiran en las boletas</span>
+                <a href="#" class="cd-item-remove cd-img-replace s-commerce-remove-cart-button" data-relationid="{{ item.get('id') }}">Remove</a>
+            </li>
+        {% endfor %}
+    </ul>
 
-            <div class="v5-cart-hud-container">
-                {% include "views/cart/hud.html" %}
-            </div>
-        </div>
+    <div class="s-commerce-cart-hud">
+        {% include "views/cart/hud.html" %}
     </div>
-{% endblock %}
+</div>
