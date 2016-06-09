@@ -103,13 +103,25 @@
                                                 {% set request = testimonial['userrequest'] %}
 
                                                 {% if request['accepted_date'] and request['paid_date'] %}
-                                                    Compra enviada {{ request['accepted_date'] - request['paid_date'] }}
+                                                    {% set time_diff = request['accepted_date'] - request['paid_date'] %}
+
+                                                    {% if time_diff.total_seconds() < 10 %}
+                                                        Compra enviada instantáneamente
+                                                    {% else %}
+                                                        Compra enviada {{ time_diff }}
+                                                    {% endif %}
                                                 {% endif %}
                                             {% elif testimonial['paidrequest'] %}
                                                 {% set request = testimonial['paidrequest'] %}
 
                                                 {% if request['accepted_date'] and request['date'] %}
-                                                    Compra enviada {{ request['accepted_date'] - request['date'] }}
+                                                    {% set time_diff = request['accepted_date'] - request['date'] %}
+
+                                                    {% if time_diff.total_seconds() < 30 %}
+                                                        Compra enviada instantáneamente
+                                                    {% else %}
+                                                        Compra enviada {{ time_diff }}
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endif %}
                                         </div>
