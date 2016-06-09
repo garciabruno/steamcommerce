@@ -66,6 +66,8 @@ def store_catalog():
 
     user_id = session.get('user')
 
+    pending_testimonials = []
+
     if user_id:
         pending_testimonials = testimonial.Testimonial().get_unsubmited(
             user_id, lazy=True
