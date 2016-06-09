@@ -139,6 +139,18 @@
                                     $('.s-commerce-new-testimonial[data-testimonialid="' + testimonial_id + '"]').fadeOut();
 
                                     swal('Testimonio publicado', 'Muchas gracias por tu contribución', 'success');
+                                },
+                                error: function(data) {
+                                    var json_data = $.parseJSON(data.responseText);
+                                    var notification = new Notification();
+
+                                    button.restore_loading();
+
+                                    if (json_data['status'] == 1) {
+                                        notification.push('El contenido del testimonio debe contener más caracteres');
+                                    } else if (json_data['status'] == 2) {
+                                        notification.push('Este testimonio no te pertenece');
+                                    }
                                 }
                             });
                         });
