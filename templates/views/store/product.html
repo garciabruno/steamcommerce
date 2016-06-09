@@ -73,6 +73,33 @@
                         </div>
                     {% endif %}
 
+                    {% if product.get('product_type') == 2 and product.get('codes')|length > 0 %}
+                        <div class="s-commerce-offer-hud">
+                            <span class="s-commerce-product-in-offer">
+                                ¡Este producto se entrega inmediatamente al ingresar el pago!
+                            </span>
+
+                            <span class="s-commerce-product-offer-date">
+                                Hay {{ product.get('codes')|length }} códigos/links de entrega inmediata restantes
+                            </span>
+                            <p>
+                                <i><small>* Solo aplicable para compras individuales del producto</small></i>
+                            </p>
+                        </div>
+                    {% endif %}
+
+                    {% if product.get('run_stock') and product.get('stock') > 0 %}
+                        <div class="s-commerce-offer-hud">
+                            <span class="s-commerce-product-in-offer">
+                                Producto en stock limitado
+                            </span>
+
+                            <span class="s-commerce-product-offer-date">
+                                Hay {{ product.get('stock') }} unidades en stock
+                            </span>
+                        </div>
+                    {% endif %}
+
                     <div class="s-commerce-product-body">
                         <div class="row">
                             <div class="col-md-10">
@@ -267,16 +294,22 @@
                         success: function(data){
                             var json_data = data;
 
+                            if (!json_data['instant']) {
+                                text_content = 'En las próximas 1hs a 48hs estaremos procesando tu pedido. En caso de que se haya encontrado en "Entrega Inmediata" entonces se creará una nota con tu código/link de activación en tu pedido.';
+                            } else {
+                                text_content = '¡Tu pedido fue entregado inmediatamente! En el historial de tu pedido podrás encontrar un nuevo mensaje con tu código/link de activación. También te copiamos el mensaje aquí:<br><br> ' + json_data['message'];
+                            }
+
                             swal({
                                 title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',
-                                text: 'En las próximas 1hs a 48hs estaremos procesando tu pedido. En caso de que se haya encontrado en "Entrega Inmediata" entonces se creará una nota con tu código/link de activación en tu pedido.',
+                                text: text_content,
                                 type: 'success',
                                 showCancelButton: true,
                                 html: true,
                                 cancelButtonText: "Cerrar"
                             });
                         },
-                        error: function(data){
+                        error: function(data) {
                             var json_data = $.parseJSON(data.responseText);
 
                             if (json_data['status'] == 0) {
@@ -297,7 +330,7 @@
                 });
            }
 
-           $('.s-commerce-purchase-button').on('click', function(){
+           $('.s-commerce-purchase-button').on('click', function() {
                 swal({
                     title: "Comprar {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} ARS",
                     showCancelButton: true,
@@ -310,8 +343,8 @@
                     confirmButtonColor: "#2cb16e",
                     confirmButtonText: "Pagar con créditos"
                 },
-                function(isConfirmed){
-                    if (!isConfirmed){
+                function(isConfirmed) {
+                    if (!isConfirmed) {
                         userrequest_swal();
                     } else {
                         paidrequest_swal();
