@@ -188,7 +188,7 @@ def user_testimonial_submit():
     content = request.form.get('content')
 
     if not testimonial_id or not content or len(content) < 10:
-        return ({'success': False}, 500)
+        return ({'success': False, 'status': 1}, 500)
 
     pending_testimonials = testimonial.Testimonial().get_unsubmited(
         user_id, lazy=True
@@ -197,7 +197,7 @@ def user_testimonial_submit():
     testimonial_id = int(testimonial_id)
 
     if testimonial_id not in [x for x in pending_testimonials]:
-        return ({'success': False}, 500)
+        return ({'success': False, 'status': 2}, 500)
 
     testimonial.Testimonial().update(**{
         'id': testimonial_id,
