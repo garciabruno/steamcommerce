@@ -30,6 +30,14 @@
         Un administrador ha adjuntado una nueva nota en el pedido <a href="{{ url }}">{{ text }}</a></a>
     {% elif notification.action == 10 %}
         Actualizó su dirección de email de: <strong>{{ notification.old_email }}</strong> a <strong>{{ notification.new_email }}</strong>
+    {% elif notification.action == 11 %}
+        Has recibido un nuevo mensaje en el pedido
+
+        {% if notification.paidrequest %}
+            <a href="/historial/C-{{ notification.paidrequest.id }}">#C-{{ notification.paidrequest.id }}</a>
+        {% elif notification.userrequest %}
+            <a href="/historial/A-{{ notification.userrequest.id }}">#A-{{ notification.userrequest.id }}</a>
+        {% endif %}
     {% endif %}
 {% endmacro %}
 
