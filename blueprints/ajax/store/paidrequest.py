@@ -12,11 +12,16 @@ from steamcommerce_api import config
 
 from steamcommerce_api.api import user
 from steamcommerce_api.api import cart
+from steamcommerce_api.api import message
 from steamcommerce_api.api import history
 from steamcommerce_api.api import product
-from steamcommerce_api.api import notification
+from steamcommerce_api.api import productcode
 from steamcommerce_api.api import paidrequest
+from steamcommerce_api.api import testimonial
+from steamcommerce_api.api import adminlog
+from steamcommerce_api.api import notification
 
+import datetime
 import constants
 
 ajax_paidrequest = Blueprint('ajax.store.paidrequest', __name__)
@@ -67,6 +72,8 @@ def ajax_paidrequest_generate():
 
     # TODO: Move functionality to API.
 
+    request_id = invoice.get('paidrequest')
+
     if not invoice.get('success'):
         return (invoice, 500)
 
@@ -80,7 +87,7 @@ def ajax_paidrequest_generate():
 
     history.History().push(
         constants.HISTORY_GENERATED_STATE,
-        invoice.get('paidrequest'),
+        request_id,
         constants.HISTORY_PAIDREQUEST_TYPE
     )
 
@@ -89,9 +96,81 @@ def ajax_paidrequest_generate():
         constants.NOTIFICATION_PAIDREQUEST_DONE,
         **{
             'product': product_id,
-            'paidrequest': invoice['paidrequest'],
+            'paidrequest': request_id,
         }
     )
+
+    if (
+        product_data.get('product_type') == 2
+        and len(product_data.get('codes')) > 0
+    ):
+        code = product_data.get('codes')[0]
+
+        productcode.ProductCode().update(**{
+            'id': code.get('id'),
+            'paidrequest': request_id,
+            'sent': True
+        })
+
+        message_content = constants.DEFAULT_REQUEST_MESSAGE + code.get('code')
+
+        message.Message().push(**{
+            'user': code.get('user_owner'),
+            'to_user': user_id,
+            'has_code': True,
+            'paidrequest': request_id,
+            'content': message_content
+        })
+
+        adminlog.AdminLog().push(
+            constants.ADMINLOG_CODE_DELIVERED, **{
+                'paidrequest': request_id
+            }
+        )
+
+        notification.Notification().push(
+            user_id,
+            constants.NOTIFICATION_MESSAGE_RECEIVED,
+            **{
+                'paidrequest': invoice.get('paidrequest')
+            })
+
+        paidrequest.PaidRequest().accept_paidrequest(
+            request_id, user_id=code.get('user_owner')
+        )
+
+        history.History().push(
+            constants.HISTORY_ACCEPTED_STATE,
+            request_id,
+            constants.HISTORY_PAIDREQUEST_TYPE
+        )
+
+        adminlog.AdminLog().push(
+            constants.ADMINLOG_PAIDREQUEST_ACCEPTED, **{
+                'paidrequest': request_id,
+                'user': user_id
+            }
+        )
+
+        notification.Notification().push(
+            user_id,
+            constants.NOTIFICATION_PAIDREQUEST_ACCEPTED,
+            **{'paidrequest': request_id}
+        )
+
+        testimonial.Testimonial().create(**{
+            'user': user_id,
+            'paidrequest': request_id,
+            'date': datetime.datetime.now()
+        })
+
+        if len(product_data.get('codes')) == 1:
+            product.Product().update(**{
+                'id': product_id,
+                'product_type': 1
+            })
+
+        invoice.update({'instant': True, 'message': message_content})
 
     return invoice
 
