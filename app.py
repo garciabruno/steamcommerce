@@ -257,3 +257,84 @@ def timesince(dt):
 @app.template_filter()
 def as_json(data):
     return json_util.dumps(data)
+
+
+@app.template_filter()
+def timeuntil(dt):
+    return real_timeuntil(dt)
+
+
+def real_timeuntil(dt, default='en momentos'):
+    now = datetime.datetime.now()
+    diff = dt - now
+
+    if now > dt:
+        return real_timesince(dt)
+
+    periods = (
+        (diff.days / 365, u'año', u'años'),
+        (diff.days / 30, u'mes', u'meses'),
+        (diff.days / 7, u'semana', u'semanas'),
+        (diff.days, u'día', u'días'),
+        (diff.seconds / 3600, u'hora', u'horas'),
+        (diff.seconds / 60, u'minuto', u'minutos'),
+        (diff.seconds, u'segundo', u'segundos'),
+    )
+
+    for period, singular, plural in periods:
+        if period:
+            return u'%d %s' \
+                   % (period, singular if period == 1 else plural)
+
+    return default
+
+
+def parse_plural(value, (singular, plural)):
+    if value == 1:
+        return singular
+    else:
+        return plural
+
+
+def filter_periods(periods):
+    result = []
+
+    for period, singular, plural in periods:
+        if period > 0:
+            result.append((period, singular, plural))
+
+    return result
+
+
+@app.template_filter()
+def hour_format(date, default=u'menos de un segundo'):
+    days = date.days
+    hours = date.seconds / 3600
+    minutes = (date.seconds / 60) - (hours * 60)
+    seconds = date.seconds - (minutes * 60) - (hours * 60 * 60)
+
+    periods = (
+        (days, u'día', u'días'),
+        (hours, u'hora', u'horas'),
+        (minutes, u'minuto', u'minutos'),
+        (seconds, u'segundo', u'segundos'),
+    )
+
+    new_periods = filter_periods(periods)
+
+    result = ""
+
+    for period, singular, plural in new_periods:
+        word = parse_plural(period, (singular, plural))
+        period_len = len(new_periods)
+        current = (period, singular, plural)
+
+        if new_periods[period_len - 2] == current and period_len != 1:
+            result += '%d %s y ' % (period, word)
+        else:
+            result += '%d %s ' % (period, word)
+
+    if result != "":
+        return result
+
+    return default
