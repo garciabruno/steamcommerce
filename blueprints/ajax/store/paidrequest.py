@@ -105,6 +105,7 @@ def ajax_paidrequest_generate():
         and len(product_data.get('codes')) > 0
     ):
         code = product_data.get('codes')[0]
+        admin_id = code.get('user_owner')
 
         productcode.ProductCode().update(**{
             'id': code.get('id'),
@@ -115,7 +116,7 @@ def ajax_paidrequest_generate():
         message_content = constants.DEFAULT_REQUEST_MESSAGE + code.get('code')
 
         message.Message().push(**{
-            'user': code.get('user_owner'),
+            'user': admin_id,
             'to_user': user_id,
             'has_code': True,
             'paidrequest': request_id,
@@ -136,7 +137,7 @@ def ajax_paidrequest_generate():
             })
 
         paidrequest.PaidRequest().accept_paidrequest(
-            request_id, user_id=code.get('user_owner')
+            request_id, user_id=admin_id
         )
 
         history.History().push(
@@ -148,7 +149,7 @@ def ajax_paidrequest_generate():
         adminlog.AdminLog().push(
             constants.ADMINLOG_PAIDREQUEST_ACCEPTED, **{
                 'paidrequest': request_id,
-                'user': user_id
+                'user': admin_id
             }
         )
 
