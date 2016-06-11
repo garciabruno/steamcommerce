@@ -1109,3 +1109,9 @@ CART.CSS
     background: #FDB832;
 
 }
+
+.s-commerce-product-admin{
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+}
