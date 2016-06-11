@@ -26,8 +26,8 @@ ADMINLOG_CREDITREQUEST_INVALID_PAYMENT = 5
 
 ADMINLOG_USERREQUEST_PAID = 6
 
+ADMINLOG_CODE_ADDED = 10
 ADMINLOG_CODE_DELIVERED = 11
-
 ADMINLOG_USERREQUEST_DENIED = 14
 ADMINLOG_CREDITREQUEST_DENIED = 15
 ADMINLOG_PAIDREQUEST_DENIED = 16
@@ -58,6 +58,11 @@ Request constants
 
 DEFAULT_REQUEST_MESSAGE = u'\
 Hola, Hemos procesado su pedido.\nTu código/link de activación es:\n\
+'
+
+PRODUCTCODE_ADDED = u'El código #{0} fue añadido satisfactoriamente'
+PRODUCTCODE_ADDED_TO_REQUEST = u'\
+El código añadido fue entregado al pedido #{0}-{1}\
 '
 
 '''
