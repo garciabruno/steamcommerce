@@ -12,9 +12,15 @@ from flask import request
 from flask import url_for
 from flask import redirect
 from flask import render_template
+from flask import Request
 
 from werkzeug.routing import BaseConverter
 from flask_bootstrap import Bootstrap
+
+import os
+import rollbar
+import rollbar.contrib.flask
+from flask import got_request_exception
 
 from steamcommerce_api.utils import json_util
 
@@ -119,6 +125,35 @@ for blueprint in BLUEPRINTS:
 '''
 
 
+@app.before_first_request
+def init_rollbar():
+    """init rollbar module"""
+    rollbar.init(
+        # access token for the demo app: https://rollbar.com/demo
+        config.ROLLBAR_TOKEN,
+        # environment name
+        'env',
+        # server root directory, makes tracebacks prettier
+        root=os.path.dirname(os.path.realpath(__file__)),
+        # flask already sets up logging
+        allow_logging_basic_config=False
+    )
+
+    # send exceptions from `app` to rollbar, using flask's signal system.
+    got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
+
+
+class CustomRequest(Request):
+    @property
+    def rollbar_person(self):
+        return {
+            'id': session.get('user'),
+            'ip': request.headers.get('CF-Connecting-IP', request.remote_addr)
+        }
+
+app.request_class = CustomRequest
+
+
 @app.before_request
 def before_request():
     if request.path[:7] == '/static':
@@ -171,10 +206,6 @@ def before_request():
         g.user_cart = user_cart
 
         g.notification_counter = 0
-
-        for user_notification in notifications:
-            if not user_notification.seen:
-                g.notification_counter += 1
 
         g.notifications = notifications[:10]
 
@@ -320,21 +351,14 @@ def hour_format(date, default=u'menos de un segundo'):
         (seconds, u'segundo', u'segundos'),
     )
 
-    new_periods = filter_periods(periods)
+    result = None
 
-    result = ""
+    for period, singular, plural in periods:
+        if period > 0 and not result:
+            word = parse_plural(period, (singular, plural))
+            result = '%d %s' % (period, word)
 
-    for period, singular, plural in new_periods:
-        word = parse_plural(period, (singular, plural))
-        period_len = len(new_periods)
-        current = (period, singular, plural)
-
-        if new_periods[period_len - 2] == current and period_len != 1:
-            result += '%d %s y ' % (period, word)
-        else:
-            result += '%d %s ' % (period, word)
-
-    if result != "":
+    if result is not None:
         return result
 
     return default
