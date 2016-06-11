@@ -59,7 +59,7 @@
                         </div>
                     </div>
 
-                    {% if product.get('promotion') %}
+                    {% if product.get('promotion') and product.get('is_promotional') %}
                         <div class="s-commerce-offer-hud">
                             <span class="s-commerce-product-in-offer">
                                 ¡Producto en oferta!
@@ -67,7 +67,7 @@
 
                             {% if product.get('promotion').get('ending_date') or product.get('special_ending_date') %}
                                 <span class="s-commerce-product-offer-date">
-                                    Oferta valida hasta {{ product.get('promotion').get('ending_date')|date_format }}
+                                    Oferta valida hasta {{ (product.get('special_ending_date') or product.get('promotion').get('ending_date'))|date_format }}
                                 </span>
                             {% endif %}
                         </div>
@@ -194,6 +194,55 @@
             </div>
         </div>
     </div>
+
+    {% if session.get('admin') %}
+        <div class="container">
+            <div class="main">
+                <div class="col-md-14 col-md-padding col-md-offset-1">
+                    <div class="s-commerce-product-admin">
+                        <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='Product', object_id=product.get('id')) }}">
+                            Editar producto
+                        </a>
+
+                        <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='Section', object_id=product.get('section').get('id')) }}">
+                            Editar sección ({{ product.get('section').get('title') }})
+                        </a>
+
+                        {% if product.get('price') %}
+                            <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='ProductPrice', object_id=product.get('price').get('id')) }}">
+                                Editar precio ({{ product.get('price').get('price') }})
+                            </a>
+                        {% endif %}
+
+                        {% if product.get('is_promotional') and product.get('promotion') %}
+                            <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='StorePromotion', object_id=product.get('promotion').get('id')) }}">
+                                Editar promoción ({{ product.get('promotion').get('title') }})
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="s-commerce-product-admin">
+                        <a class="btn btn-primary" href="{{ url_for('admin.panel.admin_panel_add_code', product_id=product.get('id')) }}">Añadir código/link de producto</a>
+                        <a class="btn btn-primary" href="#">Agregar precio</a>
+                    </div>
+
+                    {% if product.get('codes')|length > 0 %}
+                        <div class="s-commerce-product-admin">
+                            {% for code in product.get('codes') %}
+                                {% if code.get('user_owner') == session.get('user') %}
+                                    <div style="margin: 5px 0;">
+                                        <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='ProductCode', object_id=code.get('id')) }}">
+                                            Editar código #{{ code.get('id') }} ({{ code.get('code') }})
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     <script type="text/javascript">
         jQuery.timeago.settings.allowFuture = true;
