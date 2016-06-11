@@ -3,3 +3,5 @@ peewee
 wtforms
 flask-inputs
 flask-wtf
+rollbar
+blinker==1.4
