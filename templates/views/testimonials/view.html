@@ -105,10 +105,10 @@
                                                 {% if request['accepted_date'] and request['paid_date'] %}
                                                     {% set time_diff = request['accepted_date'] - request['paid_date'] %}
 
-                                                    {% if time_diff.total_seconds() < 10 %}
+                                                    {% if time_diff.total_seconds() < 30 %}
                                                         Compra enviada instantáneamente
                                                     {% else %}
-                                                        Compra enviada {{ time_diff }}
+                                                        Compra enviada en {{ time_diff|hour_format }}
                                                     {% endif %}
                                                 {% endif %}
                                             {% elif testimonial['paidrequest'] %}
@@ -120,7 +120,7 @@
                                                     {% if time_diff.total_seconds() < 30 %}
                                                         Compra enviada instantáneamente
                                                     {% else %}
-                                                        Compra enviada {{ time_diff }}
+                                                        Compra enviada en {{ time_diff|hour_format }}
                                                     {% endif %}
                                                 {% endif %}
                                             {% endif %}
