@@ -12,6 +12,7 @@ from flask import render_template
 from forms import admin
 from steamcommerce_api.core import models
 
+from steamcommerce_api.api import price
 from steamcommerce_api.api import product
 from steamcommerce_api.api import message
 from steamcommerce_api.api import history
@@ -178,6 +179,75 @@ def admin_model_edit(model_name, object_id):
 
         flash('Objecto actualizado satisfactoriamente')
         return render_template('admin/panel/model-form.html', **params)
+
+
+@admin_panel.route(
+    '/product/add/price/<int:product_id>',
+    methods=['GET', 'POST']
+)
+@route_decorators.is_admin
+def admin_panel_add_price(product_id):
+    if request.method == 'GET':
+        form = admin.ProductPriceForm()
+        form.product_id.data = product_id
+
+        params = {
+            'form': form
+        }
+
+        return render_template('admin/panel/generic-form.html', **params)
+    elif request.method == 'POST':
+        form = admin.ProductPriceForm(request.form)
+
+        if not form.validate():
+            params = {
+                'form': form
+            }
+
+            return render_template('admin/panel/generic-form.html', **params)
+
+        user_id = session.get('user')
+        product_id = int(form.product_id.data)
+        price_amount = float(form.price.data)
+
+        product_data = product.Product().get_product_by_id(product_id)
+
+        if product_data.get('price'):
+            params = {
+                'form': form
+            }
+
+            flash('El producto ya contiene precios activos')
+            return render_template('admin/panel/generic-form.html', **params)
+
+        price.ProductPrice().create(**{
+            'price': price_amount,
+            'product': product_id,
+            'active': bool(form.active.data)
+        })
+
+        adminlog.AdminLog().push(
+            constants.ADMINLOG_PRICE_ADDED, **{
+                'product': product_id,
+                'user': user_id
+            }
+        )
+
+        flash(
+            'Precio ${0:0.2f} para el producto {1} agregado'.format(
+                price_amount,
+                product_data.get('title')
+            )
+        )
+
+        new_form = admin.ProductPriceForm()
+        new_form.product_id.data = product_id
+
+        params = {
+            'form': new_form
+        }
+
+        return render_template('admin/panel/generic-form.html', **params)
 
 
 @admin_panel.route(
