@@ -1115,3 +1115,8 @@ CART.CSS
     margin-bottom: 10px;
     background-color: white;
 }
+
+.s-commerce-footer{
+    color: white;
+    font-size: 15px;
+}

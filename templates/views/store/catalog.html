@@ -77,6 +77,17 @@
         </div>
     </div>
 
+    {% if session.get('admin') %}
+        <footer>
+            <div class="container">
+                <div class="s-commerce-footer">
+                    steamcommerce running on {{ config.CURRENT_USER }}@{{ config.CURRENT_MACHINE }} on pid {{ config.CURRENT_PID }} @ commit {{ config.CURRENT_COMMIT }} <br>
+                    Process spawned at {{ config.SPAWN_TIME }}
+                </div>
+            </div>
+        </footer>
+    {% endif %}
+
     <script type="text/javascript">
         var INITIAL_MAX_PAGES = 10;
 
