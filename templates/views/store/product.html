@@ -223,7 +223,7 @@
 
                     <div class="s-commerce-product-admin">
                         <a class="btn btn-primary" href="{{ url_for('admin.panel.admin_panel_add_code', product_id=product.get('id')) }}">Añadir código/link de producto</a>
-                        <a class="btn btn-primary" href="#">Agregar precio</a>
+                        <a class="btn btn-primary" href="{{ url_for('admin.panel.admin_panel_add_price', product_id=product.get('id')) }}">Agregar precio</a>
                     </div>
 
                     {% if product.get('codes')|length > 0 %}
