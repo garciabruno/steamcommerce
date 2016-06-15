@@ -209,6 +209,7 @@ def admin_panel_add_price(product_id):
         user_id = session.get('user')
         product_id = int(form.product_id.data)
         price_amount = float(form.price.data)
+        price_type = int(form.price_type.data)
 
         product_data = product.Product().get_product_by_id(product_id)
 
@@ -223,7 +224,9 @@ def admin_panel_add_price(product_id):
         price.ProductPrice().create(**{
             'price': price_amount,
             'product': product_id,
-            'active': bool(form.active.data)
+            'price_type': price_type,
+            'active': bool(form.active.data),
+            'currency': form.currency.data
         })
 
         adminlog.AdminLog().push(
