@@ -129,6 +129,72 @@ def user_profile():
     return render_template('views/user/profile.html', **params)
 
 
+@user_view.route('/historial/<custom_id:history_identifier>')
+@route_decorators.is_logged_in
+def user_history(history_identifier):
+    user_id = session.get('user')
+    request_type = history_identifier['type']
+    request_id = int(history_identifier['number'])
+
+    incorrect_request = {
+        'title': 'El pedido no corresponde a este usuario',
+        'content': u'El pedido no está asociado a esta cuenta'
+    }
+
+    if request_type == 'A':
+        try:
+            userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
+                request_id
+            )
+        except userrequest.UserRequest().model.DoesNotExist:
+            return render_template('views/error.html', **incorrect_request)
+
+        if userrequest_data['user']['id'] != user_id:
+            return render_template('views/error.html', **incorrect_request)
+
+        params = {
+            'request_type': request_type,
+            'request_id': request_id,
+            'userrequest': userrequest_data
+        }
+
+        return render_template('views/user/user-history.html', **params)
+    elif request_type == 'B':
+        try:
+            creditrequest_data = creditrequest.CreditRequest().\
+                get_creditrequest_by_id(request_id)
+        except creditrequest.CreditRequest().model.DoesNotExist:
+            return render_template('views/error.html', **incorrect_request)
+
+        if creditrequest_data['user']['id'] != user_id:
+            return render_template('views/error.html', **incorrect_request)
+
+        params = {
+            'request_type': request_type,
+            'request_id': request_id,
+            'creditrequest': creditrequest_data
+        }
+
+        return render_template('views/user/user-history.html', **params)
+    elif request_type == 'C':
+        try:
+            paidrequest_data = paidrequest.PaidRequest().\
+                get_paidrequest_by_id(request_id)
+        except paidrequest.PaidRequest.DoesNotExist:
+            return render_template('views/error.html', **incorrect_request)
+
+        if paidrequest_data['user']['id'] != user_id:
+            return render_template('views/error.html', **incorrect_request)
+
+        params = {
+            'request_type': request_type,
+            'request_id': request_id,
+            'paidrequest': paidrequest_data
+        }
+
+        return render_template('views/user/user-history.html', **params)
+
+
 @user_view.route('/notifications/seen/')
 @route_decorators.is_logged_in
 @route_decorators.as_json
