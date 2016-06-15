@@ -1,0 +1,324 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Historial #{{ request_type }}-{{ request_id }}{% endblock %}
+
+{% block body %}
+    <div class="s-commerce-user-history-container">
+        <div class="container">
+            <div class="main">
+                <div class="s-commerce-request-history">
+                    <div class="s-commerce-history-body">
+                        <div class="history-body-top">
+                            <div class="history-pre-title">Pedido</div>
+                            <div class="history-title">#{{ request_type }}-{{ request_id }}</div>
+                        </div>
+
+                        <div class="history-items">
+                            <table cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td>Número de pedido</td>
+
+                                        <td class="table-listing">
+                                            #{{ request_type }}-{{ request_id }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Tipo de pedido</td>
+
+                                        <td class="table-listing">
+                                            {% if request_type == 'A' %}
+                                                Boleta
+                                            {% elif request_type == 'B' %}
+                                                Carga de fondos
+                                            {% elif request_type == 'C' %}
+                                                Compra con créditos
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Estado</td>
+
+                                        <td class="td table-listing">
+                                            {% if request_type == 'A' %}
+                                                {% if userrequest['accepted'] %}
+                                                    <span class="text text-success">Pedido entregado</span>
+                                                {% elif userrequest['paid'] %}
+                                                    Pago ingresado
+                                                {% else %}
+                                                    Esperando ingreso de pago
+                                                {% endif %}
+                                            {% elif request_type == 'B' %}
+                                                {% if creditrequest['accepted'] %}
+                                                    <span class="text text-success">Créditos añadidos a tu cuenta</span>
+                                                {% elif creditrequest['paid'] %}
+                                                    Pago ingresado
+                                                {% else %}
+                                                    Esperando ingreso de pago
+                                                {% endif %}
+                                            {% elif request_type == 'C' %}
+                                                {% if paidrequest['accepted'] %}
+                                                    <span class="text text-success">Pedido entregado</span>
+                                                {% else %}
+                                                    Pedido generado
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    {% if request_type == 'A' %}
+                                        <tr>
+                                            <td>Código de barras</td>
+
+                                            <td class="table-listing">
+                                                {{ userrequest.get('bar_code') }}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Productos solicitados</td>
+
+                                            <td class="table-listing">
+                                                {{ userrequest.get('relations')|length }}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td></td>
+                                            <td class="table-listing"><br></td>
+                                        </tr>
+
+                                        {% for relation in userrequest.get('relations') %}
+                                            <tr>
+                                                <td>{{ relation.get('product').get('title') }}</td>
+
+                                                <td class="table-listing">
+                                                    ${{ relation.get('price')|price_format }} ARS
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td></td>
+                                            <td class="table-listing"><br></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Monto total</td>
+
+                                            <td class="table-listing">
+                                                ${{ userrequest['price']|price_format }} ARS
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Requiere reserva</td>
+
+                                            <td class="table-listing">
+                                                {% if userrequest['promotion'] %}
+                                                    <strong><span class="text text-success">Si</span></strong>
+                                                {% else %}
+                                                    <strong><span class="text text-danger">No</span></strong>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+
+                                        {% if userrequest['promotion'] %}
+                                            <tr>
+                                                <td>Reserva realizada</td>
+
+                                                <td class="table-listing">
+                                                    {% if userrequest['informed'] %}
+                                                        <strong><span class="text text-success">Si</span></strong>
+                                                    {% else %}
+                                                        <strong><span class="text text-danger">No</span></strong>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% elif request_type == 'B' %}
+                                        <tr>
+                                            <td>Código de barras</td>
+
+                                            <td class="table-listing">
+                                                {{ creditrequest.get('bar_code') }}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Monto</td>
+
+                                            <td class="table-listing">
+                                                ${{ creditrequest.get('amount')|price_format }} ARS
+                                            </td>
+                                        </tr>
+                                    {% elif request_type == 'C' %}
+                                        <tr>
+                                            <td>Productos solicitados</td>
+
+                                            <td class="table-listing">
+                                                {{ paidrequest.get('relations')|length }}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td></td>
+                                            <td class="table-listing"><br></td>
+                                        </tr>
+
+                                        {% for relation in paidrequest.get('relations') %}
+                                            <tr>
+                                                <td>{{ relation.get('product').get('title') }}</td>
+
+                                                <td class="table-listing">
+                                                    ${{ relation.get('price')|price_format }} ARS
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td></td>
+                                            <td class="table-listing"><br></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Monto total</td>
+
+                                            <td class="table-listing">
+                                                ${{ paidrequest['price']|price_format }} ARS
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="s-commerce-history-tracking">
+                        <div class="tracking-title">
+                            Estado de tu pedido
+                        </div>
+
+                        {% if request_type == 'A' and userrequest['reason'] %}
+                            <div class="tracking-alert">
+                                Este pedido fue denegado por el staff con el siguiente motivo: {{ userrequest['reason'] }}
+                            </div>
+                        {% endif %}
+
+                        {% macro progress_point(text, status, tooltip_text, special_width) %}
+                            <li class="progress-point {{status}}" data-toggle="tooltip" data-placement="top" title="{{ tooltip_text }}" {% if special_width %}style="width: {{ special_width }};"{% endif %}>{{ text }}</li>
+                        {% endmacro %}
+
+                        <div class="tracking">
+                            {% if request_type == 'A' %}
+                                <ol class="progress-meter">
+                                    {{ progress_point('Pedido generado', 'done', userrequest['date']|date_format) }}
+
+                                    {% if userrequest['paid'] %}
+                                        {% if userrequest.get('paid_date') %}
+                                            {{ progress_point('Pago ingresado', 'done', userrequest['paid_date']|date_format) }}
+                                        {% else %}
+                                            {{ progress_point('Pago ingresado', 'done', '') }}
+                                        {% endif %}
+                                    {% elif not userrequest['accepted'] %}
+                                        {{ progress_point('Esperando ingreso de pago', 'todo') }}
+                                    {% endif %}
+
+                                    {% if userrequest['accepted'] %}
+                                        {% if userrequest.get('accepted_date') %}
+                                            {{ progress_point('Pedido entregado', 'done', userrequest['accepted_date']|date_format) }}
+                                        {% else %}
+                                            {{ progress_point('Pedido entregado', 'done', '') }}
+                                        {% endif %}
+                                    {% else %}
+                                        {{ progress_point('Pedido entregado', 'todo') }}
+                                    {% endif %}
+
+                                    {% if userrequest['reason'] %}
+                                        {{ progress_point('Pedido denegado', 'todo') }}
+                                    {% endif %}
+                                </ol>
+                            {% endif %}
+
+                            {% if request_type == 'B' %}
+                                <ol class="progress-meter">
+                                    {{ progress_point('Pedido generado', 'done', creditrequest['date']|date_format) }}
+
+                                    {% if creditrequest['paid'] %}
+                                        {% if creditrequest.get('paid_date') %}
+                                            {{ progress_point('Pago ingresado', 'done', creditrequest.get('paid_date')|date_format) }}
+                                        {% else %}
+                                            {{ progress_point('Pago ingresado', 'done') }}
+                                        {% endif %}
+                                    {% elif not creditrequest['accepted'] %}
+                                        {{ progress_point('Esperando ingreso de pago', 'todo') }}
+                                    {% endif %}
+
+                                    {% if creditrequest['accepted'] %}
+                                        {{ progress_point('Créditos añadidos', 'done', creditrequest.get('accepted_date')|date_format) }}
+                                    {% else %}
+                                        {{ progress_point('Créditos añadidos', 'todo') }}
+                                    {% endif %}
+
+                                    {% if creditrequest['reason'] %}
+                                        {{ progress_point('Pedido denegado', 'todo') }}
+                                    {% endif %}
+                                </ol>
+                            {% endif %}
+
+                            {% if request_type == 'C' %}
+                                <ol class="progress-meter">
+                                    {{ progress_point('Pedido generado', 'done', paidrequest['date']|date_format, '48%') }}
+
+                                    {% if paidrequest.get('accepted_date') %}
+                                        {{ progress_point('Pedido entregado', 'done', paidrequest['accepted_date']|date_format, '48%') }}
+                                    {% else %}
+                                        {{ progress_point('Pedido entregado', 'done', '', '48%') }}
+                                    {% endif %}
+
+                                    {% if paidrequest['reason'] %}
+                                        {{ progress_point('Pedido denegado', 'todo', '48%') }}
+                                    {% endif %}
+                                </ol>
+                            {% endif %}
+                        </div>
+
+                        <script type="text/javascript">
+                            $(function () {
+                              $('[data-toggle="tooltip"]').tooltip()
+                            })
+                        </script>
+                    </div>
+
+                    {% macro print_messages(messages) %}
+                        <div class="s-commerce-history-tracking">
+                            <div class="tracking-title">
+                                Mensajes del staff
+                            </div>
+
+                            {% for message in messages %}
+                                <div class="tracking-message">
+                                    <div class="tracking-message-date">
+                                        Mensaje del día {{ message.get('date')|date_format }}
+                                    </div>
+
+                                    <div class="tracking-message-content" style="white-space: pre-line;">{{ message.get('content') }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endmacro %}
+
+                    {% if request_type == 'A' and userrequest.get('messages')|length > 0 %}
+                        {{ print_messages(userrequest.get('messages')) }}
+                    {% elif request_type == 'B' and creditrequest.get('messages')|length > 0 %}
+                        {{ print_messages(creditrequest.get('messages')) }}
+                    {% elif request_type == 'C' and paidrequest.get('messages')|length > 0 %}
+                        {{ print_messages(paidrequest.get('messages')) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
