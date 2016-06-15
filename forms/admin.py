@@ -5,6 +5,7 @@ import wtforms
 
 from flask_wtf import Form
 from wtforms.validators import DataRequired
+from wtforms.validators import Optional
 
 
 class ProductCodeForm(Form):
@@ -16,6 +17,8 @@ class ProductCodeForm(Form):
 class ProductPriceForm(Form):
     product_id = wtforms.HiddenField(validators=[DataRequired()])
     price = wtforms.FloatField(validators=[DataRequired()])
+    price_type = wtforms.IntegerField(validators=[DataRequired()])
+    currency = wtforms.TextField(validators=[Optional()])
     active = wtforms.BooleanField(
         validators=[DataRequired()],
         default=True
