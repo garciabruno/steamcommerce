@@ -346,7 +346,7 @@
                             if (!json_data['instant']) {
                                 text_content = 'En las próximas 1hs a 48hs estaremos procesando tu pedido. En caso de que se haya encontrado en "Entrega Inmediata" entonces se creará una nota con tu código/link de activación en tu pedido.';
                             } else {
-                                text_content = '¡Tu pedido fue entregado inmediatamente! En el historial de tu pedido podrás encontrar un nuevo mensaje con tu código/link de activación. También te copiamos el mensaje aquí:<br><br> ' + json_data['message'];
+                                text_content = '¡Tu pedido fue entregado inmediatamente! En el historial de tu pedido podrás encontrar un nuevo mensaje con tu código/link de activación. <strong>También te copiamos el mensaje aquí:<br><br>' + json_data['message'] + '</strong>';
                             }
 
                             swal({
