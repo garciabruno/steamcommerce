@@ -1120,3 +1120,225 @@ CART.CSS
     color: white;
     font-size: 15px;
 }
+
+.s-commerce-user-error-container{
+    margin-top: 100px;
+}
+
+.s-commerce-error{
+    color: white;
+    text-align: center;
+}
+
+.error-title{
+    font-family: "Roboto",sans-erif;
+    font-size: 30px;
+}
+
+.error-content{
+    font-family: "Roboto",sans-erif;
+    font-size: 20px;
+}
+
+.s-commerce-user-history-container {
+    margin-top: 50px;
+}
+
+.s-commerce-history-body{
+    padding: 20px;
+    background: white;
+}
+
+.history-body-top{
+    text-align: center;
+}
+
+.history-pre-title{
+    font-family: "Roboto",sans-erif;
+    font-size: 35px;
+    color: #505050;
+    font-weight: 300;
+}
+
+.history-title{
+    font-family: "Roboto",sans-erif;
+    font-size: 20px;
+    color: #959595;
+    font-weight: 300;
+}
+
+.table-listing{
+    padding-left: 50px;
+}
+
+.history-items td{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.history-items td:first-child{
+    font-weight: 500;
+}
+
+.s-commerce-history-tracking {
+    padding: 20px;
+    background: #222A33;
+}
+
+.tracking-title{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 23px;
+    color: white;
+}
+
+.tracking-alert{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    color: white;
+}
+
+/*
+Progress bar CSS
+*/
+
+.progress-meter {
+    padding: 0;
+}
+
+ol.progress-meter {
+    padding-bottom: 9.5px;
+    list-style-type: none;
+}
+ol.progress-meter li {
+    display: inline-block;
+    text-align: center;
+    text-indent: -19px;
+    height: 36px;
+    width: 30%;
+    font-size: 12px;
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+}
+
+ol.progress-meter li:before {
+    position: relative;
+    float: left;
+    text-indent: 0;
+    left: -6px;
+}
+
+ol.progress-meter li.done {
+    font-size: 12px;
+}
+
+ol.progress-meter li.done:before {
+    content: " ";
+    height: 19px;
+    width: 19px;
+    line-height: 21.85px;
+    bottom: -25px;
+    border: none;
+    border-radius: 19px;
+}
+
+ol.progress-meter li.todo {
+    font-size: 12px;
+}
+
+ol.progress-meter li.todo:before {
+    content: "\2B24";
+    font-size: 17.1px;
+    bottom: -23px;
+    line-height: 18.05px;
+}
+
+ol.progress-meter li.done {
+    color: #24945C;
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    border-bottom-color: #24945C;
+    line-height: 120px;
+    text-align: left;
+}
+
+ol.progress-meter li.done:before {
+    color: white;
+    background-color: #24945C;
+}
+
+ol.progress-meter li.todo {
+    color: silver !important;
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    border-bottom-color: silver;
+    line-height: 120px;
+    text-align: left;
+}
+
+ol.progress-meter li.todo:before {
+    color: silver;
+    font-size: 17.1px;
+    bottom: -23px;
+    line-height: 18.05px;
+}
+
+ol.progress-meter li.done {
+    color: #24945C;
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    border-bottom-color: #24945C;
+    line-height: 120px;
+    text-align: left;
+}
+
+ol.progress-meter li.done:before {
+    color: white;
+    background-color: #24945C;
+}
+
+ol.progress-meter li.todo {
+    color: #77BF84;
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    border-bottom-color: silver;
+    line-height: 120px;
+    text-align: left;
+}
+
+ol.progress-meter li.todo:before {
+    color: silver;
+}
+
+.tracking-message{
+    border-left: 2px solid #24945C;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.tracking-message-date,
+.tracking-message-content{
+    font-weight: 300;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+}
+
+.tracking-message-date{
+    font-size: 21px;
+}
+
+.tracking-message-content{
+    margin-top: 7px;
+}
+
+.s-commerce-testimonial-note {
+    padding: 10px;
+    color: white;
+}
