@@ -4,5 +4,5 @@
 config.py
 static/img/product/*
 static/img/slider/*
-static/userrequest/*
+static/userrequests/*
 logs/*
