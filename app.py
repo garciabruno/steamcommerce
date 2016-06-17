@@ -51,6 +51,7 @@ from blueprints.ajax.store.paidrequest import ajax_paidrequest
 from blueprints.ajax.store.creditrequest import ajax_creditrequest
 
 from blueprints.admin.ajax.userrequest import admin_ajax_userrequest
+from blueprints.admin.ajax.creditrequest import admin_ajax_creditrequest
 from blueprints.admin.ajax.paidrequest import admin_ajax_paidrequest
 
 from blueprints.admin.panel import admin_panel
@@ -71,7 +72,8 @@ BLUEPRINTS = [
     ajax_paidrequest,
     ajax_creditrequest,
     admin_ajax_userrequest,
-    admin_ajax_paidrequest
+    admin_ajax_paidrequest,
+    admin_ajax_creditrequest
 ]
 
 app = Flask(__name__)
