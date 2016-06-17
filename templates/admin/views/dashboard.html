@@ -41,7 +41,11 @@
                     {%- endif %}
 
                     {% if log.action == 4 -%}
-                        <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.userrequest.price|price_format }}</span>
+                        {% if log.userrequest %}
+                            <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.userrequest.price|price_format }}</span>
+                        {% elif log.creditrequest %}
+                            <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.creditrequest.amount|price_format }}</span>
+                        {% endif %}
                     {%- endif %}
 
                     {% if log.action == 5 -%}
