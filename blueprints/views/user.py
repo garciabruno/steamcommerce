@@ -27,6 +27,46 @@ from utils import route_decorators
 user_view = Blueprint('views.user', __name__)
 
 
+@user_view.route('/user/<username>')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def user_admin_profile(username):
+    try:
+        user_data = user.User().get_by_username(username)
+    except user.User().model.DoesNotExist:
+        error = {
+            'title': 'Usuario inexistente',
+            'content': 'El usuario no existe :('
+        }
+
+        return render_template('views/error.html', **error)
+
+    notifications = notification.Notification().get_for_user(user_data.id)
+
+    userrequests = userrequest.UserRequest().get_user_userrequests(
+        user_data.id
+    )
+    creditrequests = creditrequest.CreditRequest().get_user_creditrequests(
+        user_data.id
+    )
+    paidrequests = paidrequest.PaidRequest().get_user_paidrequests(
+        user_data.id
+    )
+
+    form = user_form.ProfileForm(obj=user_data)
+
+    params = {
+        'form': form,
+        'user': user_data,
+        'userrequests': userrequests,
+        'paidrequests': paidrequests,
+        'notifications': notifications,
+        'creditrequests': creditrequests
+    }
+
+    return render_template('views/user/profile.html', **params)
+
+
 @user_view.route('/login')
 @user_view.route('/login/')
 @route_decorators.not_logged_in

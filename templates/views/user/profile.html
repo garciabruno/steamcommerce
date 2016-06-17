@@ -35,6 +35,30 @@
                                     {{ user.register_date|date_format }}
                                 </div>
                             {% endif %}
+
+                            {% if session.get('admin') %}
+                                <div class="s-commerce-user-profile-item">
+                                    {{ user.ip_address or '' }}
+                                </div>
+
+                                <div class="s-commerce-user-profile-item">
+                                    Wallet (nin): {{ user.wallet }}
+                                </div>
+
+                                <div class="s-commerce-user-profile-item">
+                                    Money (emi): {{ user.money }}
+                                </div>
+
+                                <div class="s-commerce-user-profile-item">
+                                    Total: {{ user.money + user.wallet }}
+                                </div>
+
+                                <div class="s-commerce-user-profile-item">
+                                    <a class="btn btn-primary" href="{{ url_for('admin.panel.admin_model_edit', object_id=user.id, model_name='User') }}">
+                                        Editar usuario
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
