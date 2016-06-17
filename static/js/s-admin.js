@@ -99,6 +99,8 @@ var Request = function(requestButton) {
     this.accept_request = function(request_type, request_id) {
         if (request_type == 'A') {
             var URL = '/admin/ajax/userrequest/accept/';
+        } else if (request_type == 'B') {
+            var URL = '/admin/ajax/creditrequest/accept/';
         } else if (request_type == 'C') {
             var URL = '/admin/ajax/paidrequest/accept/';
         }
@@ -227,6 +229,8 @@ var Request = function(requestButton) {
     this.set_paid = function(request_type, request_id) {
         if (request_type == 'A') {
             var URL = '/admin/ajax/userrequest/set/paid/';
+        } else if (request_type == 'B') {
+            var URL = '/admin/ajax/creditrequest/set/paid/';
         }
 
         $.ajax({
