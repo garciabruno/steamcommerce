@@ -182,13 +182,30 @@ def store_app_id(app_id):
         app_product = product.Product().get_by_sub_id(app_id)
 
     if app_product is None:
-        return 'Woops! Product does not exist (Really)'
+        error = {
+            'title': 'Producto inexistente',
+            'content': 'Este producto no existe :( Solicitalo?\
+             https://facebook.com/ExtremeGamingSTEAM'
+        }
+
+        return render_template('views/error.html', **error)
 
     if not app_product.get('visible'):
-        return 'Woops! Product not currently available'
+        error = {
+            'title': 'Producto no disponible',
+            'content': 'Este producto no se encuentra disponible temporalmente'
+        }
+
+        return render_template('views/error.html', **error)
 
     if app_product.get('run_stock') and app_product.get('stock') == 0:
-        return 'Woops! Out of stock'
+        error = {
+            'title': 'Producto fuera de stock',
+            'content': 'Este producto ha agotado su stock. \
+            Disculpe las molestias.'
+        }
+
+        return render_template('views/error.html', **error)
 
     params = {
         'product': app_product
