@@ -1348,4 +1348,7 @@ ol.progress-meter li.todo:before {
     background: #2CB16E;
     color: white;
     font-size: 17px;
+    white-space: pre-line;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
