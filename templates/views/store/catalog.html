@@ -33,6 +33,18 @@
         </div>
     {% endif %}
 
+    {% if announces|length > 0 %}
+        <div class="container">
+            <div class="main">
+                {% for announce in announces %}
+                    <div class="s-commerce-announce">
+                        {{ announce['content'] }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
     {% if active_section != 'offers' %}
         {% include "views/store/offers.html" %}
     {% endif %}

@@ -27,6 +27,7 @@ from utils import route_decorators
 from steamcommerce_api.api import slider
 from steamcommerce_api.api import section
 from steamcommerce_api.api import product
+from steamcommerce_api.api import announce
 from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import configuration
@@ -53,6 +54,7 @@ def store_catalog():
     promotions = storepromotion.StorePromotion().get_active_promotions()
     promotion_products = []
     promotion_products_ids = []
+    announces = announce.Announce().get_active()
 
     if len(promotions) > 0:
         promotion_products_ids = storepromotion.StorePromotion().\
@@ -79,6 +81,7 @@ def store_catalog():
         'section_id': sections[0].id,
         'sliders': sliders,
         'products': products,
+        'announces': announces,
         'sections': sections,
         'promotions': promotions,
         'active_section': 'catalog',

@@ -1342,3 +1342,10 @@ ol.progress-meter li.todo:before {
     padding: 10px;
     color: white;
 }
+
+.s-commerce-announce{
+    padding: 10px;
+    background: #2CB16E;
+    color: white;
+    font-size: 17px;
+}
