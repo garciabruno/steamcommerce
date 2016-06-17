@@ -104,30 +104,32 @@
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="s-commerce-body-inner">
-                                    <div class="s-commerce-description-title">
-                                        Descripción
-                                    </div>
+                                    {% if product.get('description') %}
+                                        <div class="s-commerce-description-title">
+                                            Descripción
+                                        </div>
 
-                                    <div class="s-commerce-product-description">
-                                        {{ product.get('description', '')[:1024] }}
-                                    </div>
+                                        <div class="s-commerce-product-description">
+                                            {{ product.get('description', '')[:1024] }}
+                                        </div>
 
-                                    <div class="s-commerce-product-description s-commerce-product-description-full" style="display: none;">
-                                        {{ product.get('description') }}
-                                    </div>
+                                        <div class="s-commerce-product-description s-commerce-product-description-full" style="display: none;">
+                                            {{ product.get('description') }}
+                                        </div>
 
-                                    {% if product.get('description', '')|length > 1024 %}
-                                        <button class="s-commerce-read-more btn btn-default">Leer mas</button>
+                                        {% if product.get('description', '')|length > 1024 %}
+                                            <button class="s-commerce-read-more btn btn-default">Leer mas</button>
+                                        {% endif %}
+
+                                        <script type="text/javascript">
+                                            $('.s-commerce-read-more').on('click', function(){
+                                                $('.s-commerce-product-description').first().toggle();
+                                                $('.s-commerce-product-description-full').toggle();
+
+                                                $(this).text() == 'Leer mas' ? $(this).text('Leer menos') : $(this).text('Leer mas');
+                                            });
+                                        </script>
                                     {% endif %}
-
-                                    <script type="text/javascript">
-                                        $('.s-commerce-read-more').on('click', function(){
-                                            $('.s-commerce-product-description').first().toggle();
-                                            $('.s-commerce-product-description-full').toggle();
-
-                                            $(this).text() == 'Leer mas' ? $(this).text('Leer menos') : $(this).text('Leer mas');
-                                        });
-                                    </script>
                                 </div>
                             </div>
 
