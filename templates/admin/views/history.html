@@ -21,7 +21,7 @@
                                     </div>
                                 {% endif %}
 
-                                {% if request['visible'] and not request['accepted '] %}
+                                {% if request['visible'] and not request['accepted '] and request_type != 'B' %}
                                     <div class="btn btn-lg btn-danger deny_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
                                         Denegar
                                     </div>
@@ -125,53 +125,73 @@
                             <div class="request-relations">
                                 <div class="request-relation">
                                     <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Sección</th>
-                                                <th>Producto</th>
-                                                <th>Precio</th>
-                                                <th>Acción</th>
-                                                <th>Administrador</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {% for relation in request['relations'] %}
+                                        {% if request_type != 'B' %}
+                                            <thead>
                                                 <tr>
-                                                    <td>
-                                                        {{ relation['product']['section']['title'] }}
-                                                    </td>
-
-                                                    <td>
-                                                        <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
-                                                            {{ relation['product']['title'] }}
-                                                        </a>
-                                                    </td>
-
-                                                    <td>
-                                                        <span class="s-commerce-relation-product-price">${{ relation['price']|price_format }}</span>
-                                                    </td>
-
-                                                    <td>
-                                                        {% if relation['sent'] %}
-                                                            <span class="btn btn-danger">No enviado</span>
-                                                        {% else %}
-                                                            <span class="btn btn-success">Enviado</span>
-                                                        {% endif %}
-                                                    </td>
-
-                                                    <td>
-
-                                                    </td>
+                                                    <th>Sección</th>
+                                                    <th>Producto</th>
+                                                    <th>Precio</th>
+                                                    <th>Acción</th>
+                                                    <th>Administrador</th>
                                                 </tr>
-                                            {% endfor %}
-                                        </tbody>
+                                            </thead>
+
+                                            <tbody>
+                                                {% for relation in request['relations'] %}
+                                                    <tr>
+                                                        <td>
+                                                            {{ relation['product']['section']['title'] }}
+                                                        </td>
+
+                                                        <td>
+                                                            <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
+                                                                {{ relation['product']['title'] }}
+                                                            </a>
+                                                        </td>
+
+                                                        <td>
+                                                            <span class="s-commerce-relation-product-price">${{ relation['price']|price_format }}</span>
+                                                        </td>
+
+                                                        <td>
+                                                            {% if relation['sent'] %}
+                                                                <span class="btn btn-danger">No enviado</span>
+                                                            {% else %}
+                                                                <span class="btn btn-success">Enviado</span>
+                                                            {% endif %}
+                                                        </td>
+
+                                                        <td>
+
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        {% else %}
+                                            <thead>
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Precio</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr>
+                                                    <td>Carga de créditos</td>
+                                                    <td>${{ request['amount']|price_format }} ARS</td>
+                                                </tr>
+                                            </tbody>
+                                        {% endif %}
                                     </table>
                                 </div>
                             </div>
 
                             <div class="relations-total">
-                                Total: <span class="s-commerce-relation-product-price">${{ request['price']|price_format }}</span>
+                                {% if request_type != 'B' %}
+                                    Total: <span class="s-commerce-relation-product-price">${{ request['price']|price_format }}</span>
+                                {% else %}
+                                    Total: <span class="s-commerce-relation-product-price">${{ request['amount']|price_format }}</span>
+                                {% endif %}
                             </div>
 
                             <table class="table table-bordered">
