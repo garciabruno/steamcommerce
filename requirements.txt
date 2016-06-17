@@ -1,7 +1,21 @@
 flask
+flask_openid
+flask_cache
+wtf-peewee
+flask_bootstrap
+pymysql
+algoliasearch
+requests
+redis
 peewee
 wtforms
 flask-inputs
 flask-wtf
 rollbar
 blinker==1.4
+demiurge
+
+# apt-get install mysql
+# apt-get install libmysqlclient-dev
+# apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev
+# apt-get install libffi-dev
