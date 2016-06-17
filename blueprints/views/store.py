@@ -140,6 +140,10 @@ def store_offers():
     spromotion = storepromotion.StorePromotion()
 
     promotions = spromotion.get_active_promotions()
+
+    if len(promotions) < 1:
+        return redirect(url_for('views.store.store_catalog'))
+
     promotion_products = []
     promotion_products_ids = []
 
