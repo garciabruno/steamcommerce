@@ -106,11 +106,13 @@
 
         search.addWidget(
             instantsearch.widgets.rangeSlider({
-               container: '#price',
+                container: '#price',
                 attributeName: 'price.price',
                 templates: {
                     header: '<h5>Precio</h5>'
-                }
+                },
+                min:5,
+                max:1000
             })
         );
 
