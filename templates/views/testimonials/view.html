@@ -125,6 +125,18 @@
                                                 {% endif %}
                                             {% endif %}
                                         </div>
+
+                                        {% if session.get('admin') %}
+                                            <a href="{{ url_for('views.user.user_admin_profile', username=testimonial['user']['username']) }}" target="_blank" style="text-align; center;">
+                                                Ver usuario en Extremegaming
+                                            </a>
+
+                                            <br>
+
+                                            <a href="{{ url_for('admin.panel.admin_model_edit', object_id=testimonial['id'], model_name='Testimonial') }}">
+                                                Editar testimonio
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

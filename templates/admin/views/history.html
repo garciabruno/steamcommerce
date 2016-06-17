@@ -211,7 +211,9 @@
                                         </td>
 
                                         <td>
-                                            <a href="https://steamcommunity.com/profiles/{{ request['user']['steam'] }}">@{{ request['user']['username'] }}</a>
+                                            <a href="{{ url_for('views.user.user_admin_profile', username=request['user']['username']) }}" target="_blank">
+                                                @{{ request['user']['username'] }}
+                                            </a>
                                         </td>
 
                                         <td>
@@ -248,7 +250,9 @@
                                         </td>
 
                                         <td>
-                                            <a href="https://steamcommunity.com/profiles/{{ request['user']['steam'] }}">@{{ request['user']['username'] }}</a>
+                                            <a href="{{ url_for('views.user.user_admin_profile', username=request['user']['username']) }}" target="_blank">
+                                                @{{ request['user']['username'] }}
+                                            </a>
                                         </td>
 
                                         <td>
