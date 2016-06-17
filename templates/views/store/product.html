@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if product['assets'].get('background', False) %}
+    {% if product.get('assets').get('background', False) %}
         <style type="text/css">
             body{
                 background: -moz-linear-gradient(top, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 19%, rgba(28,38,47,0.8) 27%, rgba(28,38,47,0.6) 28%, rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product.id }}/{{ product['assets']['background'] }}");
@@ -37,11 +37,11 @@
                 <div class="col-md-14 col-md-padding col-md-offset-1">
                     <div class="s-commerce-product-top-hud">
                         <span class="s-commerce-product-hud-title">
-                            {{ product['title'] }}
+                            {{ product.get('title') }}
                         </span>
 
                         <span class="s-commerce-product-hud-price pull-right">
-                            {% if product['price'] %}
+                            {% if product.get('price') %}
                                 ${{ product['price']['price']|price_format }} ARS
                             {% else %}
                                 Precio inactivo
@@ -54,7 +54,7 @@
                             </span>
 
                             <span class="s-commerce-product-hud-section-link pull-right">
-                                <a href="{{ url_for('views.store.store_catalog') }}">{{ product['section']['title'] }}</a>
+                                <a href="{{ url_for('views.store.store_catalog') }}">{{ product.get('section').get('title') }}</a>
                             <span>
                         </div>
                     </div>
@@ -109,14 +109,14 @@
                                     </div>
 
                                     <div class="s-commerce-product-description">
-                                        {{ product['description'][:1024] }}
+                                        {{ product.get('description', '')[:1024] }}
                                     </div>
 
                                     <div class="s-commerce-product-description s-commerce-product-description-full" style="display: none;">
-                                        {{ product['description'] }}
+                                        {{ product.get('description') }}
                                     </div>
 
-                                    {% if product['description']|length > 1024 %}
+                                    {% if product.get('description', '')|length > 1024 %}
                                         <button class="s-commerce-read-more btn btn-default">Leer mas</button>
                                     {% endif %}
 
@@ -137,7 +137,7 @@
                                 </div>
 
                                 <div class="s-commerce-product-specs">
-                                    {% for spec in product['specs'] %}
+                                    {% for spec in product.get('specs', []) %}
                                         {% if spec['visible'] %}
                                             <span class="s-commerce-spec">
                                                 <a href="#">{{ spec['title'] }}</a>
@@ -151,7 +151,7 @@
                                 </div>
 
                                 <div class="s-commerce-product-categories">
-                                    {% for tag in product['tags'] %}
+                                    {% for tag in product.get('tags', []) %}
                                         {% if tag['visible'] %}
                                             <span class="s-commerce-category">
                                                 <a href="#">{{ tag['title'] }}</a>
