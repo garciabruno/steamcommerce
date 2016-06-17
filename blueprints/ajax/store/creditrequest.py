@@ -6,10 +6,13 @@ from flask import request
 from flask import Blueprint
 
 from steamcommerce_api.api import user
+from steamcommerce_api.api import history
 from steamcommerce_api.api import creditrequest
 
 from inputs import store_inputs
 from utils import route_decorators
+
+import constants
 
 ajax_creditrequest = Blueprint('ajax.store.creditrequest', __name__)
 
@@ -41,5 +44,11 @@ def ajax_creditrequest_generate():
 
         if invoice.get('status') == 1:
             return ({'success': False, 'status': 3}, 500)
+
+    history.History().push(
+        constants.HISTORY_GENERATED_STATE,
+        invoice['creditrequest'],
+        constants.HISTORY_CREDITREQUEST_TYPE
+    )
 
     return invoice
