@@ -14,6 +14,7 @@ from steamcommerce_api.api import history
 from steamcommerce_api.api import adminlog
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import paidrequest
+from steamcommerce_api.api import creditrequest
 from steamcommerce_api.api import requests_tools
 
 from utils import route_decorators
@@ -80,22 +81,49 @@ def admin_request(history_identifier):
     message_form = request_message.MessageForm()
 
     if request_type == u'A':
-        history_request = userrequest.UserRequest().get_userrequest_by_id(
-            request_id
-        )
+        try:
+            history_request = userrequest.UserRequest().get_userrequest_by_id(
+                request_id
+            )
+        except:
+            return redirect(url_for('admin.views.admin_requests'))
+
         history_items = history.History().get_request_history(
             history_request['id'], 1
         )
+
         messages = message.Message().get_messages_by_userrequest(
             history_request['id']
         )
-    elif request_type == u'C':
-        history_request = paidrequest.PaidRequest().get_paidrequest_by_id(
-            request_id
+    elif request_type == u'B':
+        try:
+            history_request = creditrequest.CreditRequest().\
+                get_creditrequest_by_id(
+                    request_id
+                )
+        except:
+            return redirect(url_for('admin.views.admin_requests'))
+
+        history_items = history.History().get_request_history(
+            history_request['id'], 2
         )
+
+        messages = message.Message().get_messages_by_creditrequest(
+            history_request['id']
+        )
+
+    elif request_type == u'C':
+        try:
+            history_request = paidrequest.PaidRequest().get_paidrequest_by_id(
+                request_id
+            )
+        except:
+            return redirect(url_for('admin.views.admin_requests'))
+
         history_items = history.History().get_request_history(
             history_request['id'], 3
         )
+
         messages = message.Message().get_messages_by_paidrequest(
             history_request['id']
         )
