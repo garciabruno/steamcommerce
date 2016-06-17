@@ -40,6 +40,7 @@ store = Blueprint('views.store', __name__)
 
 
 @store.route('/comprar')
+@store.route('/comprar/')
 def store_old_route():
     return redirect('/')
 
