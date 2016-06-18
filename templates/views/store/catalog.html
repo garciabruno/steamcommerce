@@ -39,6 +39,10 @@
         <div class="container">
             <div class="main">
                 {% for announce in announces %}
+                    {% if session.get('admin') %}
+                        <a href="{{ url_for('admin.panel.admin_model_edit', object_id=announce['id'], model_name='Announces') }}" class="btn btn-default" style="margin-top: 5px;">Editar anuncio</a>
+                    {% endif %}
+
                     <div class="s-commerce-announce">{{ announce['content']|safe }}</div>
                 {% endfor %}
             </div>
