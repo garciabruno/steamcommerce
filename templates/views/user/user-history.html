@@ -92,7 +92,12 @@
 
                                         {% for relation in userrequest.get('relations') %}
                                             <tr>
-                                                <td>{{ relation.get('product').get('title') }}</td>
+                                                <td>
+                                                    {% set product = relation.get('product') %}
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+                                                        {{ relation.get('product').get('title') }}
+                                                    </a>
+                                                </td>
 
                                                 <td class="table-listing">
                                                     ${{ relation.get('price')|price_format }} ARS
@@ -170,7 +175,12 @@
 
                                         {% for relation in paidrequest.get('relations') %}
                                             <tr>
-                                                <td>{{ relation.get('product').get('title') }}</td>
+                                                <td>
+                                                    {% set product = relation.get('product') %}
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+                                                        {{ relation.get('product').get('title') }}
+                                                    </a>
+                                                </td>
 
                                                 <td class="table-listing">
                                                     ${{ relation.get('price')|price_format }} ARS
