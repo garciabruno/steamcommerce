@@ -14,14 +14,11 @@ from steamcommerce_api.core import models
 
 from steamcommerce_api.api import price
 from steamcommerce_api.api import product
-from steamcommerce_api.api import message
-from steamcommerce_api.api import history
-from steamcommerce_api.api import adminlog
-from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import paidrequest
+from steamcommerce_api.api import adminlog
 from steamcommerce_api.api import productcode
-from steamcommerce_api.api import notification
+from steamcommerce_api.api import code_delivery
 
 import constants
 
@@ -30,8 +27,6 @@ from wtforms.validators import DataRequired
 import wtforms
 from wtfpeewee.orm import model_form
 from utils import route_decorators
-
-import datetime
 
 admin_panel = Blueprint('admin.panel', __name__)
 
@@ -321,64 +316,14 @@ def admin_panel_add_code(product_id):
 
             request_id = paidrequest_data.get('id')
 
-            productcode.ProductCode().update(**{
-                'id': code.id,
-                'paidrequest': request_id,
-                'sent': True
-            })
-
-            message_content = constants.DEFAULT_REQUEST_MESSAGE + code.code
-
-            message.Message().push(**{
-                'user': admin_id,
-                'to_user': paidrequest_data.get('user').get('id'),
-                'has_code': True,
-                'paidrequest': request_id,
-                'content': message_content
-            })
-
-            adminlog.AdminLog().push(
-                constants.ADMINLOG_CODE_DELIVERED, **{
-                    'paidrequest': request_id
-                }
+            code_delivery.CodeDelivery().deliver_to_paidrequest(
+                code.id, request_id
             )
-
-            notification.Notification().push(
-                paidrequest_data.get('user').get('id'),
-                constants.NOTIFICATION_MESSAGE_RECEIVED,
-                **{
-                    'paidrequest': request_id
-                })
 
             paidrequest.PaidRequest().accept_paidrequest(
                 request_id,
                 user_id=admin_id
             )
-
-            history.History().push(
-                constants.HISTORY_ACCEPTED_STATE,
-                request_id,
-                constants.HISTORY_PAIDREQUEST_TYPE
-            )
-
-            adminlog.AdminLog().push(
-                constants.ADMINLOG_PAIDREQUEST_ACCEPTED, **{
-                    'paidrequest': request_id,
-                    'user': admin_id
-                }
-            )
-
-            notification.Notification().push(
-                paidrequest_data.get('user').get('id'),
-                constants.NOTIFICATION_PAIDREQUEST_ACCEPTED,
-                **{'paidrequest': request_id}
-            )
-
-            testimonial.Testimonial().create(**{
-                'user': paidrequest_data.get('user').get('id'),
-                'paidrequest': request_id,
-                'date': datetime.datetime.now()
-            })
 
             if len(relations[0].get('product').get('codes')) == 1:
                 product.Product().update(**{
@@ -412,64 +357,14 @@ def admin_panel_add_code(product_id):
 
             request_id = userrequest_data.get('id')
 
-            productcode.ProductCode().update(**{
-                'id': code.id,
-                'userrequest': request_id,
-                'sent': True
-            })
-
-            message_content = constants.DEFAULT_REQUEST_MESSAGE + code.code
-
-            message.Message().push(**{
-                'user': admin_id,
-                'to_user': userrequest_data.get('user').get('id'),
-                'has_code': True,
-                'userrequest': request_id,
-                'content': message_content
-            })
-
-            adminlog.AdminLog().push(
-                constants.ADMINLOG_CODE_DELIVERED, **{
-                    'userrequest': request_id
-                }
+            code_delivery.CodeDelivery().deliver_to_userrequest(
+                code.id, request_id
             )
-
-            notification.Notification().push(
-                userrequest_data.get('user').get('id'),
-                constants.NOTIFICATION_MESSAGE_RECEIVED,
-                **{
-                    'userrequest': request_id
-                })
 
             userrequest.UserRequest().accept_userrequest(
                 request_id,
                 user_id=admin_id
             )
-
-            history.History().push(
-                constants.HISTORY_ACCEPTED_STATE,
-                request_id,
-                constants.HISTORY_USERREQUEST_TYPE
-            )
-
-            adminlog.AdminLog().push(
-                constants.ADMINLOG_USERREQUEST_ACCEPTED, **{
-                    'userrequest': request_id,
-                    'user': admin_id
-                }
-            )
-
-            notification.Notification().push(
-                userrequest_data.get('user').get('id'),
-                constants.NOTIFICATION_USERREQUEST_ACCEPTED,
-                **{'userrequest': request_id}
-            )
-
-            testimonial.Testimonial().create(**{
-                'user': userrequest_data.get('user').get('id'),
-                'userrequest': request_id,
-                'date': datetime.datetime.now()
-            })
 
             if len(relations[0].get('product').get('codes')) == 1:
                 product.Product().update(**{
