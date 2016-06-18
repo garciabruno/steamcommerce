@@ -240,6 +240,13 @@ body{
     font-weight: 600;
 }
 
+.s-commerce-product-title-mobile{
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
 .s-commerce-product:hover .s-commerce-product-hud{
     background-color: rgba(0, 0, 0, 0.7);
     transition: all 0.2s ease-in-out;
@@ -1393,4 +1400,8 @@ ol.progress-meter li.todo:before {
     margin-top: 5px;
     color: #1c262f;
     font-size: 14px;
+}
+
+.drawer-contents {
+    background-color: #1C262F;
 }

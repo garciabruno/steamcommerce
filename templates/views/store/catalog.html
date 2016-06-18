@@ -9,7 +9,9 @@
 {% block title %}ExtremeGaming - Catálogo{% endblock %}
 
 {% block body %}
-    {% include "views/store/sliders.html" %}
+    <div class="container hidden-xs">
+        {% include "views/store/sliders.html" %}
+    </div>
 
     {% macro plural(singular, count) %}{{ singular }}{% if count > 1 %}s{% endif %}{% endmacro %}
 
@@ -82,7 +84,8 @@
             {% endfor %}
 
             <div class="s-commerce-products-selection">
-                <div id="page-selection"> </div>
+                <div id="page-selection" class="hidden-xs"> </div>
+                <div id="mobile-page-selection" class="visible-xs"> </div>
             </div>
         </div>
     </div>
@@ -109,7 +112,29 @@
             next: 'Siguiente',
             prev: 'Anterior',
             leaps: false
+        }).on('page', function(event, page) {
+            var store = new Store();
+            var section_id = store.get_active_section();
 
+            if ($('#products-page-' + page + '-' + section_id).length) {
+                $('.products-page').hide();
+                $('#products-page-' + page + '-' + section_id).show();
+            } else {
+                $('.products-page').hide();
+
+                var store = new Store();
+                store.load_next_page(section_id, page);
+            }
+        });
+
+        $('#mobile-page-selection').bootpag({
+            total: INITIAL_MAX_PAGES,
+            page: {{ page}},
+            wrapClass: 'pagination',
+            maxVisible: 5,
+            next: '<',
+            prev: '>',
+            leaps: false
         }).on('page', function(event, page) {
             var store = new Store();
             var section_id = store.get_active_section();

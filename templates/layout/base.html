@@ -14,6 +14,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
         {{ url_for('static', filename='css/bootstrap.min.css')|css_file|safe }}
+        {{ url_for('static', filename='css/bootstrap-drawer.min.css')|css_file|safe }}
         {{ url_for('static', filename='css/s-commerce.css')|css_file|safe }}
         {{ url_for('static', filename='css/sweetalert.css')|css_file|safe }}
         {{ url_for('static', filename='css/notification.css')|css_file|safe }}
@@ -53,7 +54,7 @@
         {{ url_for('static', filename='js/bootstrap.min.js')|js_file|safe }}
         {{ url_for('static', filename='js/sweetalert.min.js')|js_file|safe }}
         {{ url_for('static', filename='js/jquery.notification.js')|js_file|safe }}
-
+        {{ url_for('static', filename='js/drawer.min.js')|js_file|safe }}
         {{ url_for('static', filename='js/s-commerce.js')|js_file|safe }}
     </body>
 </html>
