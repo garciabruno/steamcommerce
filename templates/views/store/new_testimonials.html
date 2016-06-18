@@ -29,7 +29,7 @@
 
                             <div class="s-commerce-testimonials-highlights">
                                 <ul>
-                                    {% if testimonial.get('userrequest') %}
+                                    {% if testimonial.get('userrequest') and testimonial.get('userrequest').get('accepted_date') and testimonial.get('userrequest').get('paid_date') %}
                                         {% set time_diff = testimonial.get('userrequest').get('accepted_date') - testimonial.get('userrequest').get('paid_date') %}
                                         {% set hours_diff = time_diff.total_seconds() / 60 / 60 %}
 
@@ -39,7 +39,7 @@
                                                 Tu pedido fue entregado en menos de 48hs luego de que haya ingresado el pago
                                             </li>
                                         {% endif %}
-                                    {% elif testimonial.get('paidrequest') %}
+                                    {% elif testimonial.get('paidrequest') and testimonial.get('paidrequest').get('accepted_date') and testimonial.get('paidrequest').get('date') %}
                                         {% set time_diff = testimonial.get('paidrequest').get('accepted_date') - testimonial.get('paidrequest').get('date') %}
                                         {% set hours_diff = time_diff.total_seconds() / 60 / 60 %}
 
@@ -51,7 +51,9 @@
                                         {% endif %}
                                     {% endif %}
 
-                                    <li>Pedido entregado en {{ time_diff|hour_format }} luego de que haya ingresado el pago</li>
+                                    {% if time_diff %}
+                                        <li>Pedido entregado en {{ time_diff|hour_format }} luego de que haya ingresado el pago</li>
+                                    {% endif %}
                                 </ul>
 
                                 <div class="s-commerce-testimonial-note">
