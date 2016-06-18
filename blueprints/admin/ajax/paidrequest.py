@@ -7,14 +7,12 @@ from flask import Blueprint
 
 from steamcommerce_api.api import history
 from steamcommerce_api.api import adminlog
-from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import paidrequest
 from steamcommerce_api.api import notification
 
 from utils import route_decorators
 from inputs import admin_inputs
 
-import datetime
 import constants
 
 admin_ajax_paidrequest = Blueprint('admin.ajax.paidrequest', __name__)
@@ -39,32 +37,8 @@ def ajax_paidrequest_accept():
         return ({'success': False, 'status': 0}, 500)
 
     user_id = session.get('user')
+
     paidrequest.PaidRequest().accept_paidrequest(request_id, user_id=user_id)
-
-    history.History().push(
-        constants.HISTORY_ACCEPTED_STATE,
-        request_id,
-        constants.HISTORY_PAIDREQUEST_TYPE
-    )
-
-    adminlog.AdminLog().push(
-        constants.ADMINLOG_PAIDREQUEST_ACCEPTED, **{
-            'paidrequest': request_id,
-            'user': user_id
-        }
-    )
-
-    notification.Notification().push(
-        paidrequest_data['user']['id'],
-        constants.NOTIFICATION_PAIDREQUEST_ACCEPTED,
-        **{'paidrequest': paidrequest_data['id']}
-    )
-
-    testimonial.Testimonial().create(**{
-        'user': paidrequest_data['user']['id'],
-        'paidrequest': paidrequest_data['id'],
-        'date': datetime.datetime.now()
-    })
 
     return {'success': True}
 

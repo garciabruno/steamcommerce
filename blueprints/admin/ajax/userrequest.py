@@ -7,7 +7,6 @@ from flask import Blueprint
 
 from steamcommerce_api.api import history
 from steamcommerce_api.api import adminlog
-from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import notification
 
@@ -15,7 +14,6 @@ from utils import route_decorators
 from inputs import admin_inputs
 
 import constants
-import datetime
 
 admin_ajax_userrequest = Blueprint('admin.ajax.userrequest', __name__)
 
@@ -40,31 +38,6 @@ def ajax_userrequest_accept():
     user_id = session.get('user')
 
     userrequest.UserRequest().accept_userrequest(request_id, user_id=user_id)
-
-    history.History().push(
-        constants.HISTORY_ACCEPTED_STATE,
-        request_id,
-        constants.HISTORY_USERREQUEST_TYPE
-    )
-
-    adminlog.AdminLog().push(
-        constants.ADMINLOG_USERREQUEST_ACCEPTED, **{
-            'userrequest': request_id,
-            'user': user_id
-        }
-    )
-
-    notification.Notification().push(
-        userrequest_data['user']['id'],
-        constants.NOTIFICATION_USERREQUEST_ACCEPTED,
-        **{'userrequest': userrequest_data['id']}
-    )
-
-    testimonial.Testimonial().create(**{
-        'user': userrequest_data['user']['id'],
-        'userrequest': userrequest_data['id'],
-        'date': datetime.datetime.now()
-    })
 
     return {'success': True}
 
