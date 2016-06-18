@@ -211,7 +211,7 @@ def before_request():
         g.user = curr_user
         g.user_cart = user_cart
 
-        g.notification_counter = 0
+        g.notification_counter = sum([not x.seen for x in notifications[:10]])
 
         g.notifications = notifications[:10]
 
