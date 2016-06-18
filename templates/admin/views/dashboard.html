@@ -86,26 +86,36 @@
 
                     {% if log.action == 11 -%}
                         {% if log.userrequest -%}
-                            <span data-toggle="tooltip" data-placement="top" title="({{ log.userrequest.products[0].product.title }})">
-                                envió un código para el pedido:
+                            {% if log.userrequest.products.count() > 0 %}
+                                <span data-toggle="tooltip" data-placement="top" title="({{ log.userrequest.products[0].product.title }})">
+                                    envió un código para el pedido:
 
-                                <a href="/admin/historial/A-{{ log.userrequest.id }}">
-                                    #A-{{ log.userrequest.id }}
-                                </a>
+                                    <a href="/admin/historial/A-{{ log.userrequest.id }}">
+                                        #A-{{ log.userrequest.id }}
+                                    </a>
+                                </span>
+                            {% endif %}
                         {% elif log.paidrequest %}
-                            <span data-toggle="tooltip" data-placement="top" title="({{ log.paidrequest.products[0].product.title }})">
-                                envió un código para el pedido:
+                            {% if log.paidrequest.products.count() > 0 %}
+                                <span data-toggle="tooltip" data-placement="top" title="({{ log.paidrequest.products[0].product.title }})">
+                                    envió un código para el pedido:
 
-                                <a href="/admin/historial/C-{{ log.paidrequest.id }}">
-                                    #C-{{ log.paidrequest.id }}
-                                </a>
+                                    <a href="/admin/historial/C-{{ log.paidrequest.id }}">
+                                        #C-{{ log.paidrequest.id }}
+                                    </a>
+                                </span>
+                                {% endif %}
                         {%- endif %}
 
                             <span class="text text-danger">
                                 {% if log.paidrequest -%}
-                                    ({{ log.paidrequest.products[0].product.codes.filter(sent=False, enabled=True).count() }} códigos restantes)
+                                    {% if log.paidrequest.products.count() > 0 %}
+                                        ({{ log.paidrequest.products[0].product.codes.filter(sent=False, enabled=True).count() }} códigos restantes)
+                                    {% endif %}
                                 {% elif log.userrequest %}
-                                    ({{ log.userrequest.products[0].product.codes.filter(sent=False, enabled=True).count() }} códigos restantes)
+                                    {% if log.userrequest.products.count() > 0 %}
+                                        ({{ log.userrequest.products[0].product.codes.filter(sent=False, enabled=True).count() }} códigos restantes)
+                                    {% endif %}
                                 {%- endif %}
                             </span>
                         </span>
