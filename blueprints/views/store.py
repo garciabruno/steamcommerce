@@ -27,6 +27,7 @@ from utils import route_decorators
 from steamcommerce_api.api import slider
 from steamcommerce_api.api import section
 from steamcommerce_api.api import product
+from steamcommerce_api.api import question
 from steamcommerce_api.api import announce
 from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import userrequest
@@ -44,6 +45,14 @@ store = Blueprint('views.store', __name__)
 @store.route('/comprar/')
 def store_old_route():
     return redirect('/')
+
+
+@store.route('/faqs')
+@store.route('/faqs/')
+@store.route('/preguntas-frecuentes')
+def store_faqs():
+    questions = question.Question().get_active()
+    return render_template('views/store/faqs.html', questions=questions)
 
 
 @store.route('/')

@@ -1,214 +1,212 @@
 <div class="s-commerce-navbar">
     <div class="container">
         <nav class="navbar">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
 
-                    <a href="{{ url_for('views.store.store_catalog') }}">
-                        <img src="{{ url_for('static', filename='img/logo.png') }}?{{ config.CACHE_BREAK_RAND }}" style="height: 40x; width: 120px;">
-                    </a>
-                </div>
+                <a href="{{ url_for('views.store.store_catalog') }}">
+                    <img src="{{ url_for('static', filename='img/logo.svg') }}?{{ config.CACHE_BREAK_RAND }}" style="height: 40x; width: 120px; margin-right: 50px;">
+                </a>
+            </div>
 
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="{{ url_for('views.store.store_catalog') }}" class="s-commerce-navbar-item {% if active_section == 'catalog'%}active{% endif %}">
-                                Catálogo
-                            </a>
-                        </li>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="{{ url_for('views.store.store_catalog') }}" class="s-commerce-navbar-item {% if active_section == 'catalog'%}active{% endif %}">
+                            Catálogo
+                        </a>
+                    </li>
 
-                        <li class="active">
-                            <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
-                                Buscador
-                            </a>
-                        </li>
+                    <li class="active">
+                        <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
+                            Buscador
+                        </a>
+                    </li>
 
+                    <li>
+                        <a href="{{ url_for('views.store.store_offers') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'offers'%}active{% endif %}">
+                            Ofertas
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('views.testimonials.testimonials_root') }}" class="s-commerce-navbar-item {% if active_section == 'testimonials' %}active{% endif %}">
+                            Testimonios
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url_for('views.store.store_faqs') }}" class="s-commerce-navbar-item">
+                            FAQs
+                        </a>
+                    </li>
+
+                    {% if g.user and g.user.admin %}
                         <li>
-                            <a href="{{ url_for('views.store.store_offers') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'offers'%}active{% endif %}">
-                                Ofertas
+                            <a href="{{ url_for('admin.views.admin_root') }}" class="s-commerce-navbar-item">
+                                Admin
                             </a>
                         </li>
-
-                        <li>
-                            <a href="{{ url_for('views.testimonials.testimonials_root') }}" class="s-commerce-navbar-item {% if active_section == 'testimonials' %}active{% endif %}">
-                                Testimonios
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#" class="s-commerce-navbar-item">
-                                FAQs
-                            </a>
-                        </li>
-
-                        {% if g.user and g.user.admin %}
-                            <li>
-                                <a href="{{ url_for('admin.views.admin_root') }}" class="s-commerce-navbar-item">
-                                    Admin
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if g.user %}
-                            <li>
-                                <a class="navbar-credit-button" href="#">
-                                    <span class="s-commerce-user-nav-wallet">
-                                        ${{ (g.user.money + g.user.wallet)|price_format }} <br>
-                                        <span class="s-commerce-user-nav-wallet-text">Billetera</span>
-                                    </span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ url_for('views.user.user_profile') }}">
-                                    <span class="s-commerce-user-nav-image">
-                                        <img src="{{ g.user.avatar_url }}">
-                                    </span>
-                                </a>
-                            </li>
-
-                            <li class="notification-container">
-                                <a class="s-commerce-user-nav-notifications" href="#">
-                                    <span>
-                                        <i class="glyphicon glyphicon-bell"></i>
-                                    </span>
-                                </a>
-
-                                {% if g.notification_counter > 0 %}
-                                    <div class="s-commerce-user-notification-counter">
-                                        {{ g.notification_counter }}
-                                    </div>
-                                {% endif %}
-                            </li>
-
-                            <li>
-                                <a id="cd-cart-trigger" href="#">
-                                    <span class="s-commerce-user-nav-cart">
-                                        <i class="class glyphicon glyphicon-shopping-cart"></i>
-                                    </span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="{{ url_for('views.user.user_logout') }}">
-                                    <span class="s-commerce-user-nav-cart">
-                                        <i class="glyphicon glyphicon-log-out"></i>
-                                    </span>
-                                </a>
-                            </li>
-                        {% else %}
-                            <li>
-                                <a href="{{ url_for('views.user.user_login') }}">
-                                    <img src="{{ url_for('static', filename='img/sits_small.png') }}">
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-
-                    {% if g.user %}
-                        <div class="s-commerce-cart-container">
-                            {% include "views/cart/view.html" %}
-                        </div>
-
-                        <div class="s-commerce-notifications-container">
-                            <div id="cd-notifications">
-                                <div class="s-commerce-cart-title">Notificaciones</div>
-
-                                {% include "views/user/nav-notifications.html" %}
-                            </div>
-                        </div>
                     {% endif %}
+                </ul>
 
-                    <script type="text/javascript">
-                        $('.navbar-credit-button').on('click', function(event){
-                            event.preventDefault();
+                <ul class="nav navbar-nav navbar-right">
+                    {% if g.user %}
+                        <li>
+                            <a class="navbar-credit-button" href="#">
+                                <span class="s-commerce-user-nav-wallet">
+                                    ${{ (g.user.money + g.user.wallet)|price_format }} <br>
+                                    <span class="s-commerce-user-nav-wallet-text">Billetera</span>
+                                </span>
+                            </a>
+                        </li>
 
-                            swal({
-                                type: "input",
-                                title: 'Carga de créditos',
-                                text: 'Los créditos sirven como fondos en ARS (Pesos Argentinos) en tu cuenta. Pueden ser utilizados para comprar productos más rápidamente sin tener que esperar lapsos de cobros y poder abonar productos durante fines de semana cuando no hay servicios de cobro en funcionamiento',
-                                showCancelButton: true,
-                                closeOnConfirm: false,
-                                showLoaderOnConfirm: true,
-                                inputPlaceholder: "Ingresar cantidad (Minimo $5)"
-                            },
-                            function(inputValue){
-                                if (inputValue === false) return false;
+                        <li>
+                            <a href="{{ url_for('views.user.user_profile') }}">
+                                <span class="s-commerce-user-nav-image">
+                                    <img src="{{ g.user.avatar_url }}">
+                                </span>
+                            </a>
+                        </li>
 
-                                if (inputValue === "") {
-                                    swal.showInputError("Debes ingresar una cantidad");
-                                    return false;
-                                }
+                        <li class="notification-container">
+                            <a class="s-commerce-user-nav-notifications" href="#">
+                                <span>
+                                    <i class="glyphicon glyphicon-bell"></i>
+                                </span>
+                            </a>
 
-                                if (!parseInt(inputValue)){
-                                    swal.showInputError("La cantidad debe ser un número");
-                                    return false;
-                                }
+                            {% if g.notification_counter > 0 %}
+                                <div class="s-commerce-user-notification-counter">
+                                    {{ g.notification_counter }}
+                                </div>
+                            {% endif %}
+                        </li>
 
-                                var input_number = parseInt(inputValue);
+                        <li>
+                            <a id="cd-cart-trigger" href="#">
+                                <span class="s-commerce-user-nav-cart">
+                                    <i class="class glyphicon glyphicon-shopping-cart"></i>
+                                </span>
+                            </a>
+                        </li>
 
-                                if (input_number < 5) {
-                                    swal.showInputError("La cantidad debe ser mayor a 5");
-                                    return false;
-                                }
+                        <li>
+                            <a href="{{ url_for('views.user.user_logout') }}">
+                                <span class="s-commerce-user-nav-cart">
+                                    <i class="glyphicon glyphicon-log-out"></i>
+                                </span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="{{ url_for('views.user.user_login') }}">
+                                <img src="{{ url_for('static', filename='img/sits_small.png') }}">
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
 
-                                if (input_number > 5000) {
-                                    swal.showInputError("La cantidad debe ser menor a 5000");
-                                    return false;
-                                }
+                {% if g.user %}
+                    <div class="s-commerce-cart-container">
+                        {% include "views/cart/view.html" %}
+                    </div>
 
-                                $.ajax({
-                                    url: '/ajax/store/creditrequest/generate/',
-                                    type: 'POST',
-                                    data:{
-                                        amount: input_number
+                    <div class="s-commerce-notifications-container">
+                        <div id="cd-notifications">
+                            <div class="s-commerce-cart-title">Notificaciones</div>
+
+                            {% include "views/user/nav-notifications.html" %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <script type="text/javascript">
+                    $('.navbar-credit-button').on('click', function(event){
+                        event.preventDefault();
+
+                        swal({
+                            type: "input",
+                            title: 'Carga de créditos',
+                            text: 'Los créditos sirven como fondos en ARS (Pesos Argentinos) en tu cuenta. Pueden ser utilizados para comprar productos más rápidamente sin tener que esperar lapsos de cobros y poder abonar productos durante fines de semana cuando no hay servicios de cobro en funcionamiento',
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            showLoaderOnConfirm: true,
+                            inputPlaceholder: "Ingresar cantidad (Minimo $5)"
+                        },
+                        function(inputValue){
+                            if (inputValue === false) return false;
+
+                            if (inputValue === "") {
+                                swal.showInputError("Debes ingresar una cantidad");
+                                return false;
+                            }
+
+                            if (!parseInt(inputValue)){
+                                swal.showInputError("La cantidad debe ser un número");
+                                return false;
+                            }
+
+                            var input_number = parseInt(inputValue);
+
+                            if (input_number < 5) {
+                                swal.showInputError("La cantidad debe ser mayor a 5");
+                                return false;
+                            }
+
+                            if (input_number > 5000) {
+                                swal.showInputError("La cantidad debe ser menor a 5000");
+                                return false;
+                            }
+
+                            $.ajax({
+                                url: '/ajax/store/creditrequest/generate/',
+                                type: 'POST',
+                                data:{
+                                    amount: input_number
+                                },
+                                success: function(data){
+                                    var json_data = data;
+
+                                    swal({
+                                        title: 'Pedido #B-' + json_data['creditrequest'] + ' generado',
+                                        text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b><br>Los créditos serán añadidos a tu cuenta automáticamente cuando nuestro sistema detecte el pago. Los pagos demoran entre 24-48hs hábiles en ingresar',
+                                        type: 'success',
+                                        confirmButtonText: 'Ver boleta para imprimir',
+                                        cancelButtonText: 'Cerrar',
+                                        html: true,
+                                        closeOnConfirm: false,
+                                        closeOnCancel: true,
+                                        showCancelButton: true,
                                     },
-                                    success: function(data){
-                                        var json_data = data;
+                                    function(){
+                                        window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
+                                    });
+                                },
+                                error: function(data){
+                                    var json_data = $.parseJSON(data.responseText);
 
-                                        swal({
-                                            title: 'Pedido #B-' + json_data['creditrequest'] + ' generado',
-                                            text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b><br>Los créditos serán añadidos a tu cuenta automáticamente cuando nuestro sistema detecte el pago. Los pagos demoran entre 24-48hs hábiles en ingresar',
-                                            type: 'success',
-                                            confirmButtonText: 'Ver boleta para imprimir',
-                                            cancelButtonText: 'Cerrar',
-                                            html: true,
-                                            closeOnConfirm: false,
-                                            closeOnCancel: true,
-                                            showCancelButton: true,
-                                        },
-                                        function(){
-                                            window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
-                                        });
-                                    },
-                                    error: function(data){
-                                        var json_data = $.parseJSON(data.responseText);
-
-                                        if (json_data['status'] == 0) {
-                                            swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
-                                        } else if (json_data['status'] == 1) {
-                                            swal('Monto incorrect', 'Debes ingresar un monto mayor a 5 y menor a 5000', 'error');
-                                        } else if (json_data['status'] == 2 || json_data['status'] == 3) {
-                                            swal(
-                                                'Error con CuentaDigital',
-                                                'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
-                                                'error'
-                                            );
-                                        }
+                                    if (json_data['status'] == 0) {
+                                        swal('Error de formulario', 'No hemos podido procesar tu pedido. Por favor refresca el sitio e intenta nuevamente', 'error');
+                                    } else if (json_data['status'] == 1) {
+                                        swal('Monto incorrect', 'Debes ingresar un monto mayor a 5 y menor a 5000', 'error');
+                                    } else if (json_data['status'] == 2 || json_data['status'] == 3) {
+                                        swal(
+                                            'Error con CuentaDigital',
+                                            'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
+                                            'error'
+                                        );
                                     }
-                                });
+                                }
                             });
                         });
-                    </script>
-                </div>
+                    });
+                </script>
             </div>
         </nav>
     </div>

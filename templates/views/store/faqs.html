@@ -1,0 +1,31 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Preguntas frecuentes{% endblock %}
+
+{% block body %}
+    <div class="s-commerce-faq-container">
+        <div class="container">
+            <div class="main">
+                <div class="s-commerce-faqs">
+                    <div class="s-commerce-faq-header">
+                        <div class="header-title">Preguntas frecuentes</div>
+                        <div class="header-text">Aquí podrán encontrar todas las preguntas más frecuentes respondidas por el Staff de ExtremeGaming. Ante cualquier consulta no dudar en consultar <a href="https://www.facebook.com/ExtremeGamingSTEAM">ExtremeGaming en Facebook</a></div>
+                    </div>
+
+                    {% for question in questions %}
+                        <div class="s-commerce-faq">
+                            <div class="faq-question">
+                                <span class="glyphicon glyphicon-tag"></span>
+                                {{ question['title'] }}
+                            </div>
+
+                            <div class="faq-answer">
+                                {{ question['content'] }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
