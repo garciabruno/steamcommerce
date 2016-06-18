@@ -147,6 +147,20 @@
                                                             <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
                                                                 {{ relation['product']['title'] }}
                                                             </a>
+
+                                                            <a class="btn btn-xs btn-default" href="https://steamdb.info/{{ 'app' if relation.get('product').get('app_id') else 'sub' }}/{{ relation.get('product').get('app_id') or relation.get('product').get('sub_id') }}" target="_blank">
+                                                                SteamDB
+                                                            </a>
+
+                                                            <a class="btn btn-xs btn-default" href="https://dispenser.tf?s={{ '+'.join(relation.get('product').get('title').split(' ')) }}" target="_blank">
+                                                                Dispenser
+                                                            </a>
+
+                                                            {% set crc = relation.get('product').get('currency') %}
+
+                                                            {% if crc %}
+                                                                <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ crc }}" width="16" height="11" class="flag flag-{{ crc|lower }}">
+                                                            {% endif %}
                                                         </td>
 
                                                         <td>

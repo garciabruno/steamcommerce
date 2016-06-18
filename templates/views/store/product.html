@@ -134,6 +134,18 @@
                             </div>
 
                             <div class="col-md-6">
+                                {% if session.get('admin') %}
+                                    <div class="s-commerce-product-admin-hud">
+                                        <a class="btn btn-default" href="https://steamdb.info/{{ 'app' if product.get('app_id') else 'sub' }}/{{ product.get('app_id') or product.get('sub_id') }}" target="_blank">
+                                            Ver en SteamDB
+                                        </a>
+
+                                        <a class="btn btn-default" href="https://dispenser.tf?s={{ '+'.join(product.title.split(' ')) }}">
+                                            Buscar en Dispenser.TF
+                                        </a>
+                                    </div>
+                                {% endif %}
+
                                 <div class="s-commerce-description-title">
                                     Características
                                 </div>
