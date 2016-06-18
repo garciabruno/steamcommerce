@@ -14,8 +14,11 @@ from steamcommerce_api.api import history
 from steamcommerce_api.api import adminlog
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import paidrequest
+from steamcommerce_api.api import notification
 from steamcommerce_api.api import creditrequest
 from steamcommerce_api.api import requests_tools
+
+import constants
 
 from utils import route_decorators
 from forms import request_message
@@ -167,15 +170,35 @@ def admin_message_add():
         'date': datetime.datetime.now()
     }
 
+    request_id = int(form.request_id.data)
+
     if form.request_type.data == 'A':
+        userrequest_data = userrequest.UserRequest().get_id(request_id)
+        owner_id = userrequest_data.user.id
+
         data.update({'userrequest': form.request_id.data})
     elif form.request_type.data == 'B':
+        creditrequest_data = userrequest.CreditRequest().get_id(request_id)
+        owner_id = creditrequest_data.user.id
+
         data.update({'creditrequest': form.request_id.data})
     elif form.request_type.data == 'C':
+        paidrequest_data = paidrequest.PaidRequest().get_id(request_id)
+        owner_id = paidrequest_data.user.id
+
         data.update({'paidrequest': form.request_id.data})
 
     data.update(**form.data)
 
     message.Message().push(**data)
+
+    notififcation_params = data
+    notififcation_params.pop('date')
+
+    notification.Notification().push(
+        owner_id,
+        constants.NOTIFICATION_MESSAGE_RECEIVED,
+        **notififcation_params
+    )
 
     return redirect(redirect_url)
