@@ -10,7 +10,18 @@
                             </div>
                         </a>
 
-                        <div class="s-commerce-product" style="background-image: url('http://cdn.akamai.steamstatic.com/steam/{{ 'apps' if product['app_id'] else 'subs' }}/{{ product['app_id'] or product['sub_id'] }}/capsule_616x353.jpg');margin-top: 10px;">
+                        {% set background = None %}
+                        {% set assets = product['assets'] %}
+
+                        {% if assets['capsule'] %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/capsule.jpg' %}
+                        {% elif assets['front'] %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['front'] %}
+                        {% else %}
+                            {% set background = '/static/steam_avatar_null.jpg' %}
+                        {% endif %}
+
+                        <div class="s-commerce-product" style="background-image: url('{{ background }}'); margin-top: 10px;">
                             <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
                                 <div class="s-commerce-product-hud">
                                     <div class="s-commerce-product-title">
