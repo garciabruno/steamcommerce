@@ -14,11 +14,11 @@
                         {% set assets = product['assets'] %}
 
                         {% if assets['capsule'] %}
-                            {% set background = '/static/img/product/' + product['id']|string + '/capsule.jpg' %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/capsule.jpg?' + config.CACHE_BREAK_RAND|string %}
                         {% elif assets['front'] %}
-                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['front'] %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['front'] + '?' + config.CACHE_BREAK_RAND|string %}
                         {% else %}
-                            {% set background = '/static/steam_avatar_null.jpg' %}
+                            {% set background = '/static/steam_avatar_null.jpg?' + config.CACHE_BREAK_RAND|string %}
                         {% endif %}
 
                         <div class="s-commerce-product" style="background-image: url('{{ background }}'); margin-top: 10px;">
