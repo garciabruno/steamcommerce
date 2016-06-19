@@ -28,12 +28,18 @@
                                             <div class="col-md-8">
                                                 <div class="s-commerce-offer-product-wrapper">
                                                     <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
-                                                        {% if promotion_product['app_id'] %}
-                                                            <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/apps/{{ promotion_product['app_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
+                                                        {% set background = None %}
+                                                        {% set assets = product['assets'] %}
+
+                                                        {% if assets['capsule'] %}
+                                                            {% set background = '/static/img/product/' + product['id']|string + '/capsule.jpg?' + config.CACHE_BREAK_RAND|string %}
+                                                        {% elif assets['front'] %}
+                                                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['front'] + '?' + config.CACHE_BREAK_RAND|string %}
                                                         {% else %}
-                                                            <div class="s-commerce-offer-product" style="background: url('http://cdn.akamai.steamstatic.com/steam/subs/{{ promotion_product['sub_id'] }}/capsule_616x353.jpg') no-repeat scroll center center / cover ;">
+                                                            {% set background = '/static/steam_avatar_null.jpg?' + config.CACHE_BREAK_RAND|string %}
                                                         {% endif %}
 
+                                                        <div class="s-commerce-offer-product" style="background: url('{{ background }}') no-repeat scroll center center / cover ;">
                                                             <div class="s-commerce-offer-product-hud">
                                                                 <div class="s-commerce-offer-product-title">
                                                                     {{ promotion_product['title'] }}
