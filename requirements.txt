@@ -14,6 +14,7 @@ flask-wtf
 rollbar
 blinker==1.4
 demiurge
+ujson
 
 # apt-get install mysql
 # apt-get install libmysqlclient-dev
