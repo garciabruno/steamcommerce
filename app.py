@@ -79,6 +79,7 @@ BLUEPRINTS = [
 app = Flask(__name__)
 
 app.config.from_object(config)
+app.secret_key = config.SECRET_KEY
 app.logger.addHandler(config.LOG_HANDLER)
 
 Bootstrap(app)
@@ -159,6 +160,8 @@ app.request_class = CustomRequest
 
 @app.before_request
 def before_request():
+    session.permanent = True
+
     if request.path[:7] == '/static':
         return
 
