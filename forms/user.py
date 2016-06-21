@@ -8,6 +8,7 @@ import constants
 from wtforms.validators import Email
 from wtforms.validators import Length
 from wtforms.validators import DataRequired
+# from wtforms.validators import Optional
 
 from wtforms import TextField
 from wtforms import HiddenField
@@ -30,11 +31,11 @@ class RegisterForm(Form):
     ]
 
     email = TextField(u'Dirección de email', validators=email_validator)
-    subscribe = BooleanField(
-        u'Suscribirse a la lista de emails',
-        default=True,
-        validators=[DataRequired()]
-    )
+    # subscribe = BooleanField(
+    #     u'Suscribirse a la lista de emails',
+    #     default=True,
+    #     validators=[Optional()]
+    # )
     submit = SubmitField('Enviar', validators=[DataRequired()])
 
 
