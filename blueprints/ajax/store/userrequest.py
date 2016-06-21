@@ -97,16 +97,15 @@ def ajax_userrequest_cart_generate():
         return ({'success': False, 'status': 1}, 500)
 
     cart_items = user_cart.get('items')
-
     promotion = None
-    item_index = 0
 
-    while item_index < len(cart_items) and promotion is None:
-        cart_item_product = cart_items[item_index].get('product')
+    for cart_item in cart_items:
+        cart_item_product = cart_item.get('product')
+        product_promotion = cart_item_product.get('promotion')
 
-        if cart_item_product.get('promotion'):
-            if cart_item_product.get('promotion').get('ending_date'):
-                promotion = cart_item_product.get('promotion').get('id')
+        if product_promotion:
+            if product_promotion.get('ending_date'):
+                promotion = product_promotion.get('id')
 
     invoice = userrequest.UserRequest().generate(
         curr_user.id,
