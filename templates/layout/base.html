@@ -21,6 +21,10 @@
 
         {{ url_for('static', filename='js/jquery-2.1.4.min.js')|js_file|safe }}
 
+        {% if session.get('admin') %}
+            {{ url_for('static', filename='css/s-admin.css')|css_file|safe }}
+        {% endif %}
+
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'/>
 
         {% if not config.DEBUG -%}

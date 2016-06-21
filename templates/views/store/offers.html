@@ -54,6 +54,10 @@
                                                                 <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
                                                                     {% if promotion_product['price'] %}
                                                                         ${{ promotion_product['price']['price']|price_format }}
+
+                                                                        {% if promotion_product.get('currency') and session.get('admin') %}
+                                                                            <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ promotion_product.get('currency') }}" width="16" height="11" class="flag flag-{{ promotion_product.get('currency')|lower }}">
+                                                                        {% endif %}
                                                                     {% else %}
                                                                         No activo
                                                                     {% endif %}

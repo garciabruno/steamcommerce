@@ -43,6 +43,10 @@
                         <span class="s-commerce-product-hud-price pull-right">
                             {% if product.get('price') %}
                                 ${{ product['price']['price']|price_format }} ARS
+
+                                {% if product.get('currency') and session.get('admin') %}
+                                    <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('currency') }}" width="16" height="11" class="flag flag-{{ product.get('currency')|lower }}">
+                                {% endif %}
                             {% else %}
                                 Precio inactivo
                             {% endif %}

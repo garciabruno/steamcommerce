@@ -21,6 +21,12 @@
                             {% set background = '/static/steam_avatar_null.jpg?' + config.CACHE_BREAK_RAND|string %}
                         {% endif %}
 
+                        {% if session.get('admin') %}
+                            <div class="s-commerce-admin-hud">
+                                <a class="btn btn-default btn-xs" href="{{ url_for('admin.panel.admin_model_edit', object_id=product['id'], model_name='Product') }}">Editar producto</a>
+                            </div>
+                        {% endif %}
+
                         <div class="s-commerce-product" style="background-image: url('{{ background }}'); margin-top: 10px;">
                             <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
                                 <div class="s-commerce-product-hud">
@@ -33,6 +39,10 @@
                                     <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-product-price">
                                         {% if product['price'] %}
                                             ${{ product['price']['price']|price_format }}
+
+                                            {% if product.get('currency') and session.get('admin') %}
+                                                <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('currency') }}" width="16" height="11" class="flag flag-{{ product.get('currency')|lower }}">
+                                            {% endif %}
                                         {% else %}
                                             No activo
                                         {% endif %}
