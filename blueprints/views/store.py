@@ -39,7 +39,7 @@ from steamcommerce_api.api import storepromotion
 from inputs import store_inputs
 from forms import user as user_form
 
-log = logging.getLogger('[CuentaDigital API]')
+log = logging.getLogger('[Store]')
 
 log.setLevel(logging.DEBUG)
 format = logging.Formatter(
