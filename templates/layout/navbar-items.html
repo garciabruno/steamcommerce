@@ -5,15 +5,15 @@
         </a>
     </li>
 
-    <li class="active">
-        <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
-            Buscador
-        </a>
-    </li>
-
     <li>
         <a href="{{ url_for('views.store.store_offers') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'offers'%}active{% endif %}">
             Ofertas
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
+            Buscador
         </a>
     </li>
 
