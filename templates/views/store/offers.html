@@ -46,7 +46,9 @@
                                                                 </div>
 
                                                                 <div class="s-commerce-offer-product-description">
-                                                                    {{ promotion_product['description'][:200] }}
+                                                                    {% if promotion_product.get('description') %}
+                                                                        {{ promotion_product.get('description')[:200] }}
+                                                                    {% endif %}
                                                                 </div>
                                                             </div>
 
