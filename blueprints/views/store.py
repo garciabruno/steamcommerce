@@ -126,12 +126,6 @@ def store_catalog():
 
 @store.route('/products/', methods=['POST'])
 def store_products():
-    log.info('[IP: {0}] [SESSION: {1} POST /products/ {2}'.format(
-        request.headers.get('CF-Connecting-IP', request.remote_addr),
-        session,
-        request.form
-    ))
-
     form = store_inputs.ProductsInput(request)
 
     if not form.validate():
