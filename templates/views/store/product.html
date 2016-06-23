@@ -35,6 +35,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-14 col-md-padding col-md-offset-1">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger" role="alert">
+                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
                     <div class="s-commerce-product-top-hud">
                         <span class="s-commerce-product-hud-title">
                             {{ product.get('title') }}
@@ -146,6 +157,10 @@
 
                                         <a class="btn btn-default" href="https://dispenser.tf?s={{ '+'.join(product.title.split(' ')) }}">
                                             Buscar en Dispenser.TF
+                                        </a>
+
+                                        <a class="btn btn-default" href="{{ url_for('admin.views.queue_price_add', product_id=product.get('id')) }}">
+                                            Añadir a la cola de precios
                                         </a>
                                     </div>
                                 {% endif %}
