@@ -78,7 +78,7 @@ def store_faqs():
     return render_template('views/store/faqs.html', questions=questions)
 
 
-@store.route('/')
+@store.route('/catalogo')
 def store_catalog():
     sliders = slider.Slider().get_active()
     sections = section.Section().get_active()
@@ -171,10 +171,11 @@ def store_products():
     return render_template('views/store/products.html', **params)
 
 
-@store.route('/ofertas')
+#@store.route('/ofertas')
+@store.route('/')
 def store_offers():
     spromotion = storepromotion.StorePromotion()
-
+    sliders = slider.Slider().get_active()
     promotions = spromotion.get_active_promotions()
 
     if len(promotions) < 1:
@@ -196,13 +197,23 @@ def store_offers():
             )
         )
 
+    pending_testimonials = []
+    user_id = session.get('user')
+
+    if user_id:
+        pending_testimonials = testimonial.Testimonial().get_unsubmited(
+            user_id, lazy=True
+        )
+
     template_params = {
         'page': 1,
         'section_id': promotions[0].id,
         'sections': promotions,
         'promotions': promotions,
         'active_section': 'offers',
+        'sliders': sliders,
         'products': promotion_products,
+        'pending_testimonials': pending_testimonials
     }
 
     return render_template('views/store/catalog.html', **template_params)
