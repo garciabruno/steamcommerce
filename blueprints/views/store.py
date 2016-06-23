@@ -177,6 +177,7 @@ def store_offers():
     spromotion = storepromotion.StorePromotion()
     sliders = slider.Slider().get_active()
     promotions = spromotion.get_active_promotions()
+    announces = announce.Announce().get_active()
 
     if len(promotions) < 1:
         return redirect(url_for('views.store.store_catalog'))
@@ -212,6 +213,7 @@ def store_offers():
         'promotions': promotions,
         'active_section': 'offers',
         'sliders': sliders,
+        'announces': announces,
         'products': promotion_products,
         'pending_testimonials': pending_testimonials
     }
