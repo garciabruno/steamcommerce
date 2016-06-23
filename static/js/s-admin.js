@@ -5,12 +5,16 @@ var ADMIN_ASSIGN_REQUEST_SELECTOR = '.assign_request';
 var ADMIN_ASSIGN_REQUEST_OPTION = '.request-assigment select option:selected';
 var ADMIN_PAY_REQUEST_SELECTOR = '.pay_request';
 var ADMIN_DEASSIGN_REQUEST_SELECTOR = '.deassign_request';
+var ADMIN_SET_REQUEST_INFORMED_SELECTOR = '.inform_request';
+var ADMIN_SET_REQUEST_UNINFORMED_SELECTOR = '.uninform_request';
 
 var MESSAGE_REQUEST_ACCEPTED = 'Pedido aceptado exitosamente';
 var MESSAGE_REQUEST_DENIED = 'Pedido denegado exitosamente';
 var MESSAGE_REQUEST_ASSIGNED = 'Pedido asignado exitosamente';
 var MESSAGE_REQUEST_PAID = 'Pedido cobrado exitosamente';
 var MESSAGE_REQUEST_DEASSIGNED = 'Pedido desasignado exitosamente';
+var MESSAGE_REQUEST_INFORMED = 'Pedido reservado exitosamente';
+var MESSAGE_REQUEST_UNINFORMED = 'Pedido des reservado exitosamente';
 
 var MESSAGE_REQUEST_BUTTON_DENIED = 'Pedido denegado';
 var MESSAGE_REQUEST_BUTTON_ACCEPTED = 'Pedido aceptado';
@@ -258,7 +262,57 @@ var Request = function(requestButton) {
                 requestButton.restore_loading();
             }
         });
-    }
+    };
+
+    this.set_informed = function(request_id) {
+        $.ajax({
+            url: '/admin/ajax/userrequest/set/informed/',
+            type: 'POST',
+            data: {
+                request_id: request_id
+            },
+            error: function(err) {
+                var errData = $.parseJSON(err.responseText);
+                var notification = new Notification;
+
+                notification.push(MESSAGE_ERROR_GENERIC);
+
+
+                requestButton.restore_loading();
+            },
+            success: function(data) {
+                var notification = new Notification;
+
+                notification.push(MESSAGE_REQUEST_INFORMED);
+                requestButton.restore_loading();
+            }
+        })
+    };
+
+    this.set_uninformed = function(request_id) {
+        $.ajax({
+            url: '/admin/ajax/userrequest/set/uninformed/',
+            type: 'POST',
+            data: {
+                request_id: request_id
+            },
+            error: function(err) {
+                var errData = $.parseJSON(err.responseText);
+                var notification = new Notification;
+
+                notification.push(MESSAGE_ERROR_GENERIC);
+
+
+                requestButton.restore_loading();
+            },
+            success: function(data) {
+                var notification = new Notification;
+
+                notification.push(MESSAGE_REQUEST_UNINFORMED);
+                requestButton.restore_loading();
+            }
+        })
+    };
 };
 
 function parseAdminButton(selector) {
@@ -309,12 +363,7 @@ $(ADMIN_DENY_REQUEST_SELECTOR).on('click', function() {
 });
 
 $(ADMIN_ASSIGN_REQUEST_SELECTOR).on('click', function(){
-    var button = parseAdminButton(ADMIN_ASSIGN_REQUEST_SELECTOR);
-
-    if (button == Error) {
-        return;
-    }
-
+    var button = new Button(ADMIN_ASSIGN_REQUEST_SELECTOR);
     var request = new Request(button);
     var state = button.get_state();
     var user_id = $(ADMIN_ASSIGN_REQUEST_OPTION).val();
@@ -336,7 +385,18 @@ $(ADMIN_PAY_REQUEST_SELECTOR).on('click', function() {
 });
 
 $(ADMIN_DEASSIGN_REQUEST_SELECTOR).on('click', function(){
-    var button = parseAdminButton(ADMIN_DEASSIGN_REQUEST_SELECTOR);
+    var button = new Button(ADMIN_DEASSIGN_REQUEST_SELECTOR);
+
+    var request = new Request(button);
+    var state = button.get_state();
+
+    request.deassign_request(state['requesttype'], state['requestid']);
+});
+
+
+
+$(ADMIN_SET_REQUEST_INFORMED_SELECTOR).on('click', function(){
+    var button = parseAdminButton(ADMIN_SET_REQUEST_INFORMED_SELECTOR);
 
     if (button == Error) {
         return;
@@ -345,5 +405,19 @@ $(ADMIN_DEASSIGN_REQUEST_SELECTOR).on('click', function(){
     var request = new Request(button);
     var state = button.get_state();
 
-    request.deassign_request(state['requesttype'], state['requestid']);
+    request.set_informed(state['requestid']);
+});
+
+
+$(ADMIN_SET_REQUEST_UNINFORMED_SELECTOR).on('click', function(){
+    var button = parseAdminButton(ADMIN_SET_REQUEST_UNINFORMED_SELECTOR);
+
+    if (button == Error) {
+        return;
+    }
+
+    var request = new Request(button);
+    var state = button.get_state();
+
+    request.set_uninformed(state['requestid']);
 });
