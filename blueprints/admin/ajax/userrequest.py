@@ -28,12 +28,12 @@ def ajax_userrequest_accept():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-        request_id
-    )
+    # userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
+    #     request_id
+    # )
 
-    if userrequest_data['accepted']:
-        return ({'success': False, 'status': 0}, 500)
+    # if userrequest_data['accepted']:
+    #     return ({'success': False, 'status': 0}, 500)
 
     user_id = session.get('user')
 
@@ -96,12 +96,12 @@ def ajax_userrequest_assign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-        request_id
-    )
+    # userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
+    #     request_id
+    # )
 
-    if userrequest_data['assigned']:
-        return ({'success': False, 'status': 0}, 500)
+    # if userrequest_data['assigned']:
+    #     return ({'success': False, 'status': 0}, 500)
 
     user_id = session.get('user')
 
@@ -181,5 +181,37 @@ def ajax_userrequest_set_paid():
             'user': user_id
         }
     )
+
+    return {'success': True}
+
+
+@admin_ajax_userrequest.route('/set/informed/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_userrequest_set_informed():
+    form = admin_inputs.RequestIDInput(request)
+
+    if not form.validate():
+        return ({'success': False, 'errors': form.errors}, 422)
+
+    request_id = int(request.form.get('request_id'))
+
+    userrequest.UserRequest().set_informed(request_id, None)
+
+    return {'success': True}
+
+
+@admin_ajax_userrequest.route('/set/uninformed/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_userrequest_set_uninformed():
+    form = admin_inputs.RequestIDInput(request)
+
+    if not form.validate():
+        return ({'success': False, 'errors': form.errors}, 422)
+
+    request_id = int(request.form.get('request_id'))
+
+    userrequest.UserRequest().set_uninformed(request_id)
 
     return {'success': True}
