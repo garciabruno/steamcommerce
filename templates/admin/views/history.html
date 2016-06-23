@@ -33,6 +33,16 @@
                                     </div>
                                 {% endif %}
 
+                                {% if request['promotion'] and not request['informed'] %}
+                                    <div class="btn btn-lg btn-default inform_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Marcar como informado
+                                    </div>
+                                {% elif request['promotion'] and request['informed'] %}
+                                    <div class="btn btn-lg btn-default uninform_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Marcar como no informado
+                                    </div>
+                                {% endif %}
+
                                 {% if request['visible'] and not request['accepted '] %}
                                     <input id="deny_reason" type="text" class="form-control" placeholder="Motivo de denegación">
                                 {% endif %}
@@ -43,6 +53,10 @@
                                     <div class="well">
                                         <img src="{{ request['assigned']['avatar_url'] }}" alt="">
                                         Asignado a <a href="#">{{ request['assigned']['username'] }}</a>
+
+                                        {% if request['assigned_date'] %}
+                                            {{ request['assigned_date']|timesince }}
+                                        {% endif%}
                                     </div>
                                 </div>
                             {% endif %}
