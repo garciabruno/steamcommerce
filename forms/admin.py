@@ -24,3 +24,10 @@ class ProductPriceForm(Form):
         default=True
     )
     submit = wtforms.SubmitField(validators=[DataRequired()])
+
+
+class SteamProduct(Form):
+    sub_id = wtforms.IntegerField(validators=[Optional()])
+    app_id = wtforms.IntegerField(validators=[Optional()])
+
+    submit = wtforms.SubmitField(validators=[DataRequired()])
