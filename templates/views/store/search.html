@@ -4,31 +4,33 @@
 
 {% block header %}
     <script type="text/html" id="hit-template">
-        <div class="col-md-4" style="margin-bottom: 11px; padding-right: 5px; padding-left: 5px;">
-            {% raw %}
+        {% raw %}
+        {{#visible}}
+            <div class="col-md-4" style="margin-bottom: 11px; padding-right: 5px; padding-left: 5px;">
 
-            {{#assets.capsule}}
-                <div class="s-commerce-product" style="background-image: url('/static/img/product/{{ id }}/{{ assets.capsule }}');">
-            {{/assets.capsule}}
-            {{^assets.capsule}}
-                <div class="s-commerce-product" style="background-image: url('/static/img/product/{{ id }}/{{ assets.front }}');">
-            {{/assets.capsule}}
-                <a href="/comprar/{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}">
-                    <div class="s-commerce-product-hud">
-                        <div class="s-commerce-product-title">
-                            {{title}}
+                {{#assets.capsule}}
+                    <div class="s-commerce-product" style="background-image: url('/static/img/product/{{ id }}/{{ assets.capsule }}');">
+                {{/assets.capsule}}
+                {{^assets.capsule}}
+                    <div class="s-commerce-product" style="background-image: url('/static/img/product/{{ id }}/{{ assets.front }}');">
+                {{/assets.capsule}}
+                    <a href="/comprar/{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}">
+                        <div class="s-commerce-product-hud">
+                            <div class="s-commerce-product-title">
+                                {{title}}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="s-commerce-product-buttons">
-                        <a href="{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}" class="s-commerce-product-price">
-                            ${{#price}}{{price}}.00{{/price}}
-                        </a>
-                    </div>
-                </a>
+                        <div class="s-commerce-product-buttons">
+                            <a href="{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}" class="s-commerce-product-price">
+                                ${{#price}}{{price}}.00{{/price}}
+                            </a>
+                        </div>
+                    </a>
+                </div>
             </div>
-            {% endraw %}
-        </div>
+        {{/visible}}
+        {% endraw %}
     </script>
 
     <script id="facetTemplate-template" language="x-template">
