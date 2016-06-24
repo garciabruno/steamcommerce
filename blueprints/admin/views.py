@@ -51,6 +51,8 @@ def admin_root():
 @route_decorators.is_logged_in
 @route_decorators.is_admin
 def admin_requests():
+    user_id = session.get('user')
+
     userrequests = userrequest.UserRequest().get_paid_userrequests()
     paidrequests = paidrequest.PaidRequest().get_paid_paidrequests()
     informed = userrequest.UserRequest().get_informed_userrequests()
@@ -58,6 +60,33 @@ def admin_requests():
     resumes_all = requests_tools.RequestsTools().resume_all(
         userrequests,
         paidrequests
+    )
+
+    resumes_informed = requests_tools.RequestsTools().resume_all(
+        informed,
+        []
+    )
+
+    assigned_userrequests = []
+    assigned_paidrequests = []
+
+    for userrequest_data in userrequests:
+        if (
+            userrequest_data.get('assigned') and
+            userrequest_data.get('assigned').get('id') == user_id
+        ):
+            assigned_userrequests.append(userrequest_data)
+
+    for paidrequest_data in paidrequests:
+        if (
+            paidrequest_data.get('assigned') and
+            paidrequest_data.get('assigned').get('id') == user_id
+        ):
+            assigned_paidrequests.append(paidrequest_data)
+
+    resumes_assigned = requests_tools.RequestsTools().resume_all(
+        assigned_userrequests,
+        assigned_paidrequests
     )
 
     counters = {
@@ -71,6 +100,8 @@ def admin_requests():
     params = {
         'userrequests': userrequests,
         'paidrequests': paidrequests,
+        'resumes_informed': resumes_informed,
+        'resumes_assigned': resumes_assigned,
         'informed': informed,
         'counters': counters,
         'date_now': date_now,
