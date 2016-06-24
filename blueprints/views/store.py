@@ -95,7 +95,8 @@ def store_catalog():
     for promotion_product_id in promotion_products_ids:
         promotion_products.append(
             product.Product().get_product_by_id(
-                promotion_product_id
+                promotion_product_id,
+                excludes=['section', 'codes', 'tags', 'specs']
             )
         )
 
@@ -159,7 +160,10 @@ def store_products():
 
         for promotion_product_id in promotion_products_ids:
             promotion_products.append(
-                product.Product().get_product_by_id(promotion_product_id)
+                product.Product().get_product_by_id(
+                    promotion_product_id,
+                    excludes=['section', 'codes', 'tags', 'specs']
+                )
             )
 
         params = {
