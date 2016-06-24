@@ -24,6 +24,7 @@ from steamcommerce_api.api import requests_tools
 
 import constants
 
+import json
 from forms import admin
 from utils import route_decorators
 from forms import request_message
@@ -51,7 +52,7 @@ def admin_root():
 @route_decorators.is_logged_in
 @route_decorators.is_admin
 def admin_requests():
-    user_id = int(request.args.get('user')) or session.get('user')
+    user_id = int(request.args.get('user', 0)) or session.get('user')
 
     userrequests = userrequest.UserRequest().get_paid_userrequests()
     paidrequests = paidrequest.PaidRequest().get_paid_paidrequests()
@@ -67,6 +68,8 @@ def admin_requests():
         []
     )
 
+    cart_json = []
+
     assigned_userrequests = []
     assigned_paidrequests = []
 
@@ -77,12 +80,28 @@ def admin_requests():
         ):
             assigned_userrequests.append(userrequest_data)
 
+            for relation in userrequest_data.get('relations'):
+                if relation.get('product').get('store_sub_id'):
+                    cart_json.append({
+                        'subid': relation.get('product').get('store_sub_id'),
+                        'name': relation.get('product').get('title')
+                    })
+
     for paidrequest_data in paidrequests:
         if (
             paidrequest_data.get('assigned') and
             paidrequest_data.get('assigned').get('id') == user_id
         ):
             assigned_paidrequests.append(paidrequest_data)
+
+            for relation in paidrequest_data.get('relations'):
+                if relation.get('product').get('store_sub_id'):
+                    cart_json.append({
+                        'subid': relation.get('product').get('store_sub_id'),
+                        'name': relation.get('product').get('title')
+                    })
+
+    cart_json = json.dumps(cart_json)
 
     resumes_assigned = requests_tools.RequestsTools().resume_all(
         assigned_userrequests,
