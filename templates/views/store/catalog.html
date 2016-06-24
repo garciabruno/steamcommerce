@@ -9,6 +9,15 @@
 {% block title %}ExtremeGaming - Catálogo{% endblock %}
 
 {% block body %}
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
     <div class="container hidden-xs">
         {% include "views/store/sliders.html" %}
     </div>
@@ -90,6 +99,18 @@
             <div class="s-commerce-products-selection">
                 <div id="page-selection" class="hidden-xs"> </div>
                 <div id="mobile-page-selection" class="visible-xs"> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5 col-md-offset-3">
+                <div class="fb-page" data-href="https://www.facebook.com/ExtremeGamingSTEAM/" data-tabs="timeline" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/ExtremeGamingSTEAM/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/ExtremeGamingSTEAM/">ExtremeGaming - Venta de Juegos Steam</a></blockquote></div>
+            </div>
+
+            <div class="col-md-8">
+                <a class="twitter-timeline" data-width="300" data-height="500" href="https://twitter.com/ExtremeGamingAR">Tweets by ExtremeGamingAR</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </div>
     </div>
