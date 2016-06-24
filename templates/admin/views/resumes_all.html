@@ -1,4 +1,6 @@
 <div class="s-commerce-resumes-all">
+    <h3>Resumen total (Sin reservas)</h3>
+
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -10,6 +12,70 @@
 
         <tbody>
             {% for resume in resumes_all %}
+                <tr>
+                    <td>
+                        {{ resume['count'] }}
+                    </td>
+
+                    <td>
+                        <span class="s-commerce-relation-product-title">
+                            <a href="{{ url_for('views.store.store_app_id', app_id=(resume['product']['app_id'] or resume['product']['sub_id'])) }}">{{ resume['product']['title'] }}</a>
+                        </span>
+                    </td>
+
+                    <td>
+                        <a href="{{ resume['product']['store_url'] }}">{{ resume['product']['store_url'] }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Resumen de asignaciones (Sin reservas)</h3>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for resume in resumes_assigned %}
+                <tr>
+                    <td>
+                        {{ resume['count'] }}
+                    </td>
+
+                    <td>
+                        <span class="s-commerce-relation-product-title">
+                            <a href="{{ url_for('views.store.store_app_id', app_id=(resume['product']['app_id'] or resume['product']['sub_id'])) }}">{{ resume['product']['title'] }}</a>
+                        </span>
+                    </td>
+
+                    <td>
+                        <a href="{{ resume['product']['store_url'] }}">{{ resume['product']['store_url'] }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Resumen de total de reservas</h3>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for resume in resumes_informed %}
                 <tr>
                     <td>
                         {{ resume['count'] }}
