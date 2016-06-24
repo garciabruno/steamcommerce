@@ -56,9 +56,10 @@
                 </div>
 
                 <div class="row" style="margin-top: 20px;">
-                    <div class="col-md-5"><div id="price"> </div></div>
-                    <div class="col-md-5"><div id="sections"> </div></div>
-                    <div class="col-md-5"><div id="categories"> </div></div>
+                    <div class="col-md-4"><div id="price"> </div></div>
+                    <div class="col-md-4"><div id="sections"> </div></div>
+                    <div class="col-md-4"><div id="categories"> </div></div>
+                    <div class="col-md-4"><div id="promotions"> </div></div>
                 </div>
 
                 <div class="row">
@@ -151,6 +152,25 @@
                     header: '<h5>Secciones</h5>',
                     item: getTemplate('facetTemplate')
                 }
+            })
+        );
+
+        search.addWidget(
+            instantsearch.widgets.refinementList({
+                container: '#promotions',
+                attributeName: 'promotion.title',
+                limit: 10,
+                operator: 'or',
+                templates: {
+                    header: '<h5>Ofertas</h5>',
+                    item: getTemplate('facetTemplate')
+                },
+                showMore: {
+                    limit: 1e3,
+                    templates: {
+                        inactive: ""
+                    }
+                },
             })
         );
 

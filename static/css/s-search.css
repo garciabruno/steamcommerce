@@ -380,7 +380,8 @@ footer a:hover {
 }
 
 #categories .s-facet,
-#sections .s-facet{
+#sections .s-facet,
+#promotions .s-facet{
   height: 2.5rem;
   font-size: 14px;
   color: #3874A2;
