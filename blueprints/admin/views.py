@@ -124,6 +124,7 @@ def admin_requests():
         'informed': informed,
         'counters': counters,
         'date_now': date_now,
+        'cart_json': cart_json,
         'resumes_all': resumes_all
     }
 
