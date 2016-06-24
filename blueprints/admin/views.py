@@ -51,7 +51,7 @@ def admin_root():
 @route_decorators.is_logged_in
 @route_decorators.is_admin
 def admin_requests():
-    user_id = session.get('user')
+    user_id = int(request.args.get('user')) or session.get('user')
 
     userrequests = userrequest.UserRequest().get_paid_userrequests()
     paidrequests = paidrequest.PaidRequest().get_paid_paidrequests()
