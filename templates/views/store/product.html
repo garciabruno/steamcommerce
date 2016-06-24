@@ -46,6 +46,27 @@
                         {% endif %}
                     {% endwith %}
 
+                    {% if not product.get('enabled') %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            *** PRODUCTO DESHABILITADO - TRATAR CON CUIDADO ***
+                        </div>
+                    {% endif %}
+
+                    {% if not product.get('visible') %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            Producto no visible a los usuarios
+                        </div>
+                    {% endif %}
+
+                    {% if product.get('run_stock') and product.get('stock') == 0 %}
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            Producto fuera de stock
+                        </div>
+                    {% endif %}
+
                     <div class="s-commerce-product-top-hud">
                         <span class="s-commerce-product-hud-title">
                             {{ product.get('title') }}

@@ -243,7 +243,7 @@ def store_app_id(app_id):
 
         return render_template('views/error.html', **error)
 
-    if not app_product.get('visible'):
+    if not app_product.get('visible') and not session.get('admin'):
         error = {
             'title': 'Producto no disponible',
             'content': 'Este producto no se encuentra disponible temporalmente'
@@ -251,7 +251,11 @@ def store_app_id(app_id):
 
         return render_template('views/error.html', **error)
 
-    if app_product.get('run_stock') and app_product.get('stock') == 0:
+    if (
+        app_product.get('run_stock') and
+        app_product.get('stock') == 0
+        and not session.get('admin')
+    ):
         error = {
             'title': 'Producto fuera de stock',
             'content': 'Este producto ha agotado su stock. \
