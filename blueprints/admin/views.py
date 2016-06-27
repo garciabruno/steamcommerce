@@ -69,39 +69,80 @@ def admin_requests():
     )
 
     cart_json = []
+    inventory_json = {}
 
     assigned_userrequests = []
     assigned_paidrequests = []
 
     for userrequest_data in userrequests:
         if (
-            userrequest_data.get('assigned') and
-            userrequest_data.get('assigned').get('id') == user_id
+            not userrequest_data.get('assigned') or
+            userrequest_data.get('assigned').get('id') != user_id
         ):
-            assigned_userrequests.append(userrequest_data)
+            continue
 
-            for relation in userrequest_data.get('relations'):
-                if relation.get('product').get('store_sub_id'):
-                    cart_json.append({
-                        'subid': relation.get('product').get('store_sub_id'),
-                        'name': relation.get('product').get('title')
-                    })
+        assigned_userrequests.append(userrequest_data)
+
+        inventory_json['A-{}'.format(userrequest_data.get('id'))] = {
+            'relations': []
+        }
+
+        relations = inventory_json[
+            'A-{}'.format(userrequest_data.get('id'))
+        ].get(
+            'relations'
+        )
+
+        for relation in userrequest_data.get('relations'):
+            relations.append(
+                {
+                    'app': relation.get('product').get('app_id'),
+                    'sub': relation.get('product').get('sub_id')
+                }
+            )
+
+            if relation.get('product').get('store_sub_id'):
+                cart_json.append({
+                    'subid': relation.get('product').get('store_sub_id'),
+                    'from_app': relation.get('product').get('app_id'),
+                    'name': relation.get('product').get('title')
+                })
 
     for paidrequest_data in paidrequests:
         if (
-            paidrequest_data.get('assigned') and
-            paidrequest_data.get('assigned').get('id') == user_id
+            not paidrequest_data.get('assigned') or
+            paidrequest_data.get('assigned').get('id') != user_id
         ):
-            assigned_paidrequests.append(paidrequest_data)
+            continue
 
-            for relation in paidrequest_data.get('relations'):
-                if relation.get('product').get('store_sub_id'):
-                    cart_json.append({
-                        'subid': relation.get('product').get('store_sub_id'),
-                        'name': relation.get('product').get('title')
-                    })
+        assigned_paidrequests.append(paidrequest_data)
+
+        inventory_json['C-{0}'.format(paidrequest_data.get('id'))] = {
+            'relations': []
+        }
+
+        relations = inventory_json[
+            'C-{}'.format(paidrequest_data.get('id'))
+        ].get(
+            'relations'
+        )
+        for relation in paidrequest_data.get('relations'):
+            relations.append(
+                {
+                    'app': relation.get('product').get('app_id'),
+                    'sub': relation.get('product').get('sub_id')
+                }
+            )
+
+            if relation.get('product').get('store_sub_id'):
+                cart_json.append({
+                    'subid': relation.get('product').get('store_sub_id'),
+                    'from_app': relation.get('product').get('app_id'),
+                    'name': relation.get('product').get('title')
+                })
 
     cart_json = json.dumps(cart_json)
+    inventory_json = json.dumps(inventory_json)
 
     resumes_assigned = requests_tools.RequestsTools().resume_all(
         assigned_userrequests,
@@ -125,7 +166,8 @@ def admin_requests():
         'counters': counters,
         'date_now': date_now,
         'cart_json': cart_json,
-        'resumes_all': resumes_all
+        'resumes_all': resumes_all,
+        'inventory_json': inventory_json,
     }
 
     return render_template('admin/views/requests.html', **params)
