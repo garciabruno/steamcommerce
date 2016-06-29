@@ -151,3 +151,25 @@ def ajax_paidrequest_assign_to():
     paidrequest.PaidRequest().assign(request_id, assign_to_id)
 
     return {'success': True}
+
+
+@admin_ajax_paidrequest.route('/set/sent/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_paidrequest_set_sent():
+    relation_id = int(request.form.get('relation_id'))
+
+    paidrequest.PaidRequest().set_sent(relation_id)
+
+    return {'success': True}
+
+
+@admin_ajax_paidrequest.route('/set/unsent/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_paidrequest_set_unsent():
+    relation_id = int(request.form.get('relation_id'))
+
+    paidrequest.PaidRequest().set_sent(relation_id, sent=False)
+
+    return {'success': True}
