@@ -158,9 +158,8 @@
                                                         </td>
 
                                                         <td>
-                                                            <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
-                                                                {{ relation['product']['title'] }}
-                                                            </a>
+                                                            <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through;"{% endif %}>
+                                                                {{ relation['product']['title'] }}</a>
 
                                                             <a class="btn btn-xs btn-default" href="https://steamdb.info/{{ 'app' if relation.get('product').get('app_id') else 'sub' }}/{{ relation.get('product').get('app_id') or relation.get('product').get('sub_id') }}" target="_blank">
                                                                 SteamDB
@@ -178,14 +177,20 @@
                                                         </td>
 
                                                         <td>
-                                                            <span class="s-commerce-relation-product-price">${{ relation['price']|price_format }}</span>
+                                                            <span class="s-commerce-relation-product-price">
+                                                                ${{ relation['price']|price_format }}
+                                                            </span>
                                                         </td>
 
                                                         <td>
                                                             {% if relation['sent'] %}
-                                                                <span class="btn btn-danger">No enviado</span>
+                                                                <span class="btn btn-danger relation_unsent" data-requesttype="{{ request_type }}" data-relationid="{{ relation.get('id') }}">
+                                                                    No enviado
+                                                                </span>
                                                             {% else %}
-                                                                <span class="btn btn-success">Enviado</span>
+                                                                <span class="btn btn-success relation_sent" data-requesttype="{{ request_type }}" data-relationid="{{ relation.get('id') }}">
+                                                                    Enviado
+                                                                </span>
                                                             {% endif %}
                                                         </td>
 
