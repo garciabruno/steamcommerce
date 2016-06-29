@@ -215,3 +215,25 @@ def ajax_userrequest_set_uninformed():
     userrequest.UserRequest().set_uninformed(request_id)
 
     return {'success': True}
+
+
+@admin_ajax_userrequest.route('/set/sent/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_userrequest_set_sent():
+    relation_id = int(request.form.get('relation_id'))
+
+    userrequest.UserRequest().set_sent(relation_id)
+
+    return {'success': True}
+
+
+@admin_ajax_userrequest.route('/set/unsent/', methods=['POST'])
+@route_decorators.ajax_is_admin
+@route_decorators.as_json
+def ajax_userrequest_set_unsent():
+    relation_id = int(request.form.get('relation_id'))
+
+    userrequest.UserRequest().set_sent(relation_id, sent=False)
+
+    return {'success': True}
