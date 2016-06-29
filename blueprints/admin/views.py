@@ -126,6 +126,7 @@ def admin_requests():
         ].get(
             'relations'
         )
+
         for relation in paidrequest_data.get('relations'):
             relations.append(
                 {
@@ -291,13 +292,13 @@ def admin_message_add():
 
     message.Message().push(**data)
 
-    notififcation_params = data
-    notififcation_params.pop('date')
+    notification_params = data
+    notification_params.pop('date')
 
     notification.Notification().push(
         owner_id,
         constants.NOTIFICATION_MESSAGE_RECEIVED,
-        **notififcation_params
+        **notification_params
     )
 
     return redirect(redirect_url)
