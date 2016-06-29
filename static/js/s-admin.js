@@ -8,6 +8,9 @@ var ADMIN_DEASSIGN_REQUEST_SELECTOR = '.deassign_request';
 var ADMIN_SET_REQUEST_INFORMED_SELECTOR = '.inform_request';
 var ADMIN_SET_REQUEST_UNINFORMED_SELECTOR = '.uninform_request';
 
+var ADMIN_SET_RELATION_SENT = '.relation_sent';
+var ADMIN_SET_RELATION_UNSENT = '.relation_unsent';
+
 var MESSAGE_REQUEST_ACCEPTED = 'Pedido aceptado exitosamente';
 var MESSAGE_REQUEST_DENIED = 'Pedido denegado exitosamente';
 var MESSAGE_REQUEST_ASSIGNED = 'Pedido asignado exitosamente';
@@ -15,6 +18,9 @@ var MESSAGE_REQUEST_PAID = 'Pedido cobrado exitosamente';
 var MESSAGE_REQUEST_DEASSIGNED = 'Pedido desasignado exitosamente';
 var MESSAGE_REQUEST_INFORMED = 'Pedido reservado exitosamente';
 var MESSAGE_REQUEST_UNINFORMED = 'Pedido des reservado exitosamente';
+
+var MESSAGE_RELATION_SENT = 'Producto marcado como enviado';
+var MESSAGE_RELATION_UNSENT = 'Producto marcado como no enviado';
 
 var MESSAGE_REQUEST_BUTTON_DENIED = 'Pedido denegado';
 var MESSAGE_REQUEST_BUTTON_ACCEPTED = 'Pedido aceptado';
@@ -313,6 +319,50 @@ var Request = function(requestButton) {
             }
         })
     };
+
+    this.set_sent = function(request_type, relation_id) {
+        if (request_type == 'A') {
+            var url = '/admin/ajax/userrequest/set/sent/'
+        } else if (request_type == 'C') {
+            var url = '/admin/ajax/paidrequest/set/sent/'
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                relation_id, relation_id
+            },
+            success: function(data) {
+                var notification = new Notification;
+
+                notification.push(MESSAGE_RELATION_SENT);
+                requestButton.restore_loading();
+            }
+        })
+    };
+
+    this.set_unsent = function(request_type, relation_id) {
+        if (request_type == 'A') {
+            var url = '/admin/ajax/userrequest/set/unsent/'
+        } else if (request_type == 'C') {
+            var url = '/admin/ajax/paidrequest/set/unsent/'
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                relation_id, relation_id
+            },
+            success: function(data) {
+                var notification = new Notification;
+
+                notification.push(MESSAGE_RELATION_UNSENT);
+                requestButton.restore_loading();
+            }
+        })
+    };
 };
 
 function parseAdminButton(selector) {
@@ -420,4 +470,22 @@ $(ADMIN_SET_REQUEST_UNINFORMED_SELECTOR).on('click', function(){
     var state = button.get_state();
 
     request.set_uninformed(state['requestid']);
+});
+
+$(ADMIN_SET_RELATION_SENT).on('click', function(){
+    var button = new Button(ADMIN_SET_RELATION_SENT);
+
+    var request = new Request(button);
+    var state = button.get_state();
+
+    request.set_sent(state['requesttype'], state['relationid']);
+});
+
+$(ADMIN_SET_RELATION_UNSENT).on('click', function(){
+    var button = new Button(ADMIN_SET_RELATION_UNSENT);
+
+    var request = new Request(button);
+    var state = button.get_state();
+
+    request.set_unsent(state['requesttype'], state['relationid']);
 });
