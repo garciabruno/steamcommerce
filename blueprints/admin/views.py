@@ -294,6 +294,7 @@ def admin_message_add():
 
     notification_params = data
     notification_params.pop('date')
+    notification_params.pop('user')
 
     notification.Notification().push(
         owner_id,
