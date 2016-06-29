@@ -473,7 +473,7 @@ $(ADMIN_SET_REQUEST_UNINFORMED_SELECTOR).on('click', function(){
 });
 
 $(ADMIN_SET_RELATION_SENT).on('click', function(){
-    var button = new Button(ADMIN_SET_RELATION_SENT);
+    var button = new Button($(this));
 
     var request = new Request(button);
     var state = button.get_state();
@@ -482,7 +482,7 @@ $(ADMIN_SET_RELATION_SENT).on('click', function(){
 });
 
 $(ADMIN_SET_RELATION_UNSENT).on('click', function(){
-    var button = new Button(ADMIN_SET_RELATION_UNSENT);
+    var button = new Button($(this));
 
     var request = new Request(button);
     var state = button.get_state();
