@@ -94,7 +94,7 @@
                                             <tr>
                                                 <td>
                                                     {% set product = relation.get('product') %}
-                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through"{% endif %}>
                                                         {{ relation.get('product').get('title') }}
                                                     </a>
                                                 </td>
@@ -102,6 +102,10 @@
                                                 <td class="table-listing">
                                                     ${{ relation.get('price')|price_format }} ARS
                                                 </td>
+
+                                                {% if relation.get('sent') %}
+                                                    <td>*Este producto ha sido marcado como enviado por un Administrador</td>
+                                                {% endif %}
                                             </tr>
                                         {% endfor %}
 
@@ -177,7 +181,7 @@
                                             <tr>
                                                 <td>
                                                     {% set product = relation.get('product') %}
-                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through"{% endif %}>
                                                         {{ relation.get('product').get('title') }}
                                                     </a>
                                                 </td>
@@ -185,6 +189,10 @@
                                                 <td class="table-listing">
                                                     ${{ relation.get('price')|price_format }} ARS
                                                 </td>
+
+                                                {% if relation.get('sent') %}
+                                                    <td>*Este producto ha sido marcado como enviado por un Administrador</td>
+                                                {% endif %}
                                             </tr>
                                         {% endfor %}
 
@@ -285,7 +293,7 @@
                                     {% if paidrequest.get('accepted_date') %}
                                         {{ progress_point('Pedido entregado', 'done', paidrequest['accepted_date']|date_format, '48%') }}
                                     {% else %}
-                                        {{ progress_point('Pedido entregado', 'done', '', '48%') }}
+                                        {{ progress_point('Entrega pendiente', 'todo', '', '48%') }}
                                     {% endif %}
 
                                     {% if paidrequest['reason'] %}
