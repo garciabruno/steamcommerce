@@ -108,7 +108,7 @@
                                             {% for userrequest in userrequests %}
                                                 <tr class="{{ process_state(userrequest) }}">
                                                     <td>
-                                                        <a href="/historial/A-{{ userrequest.id }}">
+                                                        <a href="{% if session.get('admin') %}/admin{% endif %}/historial/A-{{ userrequest.id }}">
                                                             #A-{{ userrequest.id }}
                                                         </a>
                                                     </td>
@@ -150,7 +150,7 @@
                                             {% for creditrequest in creditrequests %}
                                                 <tr class="{{ process_state(creditrequest) }}">
                                                     <td>
-                                                        <a href="/historial/B-{{ creditrequest.id }}">
+                                                        <a href="{% if session.get('admin') %}/admin{% endif %}/historial/B-{{ creditrequest.id }}">
                                                             #B-{{ creditrequest.id }}
                                                         </a>
                                                     </td>
@@ -186,7 +186,7 @@
                                             {% for paidrequest in paidrequests %}
                                                 <tr class="{{ process_state(paidrequest) }}">
                                                     <td>
-                                                        <a href="/historial/C-{{ paidrequest.id }}">
+                                                        <a href="{% if session.get('admin') %}/admin{% endif %}/historial/C-{{ paidrequest.id }}">
                                                             #C-{{ paidrequest.id }}
                                                         </a>
                                                     </td>
