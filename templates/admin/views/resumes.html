@@ -1,0 +1,168 @@
+{% extends "admin/layout/base.html" %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Admin - Resumenes{% endblock %}
+
+{% block header %}
+    {{ url_for('static', filename='js/jquery-ui.min.js')|js_file|safe }}
+    {{ url_for('static', filename='js/jquery-ui-timepicker-addon.js')|js_file|safe }}
+
+    {{ url_for('static', filename='css/jquery-ui.min.css')|css_file|safe }}
+    {{ url_for('static', filename='css/jquery-ui.structure.min.css')|css_file|safe }}
+    {{ url_for('static', filename='css/jquery-ui.theme.min.css')|css_file|safe }}
+    {{ url_for('static', filename='css/jquery-ui-timepicker-addon.css')|css_file|safe }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="main">
+            <div class="admin-resumes">
+                {{ wtf.quick_form(form) }}
+            </div>
+
+            <script type="text/javascript">
+                $('#start_date').datetimepicker();
+                $('#end_date').datetimepicker();
+
+                $('#start_date').datepicker('option', 'dateFormat', 'dd/mm/yy');
+                $('#end_date').datepicker('option', 'dateFormat', 'dd/mm/yy');
+
+                $('#start_date').val('');
+                $('#end_date').val('{{ now_date|date_format }}');
+            </script>
+
+            <div class="admin_requests_resumes" style="margin-top: 10px;">
+                <hr>
+
+                <tr class="active">
+                    <td colspan="7" style="font-size: 10px;">Pedidos de boleta</td>
+                </tr>
+
+                <hr>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Identificador</th>
+                            <th>Productos</th>
+                            <th>Fecha de entrega</th>
+                            <th>Entregado por</th>
+                            <th>Monto bruto</th>
+                            <th>Comisión CuentaDigital</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for userrequest in userrequests %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('admin.views.admin_request', history_identifier=('A-' + userrequest['request'].id|string)) }}">
+                                        #A-{{ userrequest['request'].id }}
+                                    </a>
+                                </td>
+
+                                <td>
+                                    {% for relation in userrequest['request'].products %}
+                                        <a href="{{ url_for('views.store.store_app_id', app_id=(relation.product.app_id or relation.product.sub_id)) }}">
+                                            {{ relation.product.title }}
+                                        </a> ({{ relation.price|price_format }}) <br>
+                                    {% endfor %}
+                                </td>
+
+                                <td>
+                                    {{ userrequest['request'].accepted_date|date_format }}
+                                </td>
+
+                                <td>
+                                    {% if userrequest['request'].accepted_by %}
+                                        @{{ userrequest['request'].accepted_by.username }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ (userrequest['price'] or 0)|price_format }}
+                                </td>
+
+                                <td>
+                                    {{ userrequest['fee']|price_format }}
+                                </td>
+
+                                <td>
+                                    {{ userrequest['price'] - userrequest['fee'] }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <tr class="active">
+                    <td colspan="7" style="font-size: 10px;">Pedidos de créditos</td>
+                </tr>
+
+                <hr>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Identificador</th>
+                            <th>Productos</th>
+                            <th>Fecha de entrega</th>
+                            <th>Entregado por</th>
+                            <th>Monto bruto</th>
+                            <th>Comisión CuentaDigital</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for paidrequest in paidrequests %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('admin.views.admin_request', history_identifier=('C-' + paidrequest['request'].id|string)) }}">
+                                        #C-{{ paidrequest['request'].id }}
+                                    </a>
+                                </td>
+
+                                <td>
+                                    {% for relation in paidrequest['request'].products %}
+                                        <a href="{{ url_for('views.store.store_app_id', app_id=(relation.product.app_id or relation.product.sub_id)) }}">
+                                            {{ relation.product.title }}
+                                        </a> ({{ relation.price|price_format }}) <br>
+                                    {% endfor %}
+                                </td>
+
+                                <td>
+                                    {{ paidrequest['request'].accepted_date|date_format }}
+                                </td>
+
+                                <td>
+                                    {% if paidrequest['request'].accepted_by %}
+                                        @{{ paidrequest['request'].accepted_by.username }}
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ (paidrequest['price'] or 0)|price_format }}
+                                </td>
+
+                                <td>
+                                    {{ paidrequest['fee']|price_format }}
+                                </td>
+
+                                <td>
+                                    {{ paidrequest['price'] - paidrequest['fee'] }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                Monto bruto total: {{ (total_income or 0)|price_format }}<br>
+                Comisiones: {{ (fees or 0)|price_format }}<br>
+                Final: {{ ((total or 0) - (fees or 0))|price_format }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

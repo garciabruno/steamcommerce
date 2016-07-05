@@ -11,6 +11,8 @@ from flask import render_template
 
 from steamcommerce_tasks import app
 
+from steamcommerce_api import config
+
 from steamcommerce_api.api import user
 from steamcommerce_api.api import product
 from steamcommerce_api.api import message
@@ -19,6 +21,7 @@ from steamcommerce_api.api import adminlog
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import paidrequest
 from steamcommerce_api.api import notification
+from steamcommerce_api.api import cuentadigital
 from steamcommerce_api.api import creditrequest
 from steamcommerce_api.api import requests_tools
 
@@ -45,6 +48,92 @@ def admin_root():
     }
 
     return render_template('admin/views/dashboard.html', **params)
+
+
+@admin_view.route('/resumen', methods=['GET', 'POST'])
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def admin_resume():
+    user_id = session.get('user')
+    user_data = user.User().get_by_id(user_id)
+
+    params = {
+        'user': user_data,
+        'now_date': datetime.datetime.now(),
+    }
+
+    if request.method == 'GET':
+        form = admin.ResumeForm()
+        params.update({'form': form})
+    elif request.method == 'POST':
+        form = admin.ResumeForm(request.form)
+
+        if not form.validate():
+            params.update({'form': form})
+            return render_template('admin/views/resumes.html', **params)
+
+        userrequests = []
+        paidrequests = []
+
+        if form.userrequests.data:
+            _userrequests = userrequest.UserRequest().\
+                _get_accepted_between_dates(
+                    user_id,
+                    form.start_date.data,
+                    form.end_date.data,
+                    config.CUENTADIGITAL_NIN_ID
+                )
+
+            for userrequest_obj in _userrequests:
+                fee = cuentadigital.CuentaDigital().calc_fee(
+                    userrequest_obj.price
+                )
+
+                userrequest_data = {
+                    'fee': fee,
+                    'price': userrequest_obj.price,
+                    'request': userrequest_obj
+                }
+
+                userrequests.append(userrequest_data)
+
+        if form.paidrequests.data:
+            _paidrequests = paidrequest.PaidRequest().\
+                _get_accepted_between_dates(
+                    user_id,
+                    form.start_date.data,
+                    form.end_date.data,
+                    config.CUENTADIGITAL_NIN_ID
+                )
+
+            for paidrequest_obj in _paidrequests:
+                fee = cuentadigital.CuentaDigital().calc_fee(
+                    paidrequest_obj.price
+                )
+
+                paidrequest_data = {
+                    'fee': fee,
+                    'price': paidrequest_obj.price,
+                    'request': paidrequest_obj
+                }
+
+                paidrequests.append(paidrequest_data)
+
+        total_income = sum([x['price'] for x in userrequests])
+        total_income += sum([x['price'] for x in paidrequests])
+
+        fees = sum([x['fee'] for x in userrequests])
+        fees += sum([x['fee'] for x in paidrequests])
+
+        params.update({
+            'form': form,
+            'fees': fees,
+            'total_income': total_income,
+            'userrequests': userrequests,
+            'paidrequests': paidrequests,
+        })
+
+    return render_template('admin/views/resumes.html', **params)
 
 
 @admin_view.route('/pedidos')

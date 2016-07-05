@@ -2,6 +2,10 @@
 
 {% block title %}ExtremeGaming - Nuevos testimonios{% endblock %}
 
+{% block header %}
+
+{% endblock %}
+
 {% block body %}
     <div class="s-commerce-new-testimonials-container">
         <div class="container">
@@ -166,4 +170,7 @@
             </div>
         </div>
     </div>
+
+    {{ url_for('static', filename='js/jquery.emojiarea.min.js')|js_file|safe }}
+    {{ url_for('static', filename='css/jquery.emojiarea.css')|css_file|safe }}
 {% endblock %}

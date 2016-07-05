@@ -31,3 +31,37 @@ class SteamProduct(Form):
     app_id = wtforms.IntegerField(validators=[Optional()])
 
     submit = wtforms.SubmitField(validators=[DataRequired()])
+
+
+class ResumeForm(Form):
+    start_date = wtforms.DateTimeField(
+        u'Fecha de inicio',
+        validators=[DataRequired()],
+        format='%d/%m/%Y %H:%M'
+    )
+
+    end_date = wtforms.DateTimeField(
+        u'Fecha de finalización',
+        validators=[DataRequired()],
+        format='%d/%m/%Y %H:%M'
+    )
+
+    commerce_id = wtforms.BooleanField(
+        u'CuentaDigital Emiliano',
+        validators=[Optional()],
+        default=False
+    )
+
+    userrequests = wtforms.BooleanField(
+        u'Mostrar pedidos de boleta',
+        validators=[Optional()],
+        default=True
+    )
+
+    paidrequests = wtforms.BooleanField(
+        u'Mostrar pedidos de créditos',
+        validators=[Optional()],
+        default=True
+    )
+
+    submit = wtforms.SubmitField(u'Enviar', validators=[DataRequired()])
