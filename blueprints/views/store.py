@@ -14,10 +14,8 @@ from flask import redirect
 from flask import Blueprint
 from flask import render_template
 
-import sys
 import os
 import json
-import logging
 
 '''
 Internal imports
@@ -38,27 +36,6 @@ from steamcommerce_api.api import storepromotion
 
 from inputs import store_inputs
 from forms import user as user_form
-
-log = logging.getLogger('[Store]')
-
-log.setLevel(logging.DEBUG)
-format = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
-ch = logging.StreamHandler(sys.stdout)
-fh = logging.FileHandler(
-    os.path.join(
-        config.LOG_PATH,
-        'store.log'
-    )
-)
-
-ch.setFormatter(format)
-fh.setFormatter(format)
-
-log.addHandler(ch)
-log.addHandler(fh)
 
 
 store = Blueprint('views.store', __name__)
