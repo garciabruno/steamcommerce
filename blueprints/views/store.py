@@ -78,7 +78,7 @@ def store_faqs():
     return render_template('views/store/faqs.html', questions=questions)
 
 
-@store.route('/catalogo')
+@store.route('/')
 def store_catalog():
     sliders = slider.Slider().get_active()
     sections = section.Section().get_active()
@@ -175,8 +175,7 @@ def store_products():
     return render_template('views/store/products.html', **params)
 
 
-#@store.route('/ofertas')
-@store.route('/')
+@store.route('/ofertas')
 def store_offers():
     spromotion = storepromotion.StorePromotion()
     sliders = slider.Slider().get_active()
