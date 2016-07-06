@@ -161,7 +161,7 @@
 
                 Monto bruto total: {{ (total_income or 0)|price_format }}<br>
                 Comisiones: {{ (fees or 0)|price_format }}<br>
-                Final: {{ ((total or 0) - (fees or 0))|price_format }}
+                Final: {{ ((total_income or 0) - (fees or 0))|price_format }}
             </div>
         </div>
     </div>
