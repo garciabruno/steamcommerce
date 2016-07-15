@@ -151,8 +151,7 @@ class CustomRequest(Request):
     @property
     def rollbar_person(self):
         return {
-            'id': session.get('user'),
-            'ip': request.headers.get('CF-Connecting-IP', request.remote_addr)
+            'id': session.get('user')
         }
 
 app.request_class = CustomRequest
