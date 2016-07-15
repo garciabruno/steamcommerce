@@ -33,8 +33,8 @@
 
                                                         {% if assets['capsule'] %}
                                                             {% set background = '/static/img/product/' + promotion_product['id']|string + '/capsule.jpg?' + config.CACHE_BREAK_RAND|string %}
-                                                        {% elif assets['front'] %}
-                                                            {% set background = '/static/img/product/' + promotion_product['id']|string + '/' + assets['front'] + '?' + config.CACHE_BREAK_RAND|string %}
+                                                        {% elif assets['header'] %}
+                                                            {% set background = '/static/img/product/' + promotion_product['id']|string + '/' + assets['header'] + '?' + config.CACHE_BREAK_RAND|string %}
                                                         {% else %}
                                                             {% set background = '/static/steam_avatar_null.jpg?' + config.CACHE_BREAK_RAND|string %}
                                                         {% endif %}
@@ -54,11 +54,11 @@
 
                                                             <div class="s-commerce-offer-buttons">
                                                                 <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
-                                                                    {% if promotion_product['price'] %}
-                                                                        ${{ promotion_product['price']['price']|price_format }}
+                                                                    {% if promotion_product['price_active'] and promotion_product['price_value'] %}
+                                                                        ${{ promotion_product['price_value']|price_format }}
 
-                                                                        {% if promotion_product.get('currency') and session.get('admin') %}
-                                                                            <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ promotion_product.get('currency') }}" width="16" height="11" class="flag flag-{{ promotion_product.get('currency')|lower }}">
+                                                                        {% if promotion_product.get('price_currency') and session.get('admin') %}
+                                                                            <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ promotion_product.get('price_currency') }}" width="16" height="11" class="flag flag-{{ promotion_product.get('price_currency')|lower }}">
                                                                         {% endif %}
                                                                     {% else %}
                                                                         No activo

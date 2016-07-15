@@ -3,7 +3,12 @@
 {% block title %}ExtremeGaming - Nuevos testimonios{% endblock %}
 
 {% block header %}
+    {{ url_for('static', filename='css/emojione.min.css')|css_file|safe }}
+    {{ url_for('static', filename='css/emojione.sprites.css')|css_file|safe }}
+    {{ url_for('static', filename='css/emojionearea.min.css')|css_file|safe }}
 
+    {{ url_for('static', filename='js/emojione.min.js')|js_file|safe }}
+    {{ url_for('static', filename='js/emojionearea.min.js')|js_file|safe }}
 {% endblock %}
 
 {% block body %}
@@ -67,7 +72,9 @@
                             </div>
 
                             <div class="s-commerce-testimonial-form" data-testimonialid="{{ testimonial.get('id') }}">
-                                <textarea class="form-control"></textarea>
+                                <textarea class="form-control" style="display: none;"></textarea>
+
+                                <div class="s-commerce-testimonial-text-container"> </div>
 
                                 <button class="s-commerce-submit-testimonial btn btn-default" data-testimonialid="{{ testimonial.get('id') }}">
                                     Enviar testimonio
@@ -87,9 +94,9 @@
                             {% endif %}
 
                             .s-commerce-new-testimonial[data-testimonialid="{{ testimonial['id'] }}"]{
-                                background: -moz-linear-gradient(top, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 19%, rgba(28,38,47,0.8) 27%, rgba(28,38,47,0.6) 28%, rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/banner_blurred.jpg");
-                                background: -webkit-linear-gradient(top, rgba(28,38,47,0.6) 0%,rgba(28,38,47,0.6) 19%,rgba(28,38,47,0.8) 27%,rgba(28,38,47,0.6) 28%,rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/banner_blurred.jpg");
-                                background: linear-gradient(to bottom, rgba(28,38,47,0.6) 0%,rgba(28,38,47,0.6) 19%,rgba(28,38,47,0.8) 27%,rgba(28,38,47,0.6) 28%,rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/banner_blurred.jpg");
+                                background: -moz-linear-gradient(top, rgba(28,38,47,0.6) 0%, rgba(28,38,47,0.6) 19%, rgba(28,38,47,0.8) 27%, rgba(28,38,47,0.6) 28%, rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/background_blurred.jpg");
+                                background: -webkit-linear-gradient(top, rgba(28,38,47,0.6) 0%,rgba(28,38,47,0.6) 19%,rgba(28,38,47,0.8) 27%,rgba(28,38,47,0.6) 28%,rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/background_blurred.jpg");
+                                background: linear-gradient(to bottom, rgba(28,38,47,0.6) 0%,rgba(28,38,47,0.6) 19%,rgba(28,38,47,0.8) 27%,rgba(28,38,47,0.6) 28%,rgba(28,38,47,0.8) 100%), url("../../static/img/product/{{ product_id }}/background_blurred.jpg");
                                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc1c262f', endColorstr='#1c262f',GradientType=0 ); /* IE6-9 */
                                 background-repeat: repeat-x;
                                 background-attachment: fixed;
@@ -171,6 +178,13 @@
         </div>
     </div>
 
-    {{ url_for('static', filename='js/jquery.emojiarea.min.js')|js_file|safe }}
-    {{ url_for('static', filename='css/jquery.emojiarea.css')|css_file|safe }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("textarea").emojioneArea({
+                hideSource: false,
+                shortnames: true,
+                autoHideFilters: true
+            });
+        });
+    </script>
 {% endblock %}

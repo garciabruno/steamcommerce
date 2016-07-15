@@ -73,11 +73,11 @@
                         </span>
 
                         <span class="s-commerce-product-hud-price pull-right">
-                            {% if product.get('price') %}
-                                ${{ product['price']['price']|price_format }} ARS
+                            {% if product.get('price_active') and product.get('price_value') %}
+                                ${{ product['price_value']|price_format }} ARS
 
-                                {% if product.get('currency') and session.get('admin') %}
-                                    <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('currency') }}" width="16" height="11" class="flag flag-{{ product.get('currency')|lower }}">
+                                {% if product.get('price_currency') and session.get('admin') %}
+                                    <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('price_currency') }}" width="16" height="11" class="flag flag-{{ product.get('price_currency')|lower }}">
                                 {% endif %}
                             {% else %}
                                 Precio inactivo
@@ -145,13 +145,8 @@
                                             Descripción
                                         </div>
 
-                                        <div class="s-commerce-product-description">
-                                            {{ product.get('description', '')[:1024] }}
-                                        </div>
-
-                                        <div class="s-commerce-product-description s-commerce-product-description-full" style="display: none;">
-                                            {{ product.get('description') }}
-                                        </div>
+                                        <div class="s-commerce-product-description">{{ product.get('description', '')[:1024] }}</div>
+                                        <div class="s-commerce-product-description s-commerce-product-description-full" style="display: none; white-space: pre-wrap;">{{ product.get('description') }}</div>
 
                                         {% if product.get('description', '')|length > 1024 %}
                                             <button class="s-commerce-read-more btn btn-default">Leer mas</button>
@@ -182,6 +177,10 @@
 
                                         <a class="btn btn-default" href="{{ url_for('admin.views.queue_price_add', product_id=product.get('id')) }}">
                                             Añadir a la cola de precios
+                                        </a>
+
+                                        <a class="btn btn-default" href="{{ url_for('admin.views.queue_assets_add', product_id=product.get('id')) }}">
+                                            Añadir a la cola de recursos
                                         </a>
                                     </div>
                                 {% endif %}
@@ -222,7 +221,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="s-commerce-purchase-button">
-                                        {% if product.get('price') %}
+                                        {% if product.get('price_active') and product.get('price_value') %}
                                             Comprar
                                         {% else %}
                                             Precio inactivo
@@ -262,12 +261,6 @@
                             Editar sección ({{ product.get('section').get('title') }})
                         </a>
 
-                        {% if product.get('price') %}
-                            <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='ProductPrice', object_id=product.get('price').get('id')) }}">
-                                Editar precio ({{ product.get('price').get('price') }})
-                            </a>
-                        {% endif %}
-
                         {% if product.get('is_promotional') and product.get('promotion') %}
                             <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='StorePromotion', object_id=product.get('promotion').get('id')) }}">
                                 Editar promoción ({{ product.get('promotion').get('title') }})
@@ -305,10 +298,10 @@
             $("span.timeago").timeago();
         });
 
-       {% if product.get('price') %}
+       {% if product.get('price_active') and product.get('price_value') %}
            function userrequest_swal(){
                 swal({
-                    title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} ARS",
+                    title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price_value')|price_format }} ARS",
                     text: "Al generar una boleta en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>.",
                     showCancelButton: true,
                     closeOnConfirm: false,
@@ -378,12 +371,12 @@
 
            function paidrequest_swal(){
                 swal({
-                    title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} créditos",
-                    text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ product.get('price').get('price')|price_format }} de créditos de tu usuario</b>",
+                    title: "Confirmar compra de {{ product.get('title') }} por ${{ product.get('price_value')|price_format }} créditos",
+                    text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ product.get('price_value')|price_format }} de créditos de tu usuario</b>",
                     showCancelButton: true,
                     closeOnConfirm: false,
                     cancelButtonText: "Cancelar",
-                    confirmButtonText: "Autorizar compra por ${{ product.get('price').get('price')|price_format }}",
+                    confirmButtonText: "Autorizar compra por ${{ product.get('price_value')|price_format }}",
                     showLoaderOnConfirm: true,
                     html: true,
                 },
@@ -435,7 +428,7 @@
 
            $('.s-commerce-purchase-button').on('click', function() {
                 swal({
-                    title: "Comprar {{ product.get('title') }} por ${{ product.get('price').get('price')|price_format }} ARS",
+                    title: "Comprar {{ product.get('title') }} por ${{ product.get('price_value')|price_format }} ARS",
                     showCancelButton: true,
                     closeOnConfirm: false,
                     closeOnConfirm: false,

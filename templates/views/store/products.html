@@ -15,8 +15,8 @@
 
                         {% if assets['capsule'] %}
                             {% set background = '/static/img/product/' + product['id']|string + '/capsule.jpg?' + config.CACHE_BREAK_RAND|string %}
-                        {% elif assets['front'] %}
-                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['front'] + '?' + config.CACHE_BREAK_RAND|string %}
+                        {% elif assets['header'] %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['header'] + '?' + config.CACHE_BREAK_RAND|string %}
                         {% else %}
                             {% set background = '/static/steam_avatar_null.jpg?' + config.CACHE_BREAK_RAND|string %}
                         {% endif %}
@@ -37,11 +37,11 @@
 
                                 <div class="s-commerce-product-buttons">
                                     <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-product-price">
-                                        {% if product['price'] %}
-                                            ${{ product['price']['price']|price_format }}
+                                        {% if product.get('price_active') and product.get('price_value') %}
+                                            ${{ product.get('price_value')|price_format }}
 
-                                            {% if product.get('currency') and session.get('admin') %}
-                                                <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('currency') }}" width="16" height="11" class="flag flag-{{ product.get('currency')|lower }}">
+                                            {% if product.get('price_currency') and session.get('admin') %}
+                                                <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('price_currency') }}" width="16" height="11" class="flag flag-{{ product.get('price_currency')|lower }}">
                                             {% endif %}
                                         {% else %}
                                             No activo

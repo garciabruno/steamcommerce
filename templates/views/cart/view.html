@@ -13,9 +13,9 @@
                 <div class="s-commerce-cart-item-title">{{ item.get('product').get('title') }}</div>
 
                 <div class="s-commerce-cart-item-price cd-price">
-                    ${{ item.get('product').get('price').get('price')|price_format }}
+                    ${{ item.get('product').get('price_value')|price_format }}
 
-                    {% if item.get('product').get('price').get('price_type') == 2 %}
+                    {% if item.get('product').get('price_type') == 2 %}
                         <i class="text text-danger">* Unicamente abonable con fondos de tu cuenta</i>
                     {% endif %}
                 </div>
