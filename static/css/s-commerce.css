@@ -353,6 +353,7 @@ body{
     font-weight: 400;
     color: #9d9d9d;
     padding-right: 20px;
+    white-space: pre-wrap;
 }
 
 .s-commerce-product-view-buttons{
@@ -1404,4 +1405,16 @@ ol.progress-meter li.todo:before {
 
 .drawer-contents {
     background-color: #1C262F;
+}
+
+.s-commerce-testimonial-count{
+    text-align: center;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.testimonial-count{
+    color: #fdb832;
 }
