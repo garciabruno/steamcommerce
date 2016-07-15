@@ -31,11 +31,13 @@ class RegisterForm(Form):
     ]
 
     email = TextField(u'Dirección de email', validators=email_validator)
+
     # subscribe = BooleanField(
     #     u'Suscribirse a la lista de emails',
     #     default=True,
     #     validators=[Optional()]
     # )
+
     submit = SubmitField('Enviar', validators=[DataRequired()])
 
 
@@ -66,3 +68,8 @@ class ProfileForm(Form):
 
 class ReservationForm(Form):
     request_id = HiddenField(u'request_id', validators=[DataRequired()])
+
+
+class TestimonialsForm(Form):
+    page_id = HiddenField(u'page_id', validators=[DataRequired()])
+    submit = SubmitField('Cargar mas', validators=[DataRequired()])
