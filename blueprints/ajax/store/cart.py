@@ -33,7 +33,10 @@ def ajax_cart_add():
     if not form_product.get('visible'):
         return json.dumps({'success': False, 'status': 1}), 500
 
-    if not form_product.get('price'):
+    if (
+        not form_product.get('price_active') or
+        not form_product.get('price_value')
+    ):
         return json.dumps({'success': False, 'status': 2}), 500
 
     if form_product.get('product_type') == 2:
