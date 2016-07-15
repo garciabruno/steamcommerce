@@ -9,7 +9,7 @@ from flask import redirect
 from flask import Blueprint
 from flask import render_template
 
-from steamcommerce_tasks import app
+from steamcommerce_tasks.tasks import product as product_task
 
 from steamcommerce_api import config
 
@@ -398,10 +398,28 @@ def admin_message_add():
 @route_decorators.is_logged_in
 @route_decorators.is_admin
 def queue_price_add(product_id):
-    app.calc_product_price.delay(product_id)
+    product_task.product_price_queue.delay(product_id)
     product_data = product.Product().get_product_by_id(product_id)
 
     flash(u'Producto añadido a la cola de precios')
+
+    app_id = product_data.get('app_id') or product_data.get('sub_id')
+
+    return redirect(
+        url_for(
+            'views.store.store_app_id', app_id=app_id
+        )
+    )
+
+
+@admin_view.route('/queue/assets/add/<int:product_id>/')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def queue_assets_add(product_id):
+    product_task.get_product_assets.delay(product_id)
+    product_data = product.Product().get_product_by_id(product_id)
+
+    flash(u'Producto añadido a la cola de recursos')
 
     app_id = product_data.get('app_id') or product_data.get('sub_id')
 
@@ -440,7 +458,7 @@ def queue_product_add():
             except:
                 pass
 
-            app.add_product_to_store.delay(app_id=form.app_id.data)
+            product_task.add_product_to_store.delay(app_id=form.app_id.data)
 
             flash(u'AppID añadido a la cola de adición de productos')
 
@@ -459,7 +477,7 @@ def queue_product_add():
             except:
                 pass
 
-            app.add_product_to_store.delay(sub_id=form.sub_id.data)
+            product_task.add_product_to_store.delay(sub_id=form.sub_id.data)
 
             flash(u'SubID añadido a la cola de adición de productos')
 
