@@ -16,6 +16,9 @@ blinker==1.4
 demiurge
 ujson
 
+# apt-get install libssl-dev
+# apt-get install git
+# apt-get install vim
 # apt-get install mysql
 # apt-get install libmysqlclient-dev
 # apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev
