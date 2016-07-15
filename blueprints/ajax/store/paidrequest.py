@@ -46,10 +46,13 @@ def ajax_paidrequest_generate():
     if not product_data.get('visible'):
         return ({'success': False, 'status': 2}, 500)
 
-    if not product_data.get('price'):
+    if (
+        not product_data.get('price_active') or
+        not product_data.get('price_value')
+    ):
         return ({'success': False, 'status': 3}, 500)
 
-    price = product_data.get('price').get('price')
+    price = product_data.get('price_value')
     user_data = user.User().get_by_id(user_id)
 
     if (user_data.money + user_data.wallet) < price:

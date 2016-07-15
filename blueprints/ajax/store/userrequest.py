@@ -39,13 +39,16 @@ def ajax_userrequest_generate():
     if not product_data.get('visible'):
         return ({'success': False, 'status': 2}, 500)
 
-    if not product_data.get('price'):
+    if (
+        not product_data.get('price_active') or
+        not product_data.get('price_value')
+    ):
         return ({'success': False, 'status': 3}, 500)
 
-    if product_data.get('price').get('price_type') != 1:
+    if product_data.get('price_type') != 1:
         return ({'success': False, 'status': 4}, 500)
 
-    price = product_data.get('price').get('price')
+    price = product_data.get('price_value')
 
     promotion = None
 
