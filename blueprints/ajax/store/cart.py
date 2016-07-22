@@ -28,7 +28,7 @@ def ajax_cart_add():
         return ({'success': False, 'status': 0}, 422)
 
     product_id = int(request.form.get('product_id'))
-    form_product = product.Product().get_product_by_id(product_id)
+    form_product = product.Product().get_id(product_id, excludes=['all'])
 
     if not form_product.get('visible'):
         return json.dumps({'success': False, 'status': 1}), 500
@@ -44,7 +44,7 @@ def ajax_cart_add():
 
     user_cart = cart.Cart().get_user_cart(user_id, trim=True)
 
-    if len(user_cart.get('items')) >= 10:
+    if len(user_cart.get('items')) >= 25:
         return json.dumps({'success': False, 'status': 4}), 500
 
     success = cart.Cart().add_to_user_cart(user_id, product_id)
@@ -52,7 +52,6 @@ def ajax_cart_add():
     if not success:
         return json.dumps({'success': False, 'status': 5}), 500
 
-    cart.Cart().process_cart(session.get('user'))
     user_cart = cart.Cart().get_user_cart(session.get('user'))
 
     g.user_cart = user_cart
@@ -73,8 +72,6 @@ def ajax_cart_remove():
     relation_id = int(request.form.get('relation_id'))
 
     cart.Cart().remove_from_user_cart(user_id, relation_id)
-
-    cart.Cart().process_cart(session.get('user'))
     user_cart = cart.Cart().get_user_cart(session.get('user'))
 
     g.user_cart = user_cart
