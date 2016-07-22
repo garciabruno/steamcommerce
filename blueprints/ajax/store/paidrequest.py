@@ -12,16 +12,12 @@ from steamcommerce_api import config
 
 from steamcommerce_api.api import user
 from steamcommerce_api.api import cart
-from steamcommerce_api.api import message
 from steamcommerce_api.api import history
 from steamcommerce_api.api import product
-from steamcommerce_api.api import productcode
 from steamcommerce_api.api import paidrequest
-from steamcommerce_api.api import testimonial
-from steamcommerce_api.api import adminlog
+from steamcommerce_api.api import code_delivery
 from steamcommerce_api.api import notification
 
-import datetime
 import constants
 
 ajax_paidrequest = Blueprint('ajax.store.paidrequest', __name__)
@@ -38,7 +34,11 @@ def ajax_paidrequest_generate():
         return ({'success': False, 'status': 0}, 422)
 
     product_id = int(request.form.get('product_id'))
-    product_data = product.Product().get_product_by_id(product_id)
+
+    product_data = product.Product().get_id(
+        product_id,
+        excludes=['product_tags', 'product_specs', 'assets']
+    )
 
     if product_data is None:
         return ({'success': False, 'status': 1}, 500)
@@ -55,13 +55,13 @@ def ajax_paidrequest_generate():
     price = product_data.get('price_value')
     user_data = user.User().get_by_id(user_id)
 
-    if (user_data.money + user_data.wallet) < price:
+    if (user_data['money'] + user_data['wallet']) < price:
         return ({'success': False, 'status': 4}, 500)
 
     if product_data.get('run_stock') and product_data.get('stock') == 0:
         return ({'success': False, 'status': 5}, 500)
 
-    if user_data.money >= price:
+    if user_data['money'] >= price:
         commerce_id = config.CUENTADIGITAL_EMILIANO_ID
     else:
         commerce_id = config.CUENTADIGITAL_NIN_ID
@@ -80,11 +80,11 @@ def ajax_paidrequest_generate():
     if not invoice.get('success'):
         return (invoice, 500)
 
-    if user_data.money >= price:
+    if user_data['money'] >= price:
         user.User().decrease_money(user_id, price)
-    elif user_data.money > 0:
-        user.User().decrease_money(user_id, user_data.money)
-        user.User().decrease_wallet(user_id, price - user_data.money)
+    elif user_data['money'] > 0:
+        user.User().decrease_money(user_id, user_data['money'])
+        user.User().decrease_wallet(user_id, price - user_data['money'])
     else:
         user.User().decrease_wallet(user_id, price)
 
@@ -105,76 +105,33 @@ def ajax_paidrequest_generate():
 
     if (
         product_data.get('product_type') == 2
-        and len(product_data.get('codes')) > 0
+        and len(product_data.get('product_codes')) > 0
     ):
-        code = product_data.get('codes')[0]
-        admin_id = code.get('user_owner')
+        code = product_data.get('product_codes')[0]
+        admin_id = code.get('user_owner').get('id')
 
-        productcode.ProductCode().update(**{
-            'id': code.get('id'),
-            'paidrequest': request_id,
-            'sent': True
-        })
-
-        message_content = constants.DEFAULT_REQUEST_MESSAGE + code.get('code')
-
-        message.Message().push(**{
-            'user': admin_id,
-            'to_user': user_id,
-            'has_code': True,
-            'paidrequest': request_id,
-            'content': message_content
-        })
-
-        adminlog.AdminLog().push(
-            constants.ADMINLOG_CODE_DELIVERED, **{
-                'paidrequest': request_id
-            }
+        code_delivery.CodeDelivery().deliver_to_paidrequest(
+            code['id'],
+            request_id
         )
-
-        notification.Notification().push(
-            user_id,
-            constants.NOTIFICATION_MESSAGE_RECEIVED,
-            **{
-                'paidrequest': invoice.get('paidrequest')
-            })
 
         paidrequest.PaidRequest().accept_paidrequest(
             request_id, user_id=admin_id
         )
 
-        history.History().push(
-            constants.HISTORY_ACCEPTED_STATE,
-            request_id,
-            constants.HISTORY_PAIDREQUEST_TYPE
-        )
-
-        adminlog.AdminLog().push(
-            constants.ADMINLOG_PAIDREQUEST_ACCEPTED, **{
-                'paidrequest': request_id,
-                'user': admin_id
-            }
-        )
-
-        notification.Notification().push(
-            user_id,
-            constants.NOTIFICATION_PAIDREQUEST_ACCEPTED,
-            **{'paidrequest': request_id}
-        )
-
-        testimonial.Testimonial().create(**{
-            'user': user_id,
-            'paidrequest': request_id,
-            'date': datetime.datetime.now()
-        })
-
-        if len(product_data.get('codes')) == 1:
+        if len(product_data.get('product_codes')) == 1:
             product.Product().update(**{
                 'id': product_id,
                 'product_type': 1
             })
 
-        invoice.update({'instant': True, 'message': message_content})
+        invoice.update(
+            {
+                'instant': True,
+                'message': u'\
+Has recibido un nuevo mensaje con tu código de activación'
+            }
+        )
 
     return invoice
 
@@ -198,10 +155,10 @@ def ajax_paidrequest_cart_generate():
 
     price = user_cart.get('prices').get('credit')
 
-    if (user_data.money + user_data.wallet) < price:
+    if (user_data['money'] + user_data['wallet']) < price:
         return ({'success': False, 'status': 2}, 500)
 
-    if user_data.money >= price:
+    if user_data['money'] >= price:
         commerce_id = config.CUENTADIGITAL_EMILIANO_ID
     else:
         commerce_id = config.CUENTADIGITAL_NIN_ID
@@ -216,11 +173,11 @@ def ajax_paidrequest_cart_generate():
     if not invoice.get('success'):
         return (invoice, 500)
 
-    if user_data.money >= price:
+    if user_data['money'] >= price:
         user.User().decrease_money(user_id, price)
-    elif user_data.money > 0:
-        user.User().decrease_money(user_id, user_data.money)
-        user.User().decrease_wallet(user_id, price - user_data.money)
+    elif user_data['money'] > 0:
+        user.User().decrease_money(user_id, user_data['money'])
+        user.User().decrease_wallet(user_id, price - user_data['money'])
     else:
         user.User().decrease_wallet(user_id, price)
 

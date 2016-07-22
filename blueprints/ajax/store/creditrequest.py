@@ -33,8 +33,8 @@ def ajax_creditrequest_generate():
         return ({'success': False, 'status': 1}, 500)
 
     invoice = creditrequest.CreditRequest().generate(
-        curr_user.id,
-        curr_user.email,
+        curr_user['id'],
+        curr_user['email'],
         amount
     )
 

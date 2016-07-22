@@ -31,7 +31,7 @@ def ajax_userrequest_generate():
         return ({'success': False, 'status': 0}, 422)
 
     product_id = int(request.form.get('product_id'))
-    product_data = product.Product().get_product_by_id(product_id)
+    product_data = product.Product().get_id(product_id, excludes=['all'])
 
     if product_data is None:
         return ({'success': False, 'status': 1}, 500)
@@ -57,9 +57,9 @@ def ajax_userrequest_generate():
             promotion = product_data.get('promotion').get('id')
 
     invoice = userrequest.UserRequest().generate(
-        curr_user.id,
+        curr_user['id'],
         price,
-        curr_user.email,
+        curr_user['email'],
         [product_data.get('id')],
         promotion=promotion
     )
@@ -90,8 +90,8 @@ def ajax_userrequest_generate():
 def ajax_userrequest_cart_generate():
     curr_user = user.User().get_by_id(session.get('user'))
 
-    cart.Cart().process_cart(curr_user.id)
-    user_cart = cart.Cart().get_user_cart(curr_user.id)
+    cart.Cart().process_cart(curr_user['id'])
+    user_cart = cart.Cart().get_user_cart(curr_user['id'])
 
     if len(user_cart.get('items')) == 0:
         return ({'success': False, 'status': 0}, 500)
@@ -111,9 +111,9 @@ def ajax_userrequest_cart_generate():
                 promotion = product_promotion.get('id')
 
     invoice = userrequest.UserRequest().generate(
-        curr_user.id,
+        curr_user['id'],
         user_cart.get('prices').get('normal'),
-        curr_user.email,
+        curr_user['email'],
         [x.get('product').get('id') for x in cart_items],
         promotion=promotion
     )
@@ -127,7 +127,7 @@ def ajax_userrequest_cart_generate():
         if invoice.get('status') == 1:
             return ({'success': False, 'status': 4}, 500)
 
-    cart.Cart().empty_user_cart(curr_user.id)
+    cart.Cart().empty_user_cart(curr_user['id'])
     invoice.update({'promotional': promotion is not None})
 
     return invoice

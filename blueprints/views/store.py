@@ -31,7 +31,6 @@ from steamcommerce_api.api import question
 from steamcommerce_api.api import announce
 from steamcommerce_api.api import testimonial
 from steamcommerce_api.api import userrequest
-from steamcommerce_api.api import configuration
 from steamcommerce_api.api import storepromotion
 
 from inputs import store_inputs
@@ -59,21 +58,27 @@ def store_faqs():
 def store_catalog():
     sliders = slider.Slider().get_active()
     sections = section.Section().get_active()
-    products = product.Product().get_by_section(sections[0].id, 1)
-    promotions = storepromotion.StorePromotion().get_active_promotions()
+    products = product.Product().get_by_section(sections[0]['id'], 1)
+    promotions = storepromotion.StorePromotion().get_active()
     promotion_products = []
     promotion_products_ids = []
     announces = announce.Announce().get_active()
 
     if len(promotions) > 0:
-        promotion_products_ids = storepromotion.StorePromotion().\
-            get_promotion_products(promotions[0].id, 1)
+        promotion_products_ids = storepromotion.StorePromotion().get_products(
+            promotions[0]['id'], 1
+        )
 
     for promotion_product_id in promotion_products_ids:
         promotion_products.append(
-            product.Product().get_product_by_id(
+            product.Product().get_id(
                 promotion_product_id,
-                excludes=['section', 'codes', 'tags', 'specs']
+                excludes=[
+                    'section',
+                    'product_codes',
+                    'product_tags',
+                    'product_specs'
+                ]
             )
         )
 
@@ -83,12 +88,13 @@ def store_catalog():
 
     if user_id:
         pending_testimonials = testimonial.Testimonial().get_unsubmited(
-            user_id, lazy=True
+            user_id,
+            excludes=['all']
         )
 
     template_params = {
         'page': 1,
-        'section_id': sections[0].id,
+        'section_id': sections[0]['id'],
         'sliders': sliders,
         'products': products,
         'announces': announces,
@@ -137,9 +143,14 @@ def store_products():
 
         for promotion_product_id in promotion_products_ids:
             promotion_products.append(
-                product.Product().get_product_by_id(
+                product.Product().get_id(
                     promotion_product_id,
-                    excludes=['section', 'codes', 'tags', 'specs']
+                    excludes=[
+                        'section',
+                        'product_codes',
+                        'product_tags',
+                        'product_specs'
+                    ]
                 )
             )
 
@@ -156,7 +167,7 @@ def store_products():
 def store_offers():
     spromotion = storepromotion.StorePromotion()
     sliders = slider.Slider().get_active()
-    promotions = spromotion.get_active_promotions()
+    promotions = spromotion.get_active()
     announces = announce.Announce().get_active()
 
     if len(promotions) < 1:
@@ -166,14 +177,14 @@ def store_offers():
     promotion_products_ids = []
 
     if len(promotions) > 0:
-        promotion_products_ids = spromotion.get_promotion_products(
-            promotions[0].id,
+        promotion_products_ids = spromotion.get_products(
+            promotions[0]['id'],
             1
         )
 
     for promotion_product_id in promotion_products_ids:
         promotion_products.append(
-            product.Product().get_product_by_id(
+            product.Product().get_id(
                 promotion_product_id
             )
         )
@@ -183,12 +194,13 @@ def store_offers():
 
     if user_id:
         pending_testimonials = testimonial.Testimonial().get_unsubmited(
-            user_id, lazy=True
+            user_id,
+            excludes=['all']
         )
 
     template_params = {
         'page': 1,
-        'section_id': promotions[0].id,
+        'section_id': promotions[0]['id'],
         'sections': promotions,
         'promotions': promotions,
         'active_section': 'offers',
@@ -205,12 +217,14 @@ def store_offers():
 @store.route('/catalogo/<app_id>')
 @store.route('/comprar/<app_id>/')
 def store_app_id(app_id):
-    app_product = product.Product().get_by_app_id(app_id)
+    try:
+        store_product = product.Product().get_app_id(app_id)
+    except product.Product().model.DoesNotExist:
+        store_product = product.Product().get_sub_id(app_id)
+    except:
+        store_product = None
 
-    if app_product is None:
-        app_product = product.Product().get_by_sub_id(app_id)
-
-    if app_product is None:
+    if store_product is None:
         error = {
             'title': 'Producto inexistente',
             'content': 'Este producto no existe :( Solicitalo?\
@@ -219,7 +233,7 @@ def store_app_id(app_id):
 
         return render_template('views/error.html', **error)
 
-    if not app_product.get('visible') and not session.get('admin'):
+    if not store_product.get('visible') and not session.get('admin'):
         error = {
             'title': 'Producto no disponible',
             'content': 'Este producto no se encuentra disponible temporalmente'
@@ -228,8 +242,8 @@ def store_app_id(app_id):
         return render_template('views/error.html', **error)
 
     if (
-        app_product.get('run_stock') and
-        app_product.get('stock') == 0
+        store_product.get('run_stock') and
+        store_product.get('stock') == 0
         and not session.get('admin')
     ):
         error = {
@@ -241,7 +255,7 @@ def store_app_id(app_id):
         return render_template('views/error.html', **error)
 
     params = {
-        'product': app_product
+        'product': store_product
     }
 
     return render_template('views/store/product.html', **params)
@@ -278,35 +292,15 @@ def store_reservations():
             flash('El formulario no contiene una imagen adjuntada')
             return render_template('views/store/reservations.html')
 
-        upload_count = configuration.Configuration().get_config(
-            'reservations/uploads/{}'.format(session.get('user'))
-        )
-
-        if upload_count and upload_count > 10:
-            flash('Has superado el limite de reservas. Intenta mas tarde')
-            return render_template('views/store/reservations.html')
-
         stream = request.files.get('image').stream.read()
 
         if len(stream) > config.MAX_IMAGE_BYTES_SIZE:
-            configuration.Configuration().set_config(
-                'reservations/uploads/{}'.format(session.get('user')),
-                (upload_count or 0) + 1,
-                timeout=1 * 60 * 60
-            )
-
             flash('El archivo adjuntado supera los 5MB')
             return render_template('views/store/reservations.html')
 
         if request.files.get('image').mimetype not in config.ALLOWED_MIMETYPES:
             flash(u'El formato de la imagen no está permitido')
             return render_template('views/store/reservations.html')
-
-        configuration.Configuration().set_config(
-            'reservations/uploads/{}'.format(session.get('user')),
-            (upload_count or 0) + 1,
-            timeout=1 * 60 * 60
-        )
 
         image = request.files['image']
         filename = '{0}.{1}'.format(request_id, image.filename.split('.')[1])
@@ -322,8 +316,9 @@ def store_reservations():
         userrequest.UserRequest().set_informed(request_id, filename)
         g.pending_requests = userrequest.UserRequest().\
             get_user_not_informed_userrequests(
-                session.get('user'), lazy=True
+                session.get('user')
             )
 
         flash('Pedido reservado satisfactoriamente')
+
         return render_template('views/store/reservations.html')
