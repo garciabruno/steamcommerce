@@ -29,8 +29,12 @@ def ajax_creditrequest_accept():
 
     request_id = int(request.form.get('request_id'))
 
-    creditrequest_data = creditrequest.CreditRequest().get_creditrequest_by_id(
-        request_id
+    creditrequest_data = creditrequest.CreditRequest().get_id(
+        request_id,
+        excludes=[
+            'accepted_by',
+            'creditrequest_messages'
+        ]
     )
 
     if creditrequest_data['accepted']:
@@ -72,8 +76,9 @@ def ajax_userrequest_set_paid():
 
     request_id = int(request.form.get('request_id'))
 
-    creditrequest_data = creditrequest.CreditRequest().get_creditrequest_by_id(
-        request_id
+    creditrequest_data = creditrequest.CreditRequest().get_id(
+        request_id,
+        excludes=['all']
     )
 
     if creditrequest_data['paid']:
