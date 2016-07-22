@@ -10,9 +10,10 @@ from flask import Blueprint
 from flask import render_template
 
 from forms import admin
-from steamcommerce_api.core import models
 
-from steamcommerce_api.api import price
+from steamcommerce_api.core import models
+from steamcommerce_api.utils import model_to_controller
+
 from steamcommerce_api.api import product
 from steamcommerce_api.api import userrequest
 from steamcommerce_api.api import paidrequest
@@ -50,6 +51,7 @@ def admin_root():
 def admin_model_view(model_name):
     if model_name not in [x.__name__ for x in models.models_list]:
         flash('Modelo inexistente')
+
         return redirect(url_for('admin.panel.admin_root'))
 
     page = request.args.get('page', 1)
@@ -84,11 +86,13 @@ def admin_model_view(model_name):
 def admin_model_add(model_name):
     if model_name not in [x.__name__ for x in models.models_list]:
         flash('Modelo inexistente')
+
         return redirect(url_for('admin.panel.admin_root'))
 
     model = models.models_dict.get(model_name)
 
     if 'add' not in model.Admin.actions:
+
         return redirect(url_for('admin.panel.admin_root'))
 
     raw_form = model_form(model, exclude=model.Admin.excludes)
@@ -107,12 +111,14 @@ def admin_model_add(model_name):
         }
     elif request.method == 'POST':
         new_model = model()
+
         form = raw_form(request.form, obj=new_model)
         form.hidden_tag = do_nothing
 
         if form.validate():
             form.populate_obj(new_model)
             new_model.save()
+
             flash('Objecto creado satisfactoriamente')
 
         params = {
@@ -131,6 +137,7 @@ def admin_model_add(model_name):
 def admin_model_edit(model_name, object_id):
     if model_name not in [x.__name__ for x in models.models_list]:
         flash('Modelo inexistente')
+
         return redirect(url_for('admin.panel.admin_root'))
 
     model = models.models_dict.get(model_name)
@@ -169,10 +176,25 @@ def admin_model_edit(model_name, object_id):
         if not form.validate():
             return render_template('admin/panel/model-form.html', **params)
 
+        controller = model_to_controller.CONTROLLERS.get(model_name, None)
+
+        if controller is None:
+            flash(('danger', u'No se encontró un controlador para el modelo'))
+
+            return render_template('admin/panel/model-form.html', **params)
+
+        if not hasattr(controller(), 'update'):
+            flash(('danger', u'El controlador no posee método "update"'))
+
+            return render_template('admin/panel/model-form.html', **params)
+
         form.populate_obj(_object)
         _object.save()
 
-        flash('Objecto actualizado satisfactoriamente')
+        controller().update(**{'id': object_id})
+
+        flash(('success', 'Objecto actualizado satisfactoriamente'))
+
         return render_template('admin/panel/model-form.html', **params)
 
 
@@ -206,22 +228,23 @@ def admin_panel_add_price(product_id):
         price_amount = float(form.price.data)
         price_type = int(form.price_type.data)
 
-        product_data = product.Product().get_product_by_id(product_id)
+        product_data = product.Product().get_id(product_id, excludes=['all'])
 
-        if product_data.get('price'):
+        if product_data.get('price_active'):
             params = {
                 'form': form
             }
 
             flash('El producto ya contiene precios activos')
+
             return render_template('admin/panel/generic-form.html', **params)
 
-        price.ProductPrice().create(**{
-            'price': price_amount,
-            'product': product_id,
+        product.Product().update(**{
+            'id': product_id,
+            'price_active': True,
+            'price_value': price_amount,
             'price_type': price_type,
-            'active': bool(form.active.data),
-            'currency': form.currency.data
+            'price_currency': form.currency.data
         })
 
         adminlog.AdminLog().push(
@@ -232,9 +255,12 @@ def admin_panel_add_price(product_id):
         )
 
         flash(
-            'Precio ${0:0.2f} para el producto {1} agregado'.format(
-                price_amount,
-                product_data.get('title')
+            (
+                'success',
+                'Precio ${0:0.2f} para el producto {1} agregado'.format(
+                    price_amount,
+                    product_data.get('title')
+                )
             )
         )
 
