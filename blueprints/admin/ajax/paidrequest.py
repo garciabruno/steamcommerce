@@ -29,8 +29,9 @@ def ajax_paidrequest_accept():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    paidrequest_data = paidrequest.PaidRequest().get_paidrequest_by_id(
-        request_id
+    paidrequest_data = paidrequest.PaidRequest().get_id(
+        request_id,
+        excludes=['all']
     )
 
     if paidrequest_data['accepted']:
@@ -54,8 +55,14 @@ def ajax_paidrequest_deny():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    paidrequest_data = paidrequest.PaidRequest().get_paidrequest_by_id(
-        request_id
+
+    paidrequest_data = paidrequest.PaidRequest().get_id(
+        request_id,
+        excludes=[
+            'accepted_by',
+            'paidrequest_relations',
+            'paidrequest_messages'
+        ]
     )
 
     if not paidrequest_data['visible']:
@@ -99,14 +106,16 @@ def ajax_paidrequest_assign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    user_id = session.get('user')
-    paidrequest_data = paidrequest.PaidRequest().get_paidrequest_by_id(
-        request_id
+
+    paidrequest_data = paidrequest.PaidRequest().get_id(
+        request_id,
+        excludes=['all']
     )
 
     if paidrequest_data['assigned']:
         return ({'success': False, 'status': 0}, 500)
 
+    user_id = session.get('user')
     paidrequest.PaidRequest().assign(request_id, user_id)
 
     return {'success': True}
@@ -123,8 +132,10 @@ def ajax_paidrequest_deassign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    paidrequest_data = paidrequest.PaidRequest().get_paidrequest_by_id(
-        request_id
+
+    paidrequest_data = paidrequest.PaidRequest().get_id(
+        request_id,
+        excludes=['all']
     )
 
     if not paidrequest_data['assigned']:

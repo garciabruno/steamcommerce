@@ -28,12 +28,14 @@ def ajax_userrequest_accept():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    # userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-    #     request_id
-    # )
 
-    # if userrequest_data['accepted']:
-    #     return ({'success': False, 'status': 0}, 500)
+    userrequest_data = userrequest.UserRequest().get_id(
+        request_id,
+        excludes=['all']
+    )
+
+    if userrequest_data['accepted']:
+        return ({'success': False, 'status': 0}, 500)
 
     user_id = session.get('user')
 
@@ -52,8 +54,14 @@ def ajax_userrequest_deny():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-        request_id
+
+    userrequest_data = userrequest.UserRequest().get_id(
+        request_id,
+        excludes=[
+            'accepted_by',
+            'userrequest_messages',
+            'userrequest_relations'
+        ]
     )
 
     if not userrequest_data['visible']:
@@ -96,12 +104,14 @@ def ajax_userrequest_assign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    # userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-    #     request_id
-    # )
 
-    # if userrequest_data['assigned']:
-    #     return ({'success': False, 'status': 0}, 500)
+    userrequest_data = userrequest.UserRequest().get_id(
+        request_id,
+        excludes=['all']
+    )
+
+    if userrequest_data['assigned']:
+        return ({'success': False, 'status': 0}, 500)
 
     user_id = session.get('user')
 
@@ -120,8 +130,10 @@ def ajax_userrequest_deassign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-        request_id
+
+    userrequest_data = userrequest.UserRequest().get_id(
+        request_id,
+        excludes=['all']
     )
 
     if not userrequest_data['assigned']:
@@ -159,13 +171,16 @@ def ajax_userrequest_set_paid():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-    user_id = session.get('user')
-    userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-        request_id
+
+    userrequest_data = userrequest.UserRequest().get_id(
+        request_id,
+        excludes=['all']
     )
 
     if userrequest_data['paid']:
         return ({'success': False, 'status': 0}, 500)
+
+    user_id = session.get('user')
 
     userrequest.UserRequest().set_paid(request_id)
 
