@@ -41,7 +41,7 @@ def is_logged_in(f):
 
         curr_user = user.User().get_by_id(session.get('user'))
 
-        if not curr_user.email or len(curr_user.email) < 1:
+        if not curr_user['email'] or len(curr_user['email']) < 1:
             if request.url_rule.rule != url_for('views.user.user_register'):
                 return redirect(url_for('views.user.user_register'))
 
