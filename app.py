@@ -176,19 +176,19 @@ def before_request():
 
             session.pop('user')
 
-        if not curr_user.email or len(curr_user.email) < 1:
+        if not curr_user['email'] or len(curr_user['email']) < 1:
             register_url = url_for('views.user.user_register')
 
             if request.url_rule and request.url_rule.rule != register_url:
                 return redirect(register_url)
 
-        if curr_user.is_banned:
+        if curr_user['is_banned']:
             session.pop('user')
 
             return render_template('views/user/banned.html', user=curr_user)
 
         if session.get('admin') and curr_user:
-            if not curr_user.admin:
+            if not curr_user['admin']:
                 # User had admin session but was not admin
                 # on the database. Kick the session
 
@@ -203,18 +203,19 @@ def before_request():
 
         cart.Cart().process_cart(user_id)
         user_cart = cart.Cart().get_user_cart(user_id)
-        notifications = notification.Notification().get_for_user(user_id)
 
         g.user = curr_user
         g.user_cart = user_cart
 
-        g.notification_counter = sum([not x.seen for x in notifications[:10]])
+        g.notification_counter = notification.Notification().\
+            get_user_unseen_notifications(user_id)
 
-        g.notifications = notifications[:10]
+        g.notifications = notification.Notification().\
+            get_user_top_notifications(user_id)
 
         g.pending_requests = userrequest.UserRequest().\
             get_user_not_informed_userrequests(
-                user_id, lazy=True
+                user_id
             )
 
 
