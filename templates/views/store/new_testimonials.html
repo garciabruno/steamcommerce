@@ -20,14 +20,14 @@
                         <div class="s-commerce-new-testimonial" data-testimonialid="{{ testimonial['id'] }}">
                             <div class="s-commerce-new-testimonial-title">
                                 {% if testimonial.get('userrequest') %}
-                                    {% set relations = testimonial.get('userrequest').get('relations') %}
+                                    {% set relations = testimonial.get('userrequest').get('userrequest_relations') %}
 
                                     Compra de {{ relations[0].get('product').get('title') }}
                                     {% if relations|length > 1 %}
                                         y {{ relations|length - 1 }} productos más
                                     {% endif %}
                                 {% elif testimonial.get('paidrequest') %}
-                                    {% set relations = testimonial.get('paidrequest').get('relations') %}
+                                    {% set relations = testimonial.get('paidrequest').get('paidrequest_relations') %}
 
                                     Compra de {{ relations[0].get('product').get('title') }}
                                     {% if relations|length > 1 %}
@@ -72,7 +72,7 @@
                             </div>
 
                             <div class="s-commerce-testimonial-form" data-testimonialid="{{ testimonial.get('id') }}">
-                                <textarea class="form-control" style="display: none;"></textarea>
+                                <textarea class="form-control" style="display: none;" placeholder="Insertar testimonio"> </textarea>
 
                                 <div class="s-commerce-testimonial-text-container"> </div>
 
@@ -88,9 +88,9 @@
 
                         <style type="text/css">
                             {% if testimonial.get('userrequest') %}
-                                {% set product_id = testimonial.get('userrequest').get('relations')[0].get('product').get('id') %}
+                                {% set product_id = testimonial.get('userrequest').get('userrequest_relations')[0].get('product').get('id') %}
                             {% elif testimonial.get('paidrequest') %}
-                                {% set product_id = testimonial.get('paidrequest').get('relations')[0].get('product').get('id') %}
+                                {% set product_id = testimonial.get('paidrequest').get('paidrequest_relations')[0].get('product').get('id') %}
                             {% endif %}
 
                             .s-commerce-new-testimonial[data-testimonialid="{{ testimonial['id'] }}"]{

@@ -114,7 +114,7 @@
                                                     </td>
 
                                                     <td>
-                                                        {% for relation in userrequest['relations'] %}
+                                                        {% for relation in userrequest['userrequest_relations'] %}
                                                             <div class="s-commerce-table-product">
                                                                 <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
                                                                 {{ relation['product']['title'] }}
@@ -192,7 +192,7 @@
                                                     </td>
 
                                                     <td>
-                                                        {% for relation in paidrequest['relations'] %}
+                                                        {% for relation in paidrequest['paidrequest_relations'] %}
                                                             <div class="s-commerce-table-product">
                                                                 <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
                                                                 {{ relation['product']['title'] }}

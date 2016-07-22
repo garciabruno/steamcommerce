@@ -81,7 +81,7 @@
                                             <td>Productos solicitados</td>
 
                                             <td class="table-listing">
-                                                {{ userrequest.get('relations')|length }}
+                                                {{ userrequest.get('userrequest_relations')|length }}
                                             </td>
                                         </tr>
 
@@ -90,7 +90,7 @@
                                             <td class="table-listing"><br></td>
                                         </tr>
 
-                                        {% for relation in userrequest.get('relations') %}
+                                        {% for relation in userrequest.get('userrequest_relations') %}
                                             <tr>
                                                 <td>
                                                     {% set product = relation.get('product') %}
@@ -168,7 +168,7 @@
                                             <td>Productos solicitados</td>
 
                                             <td class="table-listing">
-                                                {{ paidrequest.get('relations')|length }}
+                                                {{ paidrequest.get('paidrequest_relations')|length }}
                                             </td>
                                         </tr>
 
@@ -177,7 +177,7 @@
                                             <td class="table-listing"><br></td>
                                         </tr>
 
-                                        {% for relation in paidrequest.get('relations') %}
+                                        {% for relation in paidrequest.get('paidrequest_relations') %}
                                             <tr>
                                                 <td>
                                                     {% set product = relation.get('product') %}
@@ -313,7 +313,7 @@
                     {% macro print_messages(messages) %}
                         <div class="s-commerce-history-tracking">
                             <div class="tracking-title">
-                                Mensajes del staff
+                                Mensajes del staff ({{ messages|length }})
                             </div>
 
                             {% for message in messages %}
@@ -328,12 +328,12 @@
                         </div>
                     {% endmacro %}
 
-                    {% if request_type == 'A' and userrequest.get('messages')|length > 0 %}
-                        {{ print_messages(userrequest.get('messages')) }}
-                    {% elif request_type == 'B' and creditrequest.get('messages')|length > 0 %}
-                        {{ print_messages(creditrequest.get('messages')) }}
-                    {% elif request_type == 'C' and paidrequest.get('messages')|length > 0 %}
-                        {{ print_messages(paidrequest.get('messages')) }}
+                    {% if request_type == 'A' and userrequest.get('userrequest_messages')|length > 0 %}
+                        {{ print_messages(userrequest.get('userrequest_messages')) }}
+                    {% elif request_type == 'B' and creditrequest.get('creditrequest_messages')|length > 0 %}
+                        {{ print_messages(creditrequest.get('creditrequest_messages')) }}
+                    {% elif request_type == 'C' and paidrequest.get('paidrequest_messages')|length > 0 %}
+                        {{ print_messages(paidrequest.get('paidrequest_messages')) }}
                     {% endif %}
                 </div>
             </div>

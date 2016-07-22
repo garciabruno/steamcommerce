@@ -19,7 +19,7 @@
 
 
                     <td>
-                        {% for relation in request['relations'] %}
+                        {% for relation in request['paidrequest_relations'] %}
                             <div class="s-commerce-relation-product-section">
                                 {{ relation['product']['section']['title'] }}
                             </div>
@@ -27,7 +27,7 @@
                     </td>
 
                     <td>
-                        {% for relation in request['relations'] %}
+                        {% for relation in request['paidrequest_relations'] %}
                             <div class="s-commerce-relation{% if relation['sent'] %} relation-sent{% endif %}">
                                 <span class="s-commerce-relation-product-title">
                                     <a href="{{ url_for('views.store.store_app_id', app_id=(relation['product']['app_id'] or relation['product']['sub_id'])) }}">{{ relation['product']['title'] }}</a>

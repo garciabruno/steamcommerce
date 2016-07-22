@@ -38,9 +38,9 @@
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             {% for message in messages %}
-                                <div class="alert alert-danger" role="alert">
+                                <div class="alert alert-{{ message[0] }}" role="alert">
                                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                                    {{ message }}
+                                    {{ message[1] }}
                                 </div>
                             {% endfor %}
                         {% endif %}
@@ -109,14 +109,14 @@
                         </div>
                     {% endif %}
 
-                    {% if product.get('product_type') == 2 and product.get('codes')|length > 0 %}
+                    {% if product.get('product_type') == 2 and product.get('product_codes')|length > 0 %}
                         <div class="s-commerce-offer-hud">
                             <span class="s-commerce-product-in-offer">
                                 ¡Este producto se entrega inmediatamente al ingresar el pago!
                             </span>
 
                             <span class="s-commerce-product-offer-date">
-                                Hay {{ product.get('codes')|length }} códigos/links de entrega inmediata restantes
+                                Hay {{ product.get('product_codes')|length }} códigos/links de entrega inmediata restantes
                             </span>
                             <p>
                                 <i><small>* Solo aplicable para compras realizadas fuera del carrito</small></i>
@@ -273,9 +273,9 @@
                         <a class="btn btn-primary" href="{{ url_for('admin.panel.admin_panel_add_price', product_id=product.get('id')) }}">Agregar precio</a>
                     </div>
 
-                    {% if product.get('codes')|length > 0 %}
+                    {% if product.get('product_codes')|length > 0 %}
                         <div class="s-commerce-product-admin">
-                            {% for code in product.get('codes') %}
+                            {% for code in product.get('product_codes') %}
                                 {% if code.get('user_owner') == session.get('user') or session.get('user') == 1 %}
                                     <div style="margin: 5px 0;">
                                         <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='ProductCode', object_id=code.get('id')) }}">

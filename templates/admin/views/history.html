@@ -151,7 +151,9 @@
                                             </thead>
 
                                             <tbody>
-                                                {% for relation in request['relations'] %}
+                                                {% set relations = request.get('userrequest_relations', []) or request.get('paidrequest_relations', []) %}
+
+                                                {% for relation in relations %}
                                                     <tr>
                                                         <td>
                                                             {{ relation['product']['section']['title'] }}
@@ -314,6 +316,8 @@
                             </table>
 
                             {% include "admin/views/history_items.html" %}
+
+                            {% set messages = request.get('userrequest_messages', []) or request.get('creditrequest_messages', []) or request.get('paidrequest_messages', []) %}
 
                             {% for message in messages %}
                                 <div class="panel panel-default request_message">
