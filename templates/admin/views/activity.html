@@ -1,0 +1,153 @@
+{% macro print_logs(logs, action_range) %}
+    {% for log in logs %}
+        {% if log.action in action_range %}
+            <div class="admin-log">
+                {% if log.user -%}
+                    <span class="admin-log-avatar">
+                        <img src="{{ log.user.avatar_url }}">
+                    </span>
+
+                    <span class="admin-profile">
+                        <a href="#">@{{ log.user.username }}</a>
+                    </span>
+                {% else %}
+                    <span class="admin-log-avatar">
+
+                    </span>
+
+                    <span class="admin-profile">
+                        ExtremeBot
+                    </span>
+                {%- endif %}
+
+                <span class="admin-log-text">
+                    {% if log.action == 1 %}
+                        aceptó el pedido de usuario
+                        <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
+                    {% endif %}
+
+                    {% if log.action == 2 -%}
+                        aceptó el pedido de créditos
+                        <a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>
+                    {%- endif %}
+
+                    {% if log.action == 3 -%}
+                        aceptó el pedido de compra
+                        <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a>
+                    {%- endif %}
+
+                    {% if log.action == 4 -%}
+                        {% if log.userrequest %}
+                            <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.userrequest.price|price_format }}</span>
+                        {% elif log.creditrequest %}
+                            <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.creditrequest.amount|price_format }}</span>
+                        {% endif %}
+                    {%- endif %}
+
+                    {% if log.action == 5 -%}
+                        <span class="text text-danger">detectó un pedido de créditos con monto insuficiente
+                            (<a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>)<br/>
+                            ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.creditrequest.amount|price_format }}
+                        </span>
+                    {%- endif %}
+
+                    {% if log.action == 6 -%}
+                        actualizó el pedido <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
+                        a "Cobrado"
+                    {%- endif %}
+
+                    {% if log.action == 7 -%}
+                        finalizó la promoción de <a href="{{ url_for('views.store.store_app_id', app_id=(log.product.app_id or log.product.sub_id)) }}">{{log.product.title }}</a>
+                    {%- endif %}
+
+                    {% if log.action == 8 -%}
+                        agregó una promoción para el producto <a href="{{ url_for('views.store.store_app_id', app_id=(log.product.app_id or log.product.sub_id)) }}">{{log.product.title }}</a> con finalización a la fecha: {{ log.date|date_format }}
+                    {%- endif %}
+
+                    {% if log.action == 9 -%}
+                        <span class="text text-danger">
+                            detectó un pedido cobrado a través de CuentaDigital:
+
+                            {% if log.userrequest %}
+                                <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
+                            {% elif log.creditrequest %}
+                                <a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>
+                            {% endif %}
+                        </span>
+                    {%- endif %}
+
+                    {% if log.action == 10 -%}
+                        cargó un código para el producto <a href="{{ url_for('views.store.store_app_id', app_id=(log.product.app_id or log.product.sub_id)) }}">{{ log.product.title }}</a>
+                    {%- endif %}
+
+                    {% if log.action == 11 -%}
+                        {% if log.userrequest -%}
+                            {% if log.userrequest.userrequest_relations|length > 0 %}
+                                <span data-toggle="tooltip" data-placement="top" title="({{ log.userrequest.userrequest_relations[0].product.title }})">
+                                    envió un código para el pedido:
+
+                                    <a href="/admin/historial/A-{{ log.userrequest.id }}">
+                                        #A-{{ log.userrequest.id }}
+                                    </a>
+                                </span>
+                            {% endif %}
+                        {% elif log.paidrequest %}
+                            {% if log.paidrequest.paidrequest_relations|length > 0 %}
+                                <span data-toggle="tooltip" data-placement="top" title="({{ log.paidrequest.paidrequest_relations[0].product.title }})">
+                                    envió un código para el pedido:
+
+                                    <a href="/admin/historial/C-{{ log.paidrequest.id }}">
+                                        #C-{{ log.paidrequest.id }}
+                                    </a>
+                                </span>
+                                {% endif %}
+                        {%- endif %}
+
+                            <span class="text text-danger">
+                                {% if log.paidrequest -%}
+                                    {% if log.paidrequest.paidrequest_relations|length > 0 %}
+                                        ({{ log.paidrequest.paidrequest_relations[0].product.product_codes|length }} códigos restantes)
+                                    {% endif %}
+                                {% elif log.userrequest %}
+                                    {% if log.userrequest.userrequest_relations|length > 0 %}
+                                        ({{ log.userrequest.userrequest_relations[0].product.product_codes|length }} códigos restantes)
+                                    {% endif %}
+                                {%- endif %}
+                            </span>
+                        </span>
+                    {%- endif %}
+
+                    {% if log.action == 12 %}
+                        utilizó ${{ log.amount|price_format }} créditos para el pedido <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a>
+                    {% endif %}
+
+                    {% if log.action == 13 %}
+                        {% if log.userrequest %}
+                            reportó un pago por el monto de ${{ log.amount|price_format }} para el pedido <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
+                        {% else %}
+                            <span class="text text-danger">
+                                reportó un pago por el monto de ${{ log.amount|price_format }} para el código de barras {{ log.bar_code }} (No corresponde a ningún pedido no pago o existente)
+                            </span>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if log.action == 14 %}
+                        denegó el pedido de usuario <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a> ({{ log.userrequest.reason }})
+                    {% endif %}
+
+                    {% if log.action == 15 %}
+                        denegó el pedido de créditos <a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>
+                    {% endif %}
+
+                    {% if log.action == 16 %}
+                        denegó el pedido de compra <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a> ({{ log.paidrequest.reason }})
+                    {% endif %}
+
+                    ({{ log.timestamp|timesince }})
+                </span>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{{ print_logs(logs, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]) }}

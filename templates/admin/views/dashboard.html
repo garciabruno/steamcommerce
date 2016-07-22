@@ -2,157 +2,7 @@
 
 {% block title %}Admin - Dashboard{% endblock %}
 
-{% macro print_logs(logs, action_range) %}
-    {% for log in logs %}
-        {% if log.action in action_range %}
-            <div class="admin-log">
-                {% if log.user -%}
-                    <span class="admin-log-avatar">
-                        <img src="{{ log.user.avatar_url }}">
-                    </span>
-
-                    <span class="admin-profile">
-                        <a href="#">@{{ log.user.username }}</a>
-                    </span>
-                {% else %}
-                    <span class="admin-log-avatar">
-
-                    </span>
-
-                    <span class="admin-profile">
-                        ExtremeBot
-                    </span>
-                {%- endif %}
-
-                <span class="admin-log-text">
-                    {% if log.action == 1 %}
-                        aceptó el pedido de usuario
-                        <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
-                    {% endif %}
-
-                    {% if log.action == 2 -%}
-                        aceptó el pedido de créditos
-                        <a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>
-                    {%- endif %}
-
-                    {% if log.action == 3 -%}
-                        aceptó el pedido de compra
-                        <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a>
-                    {%- endif %}
-
-                    {% if log.action == 4 -%}
-                        {% if log.userrequest %}
-                            <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.userrequest.price|price_format }}</span>
-                        {% elif log.creditrequest %}
-                            <span class="text text-danger">detectó un pedido de usuario con monto insuficiente (<a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>) ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.creditrequest.amount|price_format }}</span>
-                        {% endif %}
-                    {%- endif %}
-
-                    {% if log.action == 5 -%}
-                        <span class="text text-danger">detectó un pedido de créditos con monto insuficiente
-                            (<a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>)<br/>
-                            ${{ log.amount|price_format }} ingresados, pedido generado por ${{ log.creditrequest.amount|price_format }}
-                        </span>
-                    {%- endif %}
-
-                    {% if log.action == 6 -%}
-                        actualizó el pedido <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
-                        a "Cobrado"
-                    {%- endif %}
-
-                    {% if log.action == 7 -%}
-                        finalizó la promoción de <a href="{{ url_for('views.store.store_app_id', app_id=(log.product.app_id or log.product.sub_id)) }}">{{log.product.title }}</a>
-                    {%- endif %}
-
-                    {% if log.action == 8 -%}
-                        agregó una promoción para el producto <a href="{{ url_for('views.store.store_app_id', app_id=(log.product.app_id or log.product.sub_id)) }}">{{log.product.title }}</a> con finalización a la fecha: {{ log.date|date_format }}
-                    {%- endif %}
-
-                    {% if log.action == 9 -%}
-                        <span class="text text-danger">
-                            detectó un pedido cobrado a través de CuentaDigital:
-
-                            {% if log.userrequest %}
-                                <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
-                            {% elif log.creditrequest %}
-                                <a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>
-                            {% endif %}
-                        </span>
-                    {%- endif %}
-
-                    {% if log.action == 10 -%}
-                        cargó un código para el producto <a href="{{ url_for('views.store.store_app_id', app_id=(log.product.app_id or log.product.sub_id)) }}">{{ log.product.title }}</a>
-                    {%- endif %}
-
-                    {% if log.action == 11 -%}
-                        {% if log.userrequest -%}
-                            {% if log.userrequest.products.count() > 0 %}
-                                <span data-toggle="tooltip" data-placement="top" title="({{ log.userrequest.products[0].product.title }})">
-                                    envió un código para el pedido:
-
-                                    <a href="/admin/historial/A-{{ log.userrequest.id }}">
-                                        #A-{{ log.userrequest.id }}
-                                    </a>
-                                </span>
-                            {% endif %}
-                        {% elif log.paidrequest %}
-                            {% if log.paidrequest.products.count() > 0 %}
-                                <span data-toggle="tooltip" data-placement="top" title="({{ log.paidrequest.products[0].product.title }})">
-                                    envió un código para el pedido:
-
-                                    <a href="/admin/historial/C-{{ log.paidrequest.id }}">
-                                        #C-{{ log.paidrequest.id }}
-                                    </a>
-                                </span>
-                                {% endif %}
-                        {%- endif %}
-
-                            <span class="text text-danger">
-                                {% if log.paidrequest -%}
-                                    {% if log.paidrequest.products.count() > 0 %}
-                                        ({{ log.paidrequest.products[0].product.codes.filter(sent=False, enabled=True).count() }} códigos restantes)
-                                    {% endif %}
-                                {% elif log.userrequest %}
-                                    {% if log.userrequest.products.count() > 0 %}
-                                        ({{ log.userrequest.products[0].product.codes.filter(sent=False, enabled=True).count() }} códigos restantes)
-                                    {% endif %}
-                                {%- endif %}
-                            </span>
-                        </span>
-                    {%- endif %}
-
-                    {% if log.action == 12 %}
-                        utilizó ${{ log.amount|price_format }} créditos para el pedido <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a>
-                    {% endif %}
-
-                    {% if log.action == 13 %}
-                        {% if log.userrequest %}
-                            reportó un pago por el monto de ${{ log.amount|price_format }} para el pedido <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a>
-                        {% else %}
-                            <span class="text text-danger">
-                                reportó un pago por el monto de ${{ log.amount|price_format }} para el código de barras {{ log.bar_code }} (No corresponde a ningún pedido no pago o existente)
-                            </span>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if log.action == 14 %}
-                        denegó el pedido de usuario <a href="/admin/historial/A-{{ log.userrequest.id }}">#A-{{ log.userrequest.id }}</a> ({{ log.userrequest.reason }})
-                    {% endif %}
-
-                    {% if log.action == 15 %}
-                        denegó el pedido de créditos <a href="/admin/historial/B-{{ log.creditrequest.id }}">#B-{{ log.creditrequest.id }}</a>
-                    {% endif %}
-
-                    {% if log.action == 16 %}
-                        denegó el pedido de compra <a href="/admin/historial/C-{{ log.paidrequest.id }}">#C-{{ log.paidrequest.id }}</a> ({{ log.paidrequest.reason }})
-                    {% endif %}
-
-                    ({{ log.timestamp|timesince }})
-                </span>
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endmacro %}
+{% import "admin/views/activity.html" as activity %}
 
 {% block body %}
     <div class="admin-dashboard">
@@ -161,54 +11,70 @@
                 <div class="tabbeable">
                     <ul class="nav nav-tabs nav-justified">
                         <li class="active">
-                            <a data-toggle="tab" href="#tab1">Actividad de pedidos</a>
+                            <a data-toggle="tab" href="#tab1">Toda la actividad</a>
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#tab2">Entrega inmediata</a>
+                            <a data-toggle="tab" href="#tab2">Actividad de pedidos</a>
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#tab3">Finalización de ofertas</a>
+                            <a data-toggle="tab" href="#tab3">Entrega inmediata</a>
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#tab4">Alertas</a>
+                            <a data-toggle="tab" href="#tab4">Finalización de ofertas</a>
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#tab5">Actividad de bot</a>
+                            <a data-toggle="tab" href="#tab5">Alertas</a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" href="#tab6">Actividad de bot</a>
                         </li>
                     </ul>
 
                     <div class="tab-content">
                         <div id="tab1" class="tab-pane active">
-                            <div class="admin-log-activity">
-                                {{ print_logs(logs, [1, 2, 3, 14, 15, 16]) }}
+                            <div class="admin-log-activity all-admin-logs">
+                                {{ activity.print_logs(logs, [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]) }}
+                            </div>
+
+                            <div class="load-more-activity" style="margin-top: 20px;">
+                                <button class="btn btn-default" data-page="1">
+                                    Cargar mas
+                                </button>
                             </div>
                         </div>
 
                         <div id="tab2" class="tab-pane">
                             <div class="admin-log-activity">
-                                {{ print_logs(logs, [10, 11]) }}
+                                {{ activity.print_logs(logs, [1, 2, 3, 14, 15, 16]) }}
                             </div>
                         </div>
 
                         <div id="tab3" class="tab-pane">
                             <div class="admin-log-activity">
-                                {{ print_logs(logs, [7, 8]) }}
+                                {{ activity.print_logs(logs, [10, 11]) }}
                             </div>
                         </div>
 
                         <div id="tab4" class="tab-pane">
                             <div class="admin-log-activity">
-                                {{ print_logs(logs, [4, 5, 9, 12]) }}
+                                {{ activity.print_logs(logs, [7, 8]) }}
                             </div>
                         </div>
 
                         <div id="tab5" class="tab-pane">
                             <div class="admin-log-activity">
-                                {{ print_logs(logs, [6, 13]) }}
+                                {{ activity.print_logs(logs, [4, 5, 9, 12]) }}
+                            </div>
+                        </div>
+
+                        <div id="tab6" class="tab-pane">
+                            <div class="admin-log-activity">
+                                {{ activity.print_logs(logs, [6, 13]) }}
                             </div>
                         </div>
                     </div>

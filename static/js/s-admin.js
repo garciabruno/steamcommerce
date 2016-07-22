@@ -489,3 +489,26 @@ $(ADMIN_SET_RELATION_UNSENT).on('click', function(){
 
     request.set_unsent(state['requesttype'], state['relationid']);
 });
+
+$('.load-more-activity button').on('click', function(){
+    var button = parseAdminButton($(this));
+
+    if (button == Error) {
+        return;
+    }
+
+    var page = parseInt($(this).data('page'));
+    $(this).data('page', page + 1);
+
+    $.ajax({
+        url: '/admin/activity/load/',
+        type: 'POST',
+        data:{
+            page: page + 1
+        },
+        success: function(data) {
+            button.restore_loading();
+            $('.all-admin-logs').append(data);
+        }
+    })
+});
