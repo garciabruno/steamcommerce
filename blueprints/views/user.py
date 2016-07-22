@@ -41,16 +41,18 @@ def user_admin_profile(username):
 
         return render_template('views/error.html', **error)
 
-    notifications = notification.Notification().get_for_user(user_data.id)
+    notifications = notification.Notification().get_for_user(user_data['id'])
 
-    userrequests = userrequest.UserRequest().get_user_userrequests(
-        user_data.id
+    userrequests = userrequest.UserRequest().get_by_user_id(
+        user_data['id']
     )
-    creditrequests = creditrequest.CreditRequest().get_user_creditrequests(
-        user_data.id
+
+    creditrequests = creditrequest.CreditRequest().get_by_user_id(
+        user_data['id']
     )
-    paidrequests = paidrequest.PaidRequest().get_user_paidrequests(
-        user_data.id
+
+    paidrequests = paidrequest.PaidRequest().get_by_user_id(
+        user_data['id']
     )
 
     form = user_form.ProfileForm(obj=user_data)
@@ -130,11 +132,9 @@ def user_profile():
     user_data = user.User().get_by_id(user_id)
     notifications = notification.Notification().get_for_user(user_id)
 
-    userrequests = userrequest.UserRequest().get_user_userrequests(user_id)
-    creditrequests = creditrequest.CreditRequest().get_user_creditrequests(
-        user_id
-    )
-    paidrequests = paidrequest.PaidRequest().get_user_paidrequests(user_id)
+    userrequests = userrequest.UserRequest().get_by_user_id(user_id)
+    creditrequests = creditrequest.CreditRequest().get_by_user_id(user_id)
+    paidrequests = paidrequest.PaidRequest().get_by_user_id(user_id)
 
     params = {
         'user': user_data,
@@ -153,17 +153,20 @@ def user_profile():
         params.update({'form': form})
 
         if form.validate():
-            if user_data.email != form.email.data:
+            if user_data['email'] != form.email['email']:
                 user.User().set_email(
                     user_id,
-                    user_data.email,
+                    user_data['email'],
                     form.email.data
                 )
 
             name = form.name.data
             last_name = form.last_name.data
 
-            if user_data.name != name or user_data.last_name != last_name:
+            if (
+                user_data['name'] != name or
+                user_data['last_name'] != last_name
+            ):
                 user.User().set_name(user_id, name, last_name)
 
     return render_template('views/user/profile.html', **params)
@@ -173,6 +176,7 @@ def user_profile():
 @route_decorators.is_logged_in
 def user_history(history_identifier):
     user_id = session.get('user')
+
     request_type = history_identifier['type']
     request_id = int(history_identifier['number'])
 
@@ -183,9 +187,7 @@ def user_history(history_identifier):
 
     if request_type == 'A':
         try:
-            userrequest_data = userrequest.UserRequest().get_userrequest_by_id(
-                request_id
-            )
+            userrequest_data = userrequest.UserRequest().get_id(request_id)
         except userrequest.UserRequest().model.DoesNotExist:
             return render_template('views/error.html', **incorrect_request)
 
@@ -201,8 +203,9 @@ def user_history(history_identifier):
         return render_template('views/user/user-history.html', **params)
     elif request_type == 'B':
         try:
-            creditrequest_data = creditrequest.CreditRequest().\
-                get_creditrequest_by_id(request_id)
+            creditrequest_data = creditrequest.CreditRequest().get_id(
+                request_id
+            )
         except creditrequest.CreditRequest().model.DoesNotExist:
             return render_template('views/error.html', **incorrect_request)
 
@@ -218,8 +221,7 @@ def user_history(history_identifier):
         return render_template('views/user/user-history.html', **params)
     elif request_type == 'C':
         try:
-            paidrequest_data = paidrequest.PaidRequest().\
-                get_paidrequest_by_id(request_id)
+            paidrequest_data = paidrequest.PaidRequest().get_id(request_id)
         except paidrequest.PaidRequest.DoesNotExist:
             return render_template('views/error.html', **incorrect_request)
 
@@ -249,8 +251,7 @@ def user_notifications_seen():
 @route_decorators.is_logged_in
 def user_testimonials_new():
     user_id = session.get('user')
-    pending_testimonials = testimonial.Testimonial().\
-        get_user_pending_testimonials(user_id)
+    pending_testimonials = testimonial.Testimonial().get_unsubmited(user_id)
 
     return render_template(
         'views/store/new_testimonials.html',
@@ -269,12 +270,13 @@ def user_testimonial_skip():
         return ({'success': False}, 500)
 
     pending_testimonials = testimonial.Testimonial().get_unsubmited(
-        user_id, lazy=True
+        user_id,
+        excludes=['all']
     )
 
     testimonial_id = int(testimonial_id)
 
-    if testimonial_id not in [x for x in pending_testimonials]:
+    if testimonial_id not in [x['id'] for x in pending_testimonials]:
         return ({'success': False}, 500)
 
     testimonial.Testimonial().update(**{
@@ -297,12 +299,13 @@ def user_testimonial_submit():
         return ({'success': False, 'status': 1}, 500)
 
     pending_testimonials = testimonial.Testimonial().get_unsubmited(
-        user_id, lazy=True
+        user_id,
+        excludes=['all']
     )
 
     testimonial_id = int(testimonial_id)
 
-    if testimonial_id not in [x for x in pending_testimonials]:
+    if testimonial_id not in [x['id'] for x in pending_testimonials]:
         return ({'success': False, 'status': 2}, 500)
 
     testimonial.Testimonial().update(**{
