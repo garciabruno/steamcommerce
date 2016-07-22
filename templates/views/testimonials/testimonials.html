@@ -33,8 +33,8 @@
         {% for testimonial in row %}
             <div class="col-xs-16 col-sm-8 col-md-5">
                 {% if testimonial['userrequest'] %}
-                    {% if testimonial['userrequest']['relations']|length > 0 %}
-                        {% set product = testimonial['userrequest']['relations'][0]['product'] %}
+                    {% if testimonial['userrequest']['userrequest_relations']|length > 0 %}
+                        {% set product = testimonial['userrequest']['userrequest_relations'][0]['product'] %}
 
                         {% if product['assets']['background'] %}
                             {{ print_background(product['id'], product['assets']['background']) }}
@@ -45,8 +45,8 @@
                         {{ default_background() }}
                     {% endif %}
                 {% elif testimonial['paidrequest'] %}
-                    {% if testimonial['paidrequest']['relations']|length > 0 %}
-                        {% set product = testimonial['paidrequest']['relations'][0]['product'] %}
+                    {% if testimonial['paidrequest']['paidrequest_relations']|length > 0 %}
+                        {% set product = testimonial['paidrequest']['paidrequest_relations'][0]['product'] %}
 
                         {% if product['assets']['background'] %}
                             {{ print_background(product['id'], product['assets']['background']) }}
@@ -61,23 +61,23 @@
                     <div class="s-commerce-testimonial-content">
                         <div class="s-commerce-testimonial-product-title">
                             {% if testimonial['userrequest'] %}
-                                {% if testimonial['userrequest']['relations']|length > 0 %}
-                                    {% set product = testimonial['userrequest']['relations'][0]['product'] %}
+                                {% if testimonial['userrequest']['userrequest_relations']|length > 0 %}
+                                    {% set product = testimonial['userrequest']['userrequest_relations'][0]['product'] %}
 
                                     <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">{{ product['title'] }}</a>
 
-                                    {% if testimonial['userrequest']['relations']|length - 1 > 0 %}
-                                        y {{ testimonial['userrequest']['relations']|length -1 }} productos más
+                                    {% if testimonial['userrequest']['userrequest_relations']|length - 1 > 0 %}
+                                        y {{ testimonial['userrequest']['userrequest_relations']|length -1 }} productos más
                                     {% endif %}
                                 {% endif %}
                             {% elif testimonial['paidrequest'] %}
-                                {% if testimonial['paidrequest']['relations']|length > 0 %}
-                                    {% set product = testimonial['paidrequest']['relations'][0]['product'] %}
+                                {% if testimonial['paidrequest']['paidrequest_relations']|length > 0 %}
+                                    {% set product = testimonial['paidrequest']['paidrequest_relations'][0]['product'] %}
 
                                     <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">{{ product['title'] }}</a>
 
-                                    {% if testimonial['paidrequest']['relations']|length - 1 > 0 %}
-                                        y {{ testimonial['paidrequest']['relations']|length -1 }} productos más
+                                    {% if testimonial['paidrequest']['paidrequest_relations']|length - 1 > 0 %}
+                                        y {{ testimonial['paidrequest']['paidrequest_relations']|length -1 }} productos más
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
@@ -87,7 +87,6 @@
 
                         <script type="text/javascript">
                             var testimonial_data = "{{ testimonial['content']|as_json }}";
-                            console.log(testimonial_data);
                             testimonial_data = testimonial_data.replaceAll('&#34;', '');
 
                             $('.s-commerce-testimonial-body[data-testimonialid="' + {{ testimonial.id }} + '"]').html(emojione.shortnameToImage(testimonial_data));
@@ -151,4 +150,10 @@
     </div>
 {% endfor %}
 
-{{ wtf.quick_form(form) }}
+<div class="container">
+    <div class="main">
+        <div id="load-more" style="text-align: center;">
+            {{ wtf.quick_form(form, button_map={"submit": "default btn-lg s-commerce-load-more"}) }}
+        </div>
+    </div>
+</div>

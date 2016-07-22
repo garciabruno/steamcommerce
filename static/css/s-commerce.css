@@ -1418,3 +1418,11 @@ ol.progress-meter li.todo:before {
 .testimonial-count{
     color: #fdb832;
 }
+
+.s-commerce-load-more{
+    font-family: 'Roboto', sans-serif;
+    font-size: 23px;
+    background-color: #30A66F;
+    color: #FFFFFF;
+    border-color: #30A66F;
+}
