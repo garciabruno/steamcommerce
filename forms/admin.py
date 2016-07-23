@@ -64,4 +64,15 @@ class ResumeForm(Form):
         default=True
     )
 
+    user_id = wtforms.SelectField(
+        u'Administrador',
+        choices=[
+            (1, 'nin'),
+            (2, 'Emiliano'),
+            (7102, 'pety99'),
+            (19548, 'paueg')
+        ],
+        coerce=int
+    )
+
     submit = wtforms.SubmitField(u'Enviar', validators=[DataRequired()])

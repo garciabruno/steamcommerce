@@ -68,11 +68,7 @@ def admin_load_activity():
 @route_decorators.is_logged_in
 @route_decorators.is_admin
 def admin_resume():
-    user_id = session.get('user')
-    user_data = user.User().get_by_id(user_id)
-
     params = {
-        'user': user_data,
         'now_date': datetime.datetime.now(),
     }
 
@@ -88,6 +84,8 @@ def admin_resume():
 
         userrequests = []
         paidrequests = []
+
+        user_id = form.user_id.data
 
         if form.userrequests.data:
             _userrequests = userrequest.UserRequest().\
