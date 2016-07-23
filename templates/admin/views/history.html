@@ -171,7 +171,7 @@
                                                                 Dispenser
                                                             </a>
 
-                                                            {% set crc = relation.get('product').get('currency') %}
+                                                            {% set crc = relation.get('product').get('price_currency') %}
 
                                                             {% if crc %}
                                                                 <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ crc }}" width="16" height="11" class="flag flag-{{ crc|lower }}">
