@@ -7,7 +7,6 @@
         {% raw %}
         {{#visible}}
             <div class="col-md-4" style="margin-bottom: 11px; padding-right: 5px; padding-left: 5px;">
-
                 {{#assets.capsule}}
                     <div class="s-commerce-product" style="background-image: url('/static/img/product/{{ id }}/{{ assets.capsule }}');">
                 {{/assets.capsule}}
@@ -23,7 +22,7 @@
 
                         <div class="s-commerce-product-buttons">
                             <a href="{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}" class="s-commerce-product-price">
-                                ${{#price}}{{price}}.00{{/price}}
+                                ${{#price_value}}{{price_value}}.00{{/price_value}}
                             </a>
                         </div>
                     </a>
@@ -116,7 +115,7 @@
         search.addWidget(
             instantsearch.widgets.rangeSlider({
                 container: '#price',
-                attributeName: 'price.price',
+                attributeName: 'price_value',
                 templates: {
                     header: '<h5>Precio</h5>'
                 },
