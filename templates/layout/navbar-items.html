@@ -1,3 +1,16 @@
+<style type="text/css">
+    #new {
+        color: #fdb832;
+        font-size: 17px;
+        left: 25px;
+        position: absolute;
+        top: 0px;
+        z-index: 100;
+        font-weight: bold;
+        font-size: 13px;
+    }
+</style>
+
 <ul class="nav navbar-nav">
     <li class="active">
         <a href="{{ url_for('views.store.store_catalog') }}" class="s-commerce-navbar-item {% if active_section == 'catalog'%}active{% endif %}">
@@ -26,6 +39,13 @@
     <li>
         <a href="{{ url_for('views.store.store_faqs') }}" class="s-commerce-navbar-item">
             FAQs
+        </a>
+    </li>
+
+    <li>
+        <a target="_blank" href="http://wasd.com.ar" class="s-commerce-navbar-item">
+            Blog
+            <span id="new">¡Nuevo!</span>
         </a>
     </li>
 
