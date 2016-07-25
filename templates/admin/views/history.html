@@ -298,7 +298,7 @@
                                             {% if request_type != 'C' and request['paid_date'] %}
                                                 {{ request['paid_date']|date_format }}
                                             {% else %}
-                                                {{ request['date']|date_format }}
+                                                {{ request['paid_date']|date_format }}
                                             {% endif %}
                                         </td>
 
