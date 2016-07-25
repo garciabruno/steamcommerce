@@ -131,10 +131,10 @@ def store_products():
         }
 
     else:
-        promotion_products_ids = storepromotion.StorePromotion().\
-            get_promotion_products(
-                section_id, page
-            )
+        promotion_products_ids = storepromotion.StorePromotion().get_products(
+            section_id,
+            page
+        )
 
         if len(promotion_products_ids) < 1:
             return json.dumps({'success': False}), 500
