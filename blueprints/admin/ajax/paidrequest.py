@@ -100,14 +100,9 @@ def ajax_paidrequest_deny():
 @route_decorators.ajax_is_admin
 @route_decorators.as_json
 def ajax_paidrequest_assign():
-    form = admin_inputs.RequestIDInput(request)
-
-    if not form.validate():
-        return ({'success': False, 'errors': form.errors}, 422)
-
+    user_id = session.get('user')
     request_id = int(request.form.get('request_id'))
 
-    user_id = session.get('user')
     paidrequest.PaidRequest().assign(request_id, user_id)
 
     return {'success': True}
