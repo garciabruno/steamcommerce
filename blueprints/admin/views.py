@@ -299,17 +299,17 @@ def admin_message_add():
 
     if form.request_type.data == 'A':
         userrequest_data = userrequest.UserRequest().get_id(request_id)
-        owner_id = userrequest_data.user.id
+        owner_id = userrequest_data['user']['id']
 
         data.update({'userrequest': form.request_id.data})
     elif form.request_type.data == 'B':
         creditrequest_data = creditrequest.CreditRequest().get_id(request_id)
-        owner_id = creditrequest_data.user.id
+        owner_id = creditrequest_data['user']['id']
 
         data.update({'creditrequest': form.request_id.data})
     elif form.request_type.data == 'C':
         paidrequest_data = paidrequest.PaidRequest().get_id(request_id)
-        owner_id = paidrequest_data.user.id
+        owner_id = paidrequest_data['user']['id']
 
         data.update({'paidrequest': form.request_id.data})
 
