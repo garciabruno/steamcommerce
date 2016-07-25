@@ -220,9 +220,13 @@ def store_app_id(app_id):
     try:
         store_product = product.Product().get_app_id(app_id)
     except product.Product().model.DoesNotExist:
-        store_product = product.Product().get_sub_id(app_id)
-    except:
         store_product = None
+
+    if not store_product:
+        try:
+            store_product = product.Product().get_sub_id(app_id)
+        except product.Product().model.DoesNotExist:
+            store_product = None
 
     if store_product is None:
         error = {
