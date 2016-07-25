@@ -132,6 +132,7 @@ if not config.DEBUG:
     @app.before_first_request
     def init_rollbar():
         """init rollbar module"""
+
         rollbar.init(
             config.ROLLBAR_TOKEN,
             'env',

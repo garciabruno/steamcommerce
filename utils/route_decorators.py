@@ -107,7 +107,7 @@ def has_no_email(f):
     def has_no_email_inner(*args, **kwargs):
         curr_user = user.User().get_by_id(session.get('user'))
 
-        if not curr_user.email or len(curr_user.email) < 1:
+        if not curr_user['email'] or len(curr_user['email']) < 1:
             return f(*args, **kwargs)
 
         return redirect(url_for('views.store.store_catalog'))
