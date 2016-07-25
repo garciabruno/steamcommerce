@@ -167,6 +167,9 @@ def before_request():
     g.db = models.database
     g.db.connect()
 
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return
+
     if session.get('user'):
         try:
             curr_user = user.User().get_by_id(session.get('user'))
