@@ -107,14 +107,6 @@ def ajax_paidrequest_assign():
 
     request_id = int(request.form.get('request_id'))
 
-    paidrequest_data = paidrequest.PaidRequest().get_id(
-        request_id,
-        excludes=['all']
-    )
-
-    if paidrequest_data['assigned']:
-        return ({'success': False, 'status': 0}, 500)
-
     user_id = session.get('user')
     paidrequest.PaidRequest().assign(request_id, user_id)
 
@@ -132,14 +124,6 @@ def ajax_paidrequest_deassign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-
-    paidrequest_data = paidrequest.PaidRequest().get_id(
-        request_id,
-        excludes=['all']
-    )
-
-    if not paidrequest_data['assigned']:
-        return ({'success': False, 'status': 0}, 500)
 
     paidrequest.PaidRequest().assign(request_id, None)
 

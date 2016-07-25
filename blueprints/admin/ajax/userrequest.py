@@ -105,16 +105,7 @@ def ajax_userrequest_assign():
 
     request_id = int(request.form.get('request_id'))
 
-    userrequest_data = userrequest.UserRequest().get_id(
-        request_id,
-        excludes=['all']
-    )
-
-    if userrequest_data['assigned']:
-        return ({'success': False, 'status': 0}, 500)
-
     user_id = session.get('user')
-
     userrequest.UserRequest().assign(request_id, user_id)
 
     return {'success': True}
@@ -130,14 +121,6 @@ def ajax_userrequest_deassign():
         return ({'success': False, 'errors': form.errors}, 422)
 
     request_id = int(request.form.get('request_id'))
-
-    userrequest_data = userrequest.UserRequest().get_id(
-        request_id,
-        excludes=['all']
-    )
-
-    if not userrequest_data['assigned']:
-        return ({'success': False, 'status': 0}, 500)
 
     userrequest.UserRequest().assign(request_id, None)
 
