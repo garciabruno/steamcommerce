@@ -153,7 +153,7 @@ def user_profile():
         params.update({'form': form})
 
         if form.validate():
-            if user_data['email'] != form.email['email']:
+            if user_data['email'] != form.email.data:
                 user.User().set_email(
                     user_id,
                     user_data['email'],
