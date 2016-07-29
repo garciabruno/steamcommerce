@@ -80,7 +80,7 @@
         <li class="notification-container">
             <a class="s-commerce-user-nav-notifications" href="#">
                 <span>
-                    <i class="glyphicon glyphicon-bell"></i>
+                    <i class="glyphicon glyphicon-bell"> </i>
                 </span>
             </a>
 
@@ -94,7 +94,15 @@
         <li>
             <a id="cd-cart-trigger" href="#">
                 <span class="s-commerce-user-nav-cart">
-                    <i class="class glyphicon glyphicon-shopping-cart"></i>
+                    <i class="glyphicon glyphicon-shopping-cart"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('views.user.user_wishlist') }}">
+                <span class="s-commerce-user-wishlist">
+                    <i class="glyphicon glyphicon-heart"> </i>
                 </span>
             </a>
         </li>
@@ -121,14 +129,26 @@
 
 {% if g.user %}
     <div class="s-commerce-cart-container">
-        {% include "views/cart/view.html" %}
+        <div id="cd-shadow-layer">
+
+        </div>
+
+        <div id="cd-cart">
+            <div class="s-commerce-navbar-item-loading">
+                Cargando tu carrito, un momento...
+            </div>
+        </div>
     </div>
 
     <div class="s-commerce-notifications-container">
         <div id="cd-notifications">
             <div class="s-commerce-cart-title">Notificaciones</div>
 
-            {% include "views/user/nav-notifications.html" %}
+            <ul class="cd-notifications-items">
+                <div class="s-commerce-navbar-item-loading">
+                    Cargando notificaciones, un momento...
+                </div>
+            </ul>
         </div>
     </div>
 {% endif %}
