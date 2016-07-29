@@ -41,8 +41,6 @@
     {% endif %}
 {% endmacro %}
 
-<ul class="cd-notifications-items">
-    {% for notification in g.notifications %}
-        <li class="s-commerce-notification {% if not notification.seen %}unseen{% endif %}">{{ get_notification_body(notification) }}</li>
-    {% endfor %}
-</ul>
+{% for notification in notifications %}
+    <li class="s-commerce-notification {% if not notification.seen %}unseen{% endif %}">{{ get_notification_body(notification) }}</li>
+{% endfor %}
