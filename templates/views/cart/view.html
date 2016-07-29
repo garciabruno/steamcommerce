@@ -1,31 +1,27 @@
-<div id="cd-shadow-layer"> </div>
+<div class="s-commerce-cart-title">Carrito (<span class="s-commerce-cart-counter">{{ user_cart.get('items')|length }}</span>)</div>
 
-<div id="cd-cart">
-    <div class="s-commerce-cart-title">Carrito (<span class="s-commerce-cart-counter">{{ g.user_cart.get('items')|length }}</span>)</div>
+{% if user_cart.get('items')|length < 1 %}
+    <div class="s-commerce-cart-title">No hay productos en tu carrito :(</div>
+{% endif %}
 
-    {% if g.user_cart.get('items')|length < 1 %}
-        <div class="s-commerce-cart-title">No hay productos en tu carrito :(</div>
-    {% endif %}
+<ul class="cd-cart-items">
+    {% for item in user_cart.get('items') %}
+        <li class="s-commerce-cart-item" data-relationid="{{ item.get('id') }}">
+            <div class="s-commerce-cart-item-title">{{ item.get('product').get('title') }}</div>
 
-    <ul class="cd-cart-items">
-        {% for item in g.user_cart.get('items') %}
-            <li class="s-commerce-cart-item" data-relationid="{{ item.get('id') }}">
-                <div class="s-commerce-cart-item-title">{{ item.get('product').get('title') }}</div>
+            <div class="s-commerce-cart-item-price cd-price">
+                ${{ item.get('product').get('price_value')|price_format }}
 
-                <div class="s-commerce-cart-item-price cd-price">
-                    ${{ item.get('product').get('price_value')|price_format }}
+                {% if item.get('product').get('price_type') == 2 %}
+                    <i class="text text-danger">* Unicamente abonable con fondos de tu cuenta</i>
+                {% endif %}
+            </div>
 
-                    {% if item.get('product').get('price_type') == 2 %}
-                        <i class="text text-danger">* Unicamente abonable con fondos de tu cuenta</i>
-                    {% endif %}
-                </div>
+            <a href="#" class="cd-item-remove cd-img-replace s-commerce-remove-cart-button" data-relationid="{{ item.get('id') }}">Remove</a>
+        </li>
+    {% endfor %}
+</ul>
 
-                <a href="#" class="cd-item-remove cd-img-replace s-commerce-remove-cart-button" data-relationid="{{ item.get('id') }}">Remove</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <div class="s-commerce-cart-hud">
-        {% include "views/cart/hud.html" %}
-    </div>
+<div class="s-commerce-cart-hud">
+    {% include "views/cart/hud.html" %}
 </div>

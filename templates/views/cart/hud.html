@@ -1,10 +1,10 @@
-{% if g.user_cart.get('prices').get('normal') > 0 or g.user_cart.get('prices').get('credit') > 0 %}
+{% if user_cart.get('prices').get('normal') > 0 or user_cart.get('prices').get('credit') > 0 %}
     <div class="cd-cart-total">
-        <p>En efectivo <span>${{ g.user_cart.get('prices').get('normal')|price_format }} ARS</span></p>
+        <p>En efectivo <span>${{ user_cart.get('prices').get('normal')|price_format }} ARS</span></p>
     </div>
 
     <div class="cd-cart-total">
-        <p>Con fondos de tu cuenta <span>${{ g.user_cart.get('prices').get('credit')|price_format }} ARS</span></p>
+        <p>Con fondos de tu cuenta <span>${{ user_cart.get('prices').get('credit')|price_format }} ARS</span></p>
     </div>
 
     <a href="#" class="checkout-btn">Comprar</a>
@@ -13,7 +13,7 @@
 <script type="text/javascript">
     function userrequest_cart_swal() {
         swal({
-            title: "Confirmar compra de {{ g.user_cart.get('items')|length }} producto(s) por ${{ g.user_cart['prices']['normal']|price_format }} ARS",
+            title: "Confirmar compra de {{ user_cart.get('items')|length }} producto(s) por ${{ user_cart['prices']['normal']|price_format }} ARS",
             text: "Al generar una boleta en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>.",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -80,14 +80,14 @@
 
     function paidrequest_cart_swal() {
         swal({
-            title: "Autorizar la compra de {{ g.user_cart.get('items')|length }} producto(s) por ${{ g.user_cart.get('prices').get('credit')|price_format }} créditos",
-            text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ g.user_cart.get('prices').get('credit')|price_format }} de créditos de tu usuario</b>",
+            title: "Autorizar la compra de {{ user_cart.get('items')|length }} producto(s) por ${{ user_cart.get('prices').get('credit')|price_format }} créditos",
+            text: "Al generar una compra con créditos en nuestro sistema estas expresando tu acuerdo con nuestros <a target=\"_blank\" href=\"#\">Términos y condiciones</a>. <b>Se descontará el monto de ${{ user_cart.get('prices').get('credit')|price_format }} de créditos de tu usuario</b>",
             html: true,
             showCancelButton: true,
             closeOnConfirm: false,
             showLoaderOnConfirm: true,
             cancelButtonText: "Cancelar",
-            confirmButtonText: "Autorizar compra por ${{ g.user_cart.get('prices').get('credit')|price_format }}",
+            confirmButtonText: "Autorizar compra por ${{ user_cart.get('prices').get('credit')|price_format }}",
         },
         function() {
             $.ajax({
@@ -129,7 +129,7 @@
 
     $('.checkout-btn').on('click', function() {
             swal({
-                title: "Comprar {{ g.user_cart.get('items')|length }} producto(s) por ${{ g.user_cart.get('prices').get('credit')|price_format }} ARS",
+                title: "Comprar {{ user_cart.get('items')|length }} producto(s) por ${{ user_cart.get('prices').get('credit')|price_format }} ARS",
                 showCancelButton: true,
                 closeOnConfirm: false,
                 closeOnConfirm: false,
