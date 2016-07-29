@@ -18,6 +18,10 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
 
+    {% if session.get('user') and pending_requests|length > 0 %}
+        {% include "views/store/pending_alert.html" %}
+    {% endif %}
+
     <div class="container hidden-xs">
         {% include "views/store/sliders.html" %}
     </div>
