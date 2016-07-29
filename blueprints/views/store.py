@@ -85,12 +85,18 @@ def store_catalog():
     user_id = session.get('user')
 
     pending_testimonials = []
+    pending_requests = []
 
     if user_id:
         pending_testimonials = testimonial.Testimonial().get_unsubmited(
             user_id,
             excludes=['all']
         )
+
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                user_id
+            )
 
     template_params = {
         'page': 1,
@@ -101,6 +107,7 @@ def store_catalog():
         'sections': sections,
         'promotions': promotions,
         'active_section': 'catalog',
+        'pending_requests': pending_requests,
         'promotion_products': promotion_products,
         'pending_testimonials': pending_testimonials
     }
@@ -190,6 +197,8 @@ def store_offers():
         )
 
     pending_testimonials = []
+    pending_requests = []
+
     user_id = session.get('user')
 
     if user_id:
@@ -197,6 +206,11 @@ def store_offers():
             user_id,
             excludes=['all']
         )
+
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                user_id
+            )
 
     template_params = {
         'page': 1,
@@ -207,6 +221,7 @@ def store_offers():
         'sliders': sliders,
         'announces': announces,
         'products': promotion_products,
+        'pending_requests': pending_requests,
         'pending_testimonials': pending_testimonials
     }
 
