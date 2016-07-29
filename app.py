@@ -201,7 +201,8 @@ def after_request(response):
     except AttributeError:
         return response
 
-    g.db.close()
+    if not g.db.is_closed():
+        g.db.close()
 
     return response
 
