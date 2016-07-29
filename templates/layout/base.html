@@ -47,10 +47,6 @@
     </head>
 
     <body>
-        {% if g.user and g.pending_requests|length > 0 %}
-            {% include "views/store/pending_alert.html" %}
-        {% endif %}
-
         {% include "layout/navbar.html" %}
 
         {% block body %} {% endblock %}
