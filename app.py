@@ -11,7 +11,6 @@ from flask import session
 from flask import request
 from flask import url_for
 from flask import redirect
-from flask import render_template
 from flask import Request
 
 from werkzeug.routing import BaseConverter
@@ -24,9 +23,7 @@ from flask import got_request_exception
 
 from steamcommerce_api.utils import json_util
 
-from steamcommerce_api.api import cart
 from steamcommerce_api.api import notification
-from steamcommerce_api.api import userrequest
 
 import datetime
 
@@ -172,55 +169,29 @@ def before_request():
         return
 
     if session.get('user'):
-        try:
-            curr_user = user.User().get_by_id(session.get('user'))
-        except user.User().model.DoesNotExist:
-            # user had a value but was incorrect
-            # highly unlikely (!)
-
-            session.pop('user')
-
-        if not curr_user['email'] or len(curr_user['email']) < 1:
+        if not session.get('email'):
             register_url = url_for('views.user.user_register')
 
             if request.url_rule and request.url_rule.rule != register_url:
                 return redirect(register_url)
 
-        if curr_user['is_banned']:
-            session.pop('user')
-
-            return render_template('views/user/banned.html', user=curr_user)
-
-        if session.get('admin') and curr_user:
-            if not curr_user['admin']:
-                # User had admin session but was not admin
-                # on the database. Kick the session
-
-                # TODO: Log event
-
-                session.pop('user')
-                session.pop('admin')
-
-                curr_user = None
-
         user_id = session.get('user')
-
-        cart.Cart().process_cart(user_id)
-        user_cart = cart.Cart().get_user_cart(user_id)
-
-        g.user = curr_user
-        g.user_cart = user_cart
 
         g.notification_counter = notification.Notification().\
             get_user_unseen_notifications(user_id)
 
-        g.notifications = notification.Notification().\
-            get_user_top_notifications(user_id)
+        user_data = user.User().get_by_id(user_id)
+        g.user = user_data
 
-        g.pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
-                user_id
-            )
+        avatar_url = user.User().get_user_avatar_url(user_data['steam'])
+
+        if user_data['avatar_url'] != avatar_url:
+            user.User().update(**{
+                'id': user_id,
+                'avatar_url': avatar_url
+            })
+
+            user_data['avatar_url'] = avatar_url
 
 
 @app.after_request
