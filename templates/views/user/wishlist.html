@@ -1,0 +1,31 @@
+{% extends "layout/base.html" %}
+
+{% block header %}
+    {{ url_for('static', filename='js/jquery.range-min.js')|js_file|safe }}
+    {{ url_for('static', filename='css/jquery.range.css')|css_file|safe }}
+    {{ url_for('static', filename='js/jquery.bootpag.min.js')|js_file|safe }}
+{% endblock %}
+
+{% block title %}ExtremeGaming - Lista de deseados{% endblock %}
+
+{% block body %}
+    <div class="s-commerce-products">
+        <div class="container">
+            <div class="s-commerce-products-title">
+                Tu lista de deseados
+            </div>
+        </div>
+
+        <div class="container" style="margin-bottom: 50px">
+            {% include "views/store/products.html" %}
+        </div>
+
+        <div class="container" style="margin-bottom: 75px">
+            <a href="{{ url_for('views.user.user_wishlist_retry') }}">
+                <button class="btn btn-lg btn-default">
+                    Refrescar lista de deseados
+                </button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
