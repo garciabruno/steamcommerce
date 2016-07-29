@@ -567,8 +567,13 @@ body{
 }
 
 .s-commerce-user-nav-notifications i,
-.s-commerce-user-nav-cart i{
+.s-commerce-user-nav-cart i,
+.s-commerce-user-wishlist i{
     font-size: 21px;
+}
+
+.s-commerce-user-wishlist:hover{
+    color: #E2264D;
 }
 
 .s-commerce-left-navbar{
@@ -1424,4 +1429,10 @@ ol.progress-meter li.todo:before {
     background-color: #30A66F;
     color: #FFFFFF;
     border-color: #30A66F;
+}
+
+.s-commerce-navbar-item-loading {
+    font-family: 'Roboto', sans-serif;
+    font-size: 23px;
+    color: #1C262F;
 }
