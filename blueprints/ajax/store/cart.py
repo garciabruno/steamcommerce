@@ -54,9 +54,11 @@ def ajax_cart_add():
 
     user_cart = cart.Cart().get_user_cart(session.get('user'))
 
-    g.user_cart = user_cart
+    params = {
+        'user_cart': user_cart
+    }
 
-    return render_template('views/cart/view.html')
+    return render_template('views/cart/view.html', **params)
 
 
 @ajax_cart.route('/remove/', methods=['POST'])
@@ -74,6 +76,8 @@ def ajax_cart_remove():
     cart.Cart().remove_from_user_cart(user_id, relation_id)
     user_cart = cart.Cart().get_user_cart(session.get('user'))
 
-    g.user_cart = user_cart
+    params = {
+        'user_cart': user_cart
+    }
 
-    return render_template('views/cart/hud.html')
+    return render_template('views/cart/hud.html', **params)
