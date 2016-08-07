@@ -50,7 +50,7 @@ def admin_root():
 @route_decorators.is_admin
 def admin_model_view(model_name):
     if model_name not in [x.__name__ for x in models.models_list]:
-        flash('Modelo inexistente')
+        flash(('danger', 'Modelo inexistente'))
 
         return redirect(url_for('admin.panel.admin_root'))
 
@@ -85,7 +85,7 @@ def admin_model_view(model_name):
 @route_decorators.is_admin
 def admin_model_add(model_name):
     if model_name not in [x.__name__ for x in models.models_list]:
-        flash('Modelo inexistente')
+        flash(('danger', 'Modelo inexistente'))
 
         return redirect(url_for('admin.panel.admin_root'))
 
@@ -119,7 +119,7 @@ def admin_model_add(model_name):
             form.populate_obj(new_model)
             new_model.save()
 
-            flash('Objecto creado satisfactoriamente')
+            flash(('success', 'Objecto creado satisfactoriamente'))
 
         params = {
             'form': form,
@@ -136,7 +136,7 @@ def admin_model_add(model_name):
 @route_decorators.is_admin
 def admin_model_edit(model_name, object_id):
     if model_name not in [x.__name__ for x in models.models_list]:
-        flash('Modelo inexistente')
+        flash(('danger', 'Modelo inexistente'))
 
         return redirect(url_for('admin.panel.admin_root'))
 
@@ -250,7 +250,7 @@ def admin_panel_add_price(product_id):
                 'form': form
             }
 
-            flash('El producto ya contiene precios activos')
+            flash(('success', 'El producto ya contiene precios activos'))
 
             return render_template(
                 'admin/panel/generic-form.html',
@@ -334,7 +334,7 @@ def admin_panel_add_code(product_id):
             code_content, product_id, user_id
         )
 
-        flash(constants.PRODUCTCODE_ADDED.format(code_id))
+        flash(('success', constants.PRODUCTCODE_ADDED.format(code_id)))
 
         code = productcode.ProductCode().get_id(code_id)
         admin_id = code.user_owner
@@ -385,7 +385,13 @@ def admin_panel_add_code(product_id):
                 })
 
             flash(
-                constants.PRODUCTCODE_ADDED_TO_REQUEST.format('C', request_id)
+                (
+                    'success',
+                    constants.PRODUCTCODE_ADDED_TO_REQUEST.format(
+                        'C',
+                        request_id
+                    )
+                )
             )
 
             code_added = True
@@ -429,7 +435,13 @@ def admin_panel_add_code(product_id):
                 })
 
             flash(
-                constants.PRODUCTCODE_ADDED_TO_REQUEST.format('A', request_id)
+                (
+                    'success',
+                    constants.PRODUCTCODE_ADDED_TO_REQUEST.format(
+                        'A',
+                        request_id
+                    )
+                )
             )
 
             break
