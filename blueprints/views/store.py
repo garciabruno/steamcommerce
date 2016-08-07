@@ -302,7 +302,16 @@ def store_search():
 @route_decorators.is_logged_in
 def store_reservations():
     if request.method == 'GET':
-        return render_template('views/store/reservations.html')
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                session.get('user')
+            )
+
+        params = {
+            'pending_requests': pending_requests
+        }
+
+        return render_template('views/store/reservations.html', **params)
     elif request.method == 'POST':
         form = user_form.ReservationForm(request.form, csrf_enabled=False)
 
@@ -340,11 +349,16 @@ def store_reservations():
         f.close()
 
         userrequest.UserRequest().set_informed(request_id, filename)
-        g.pending_requests = userrequest.UserRequest().\
+
+        pending_requests = userrequest.UserRequest().\
             get_user_not_informed_userrequests(
                 session.get('user')
             )
 
         flash('Pedido reservado satisfactoriamente')
 
-        return render_template('views/store/reservations.html')
+        params = {
+            'pending_requests': pending_requests
+        }
+
+        return render_template('views/store/reservations.html', **params)

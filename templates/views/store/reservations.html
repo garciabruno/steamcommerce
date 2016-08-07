@@ -7,7 +7,7 @@
 {% block body %}
     <div class="container">
         <div class="main">
-            {% if not g.pending_requests %}
+            {% if not pending_requests %}
                 <div class="reservation-title" style="margin-top: 50px;">
                     No tienes reservas pendientes
                 </div>
@@ -24,7 +24,7 @@
             {% endwith %}
 
             <div class="s-commerce-reservations-container">
-                {% for request in g.pending_requests %}
+                {% for request in pending_requests %}
                     <div class="s-commerce-reservation">
                         <div class="reservation-title">
                             Pedido <a href="/historial/A-{{ request['id'] }}">#A-{{ request['id'] }}</a>
