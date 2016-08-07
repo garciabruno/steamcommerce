@@ -174,19 +174,28 @@ def admin_model_edit(model_name, object_id):
         }
 
         if not form.validate():
-            return render_template('admin/panel/model-form.html', **params)
+            return render_template(
+                'admin/panel/model-form.html',
+                **params
+            )
 
         controller = model_to_controller.CONTROLLERS.get(model_name, None)
 
         if controller is None:
             flash(('danger', u'No se encontró un controlador para el modelo'))
 
-            return render_template('admin/panel/model-form.html', **params)
+            return render_template(
+                'admin/panel/model-form.html',
+                **params
+            )
 
         if not hasattr(controller(), 'update'):
             flash(('danger', u'El controlador no posee método "update"'))
 
-            return render_template('admin/panel/model-form.html', **params)
+            return render_template(
+                'admin/panel/model-form.html',
+                **params
+            )
 
         form.populate_obj(_object)
         _object.save()
@@ -212,7 +221,10 @@ def admin_panel_add_price(product_id):
             'form': form
         }
 
-        return render_template('admin/panel/generic-form.html', **params)
+        return render_template(
+            'admin/panel/generic-form.html',
+            **params
+        )
     elif request.method == 'POST':
         form = admin.ProductPriceForm(request.form)
 
@@ -221,7 +233,10 @@ def admin_panel_add_price(product_id):
                 'form': form
             }
 
-            return render_template('admin/panel/generic-form.html', **params)
+            return render_template(
+                'admin/panel/generic-form.html',
+                **params
+            )
 
         user_id = session.get('user')
         product_id = int(form.product_id.data)
@@ -237,7 +252,10 @@ def admin_panel_add_price(product_id):
 
             flash('El producto ya contiene precios activos')
 
-            return render_template('admin/panel/generic-form.html', **params)
+            return render_template(
+                'admin/panel/generic-form.html',
+                **params
+            )
 
         product.Product().update(**{
             'id': product_id,
@@ -271,7 +289,10 @@ def admin_panel_add_price(product_id):
             'form': new_form
         }
 
-        return render_template('admin/panel/generic-form.html', **params)
+        return render_template(
+            'admin/panel/generic-form.html',
+            **params
+        )
 
 
 @admin_panel.route(
@@ -288,7 +309,10 @@ def admin_panel_add_code(product_id):
             'form': form
         }
 
-        return render_template('admin/panel/generic-form.html', **params)
+        return render_template(
+            'admin/panel/generic-form.html',
+            **params
+        )
     elif request.method == 'POST':
         form = admin.ProductCodeForm(request.form)
 
@@ -297,7 +321,10 @@ def admin_panel_add_code(product_id):
                 'form': form
             }
 
-            return render_template('admin/panel/generic-form.html', **params)
+            return render_template(
+                'admin/panel/generic-form.html',
+                **params
+            )
 
         user_id = session.get('user')
         product_id = int(form.product_id.data)
@@ -366,7 +393,10 @@ def admin_panel_add_code(product_id):
             break
 
         if code_added:
-            return render_template('admin/panel/generic-form.html', **params)
+            return render_template(
+                'admin/panel/generic-form.html',
+                **params
+            )
 
         userrequests = userrequest.UserRequest().get_paid_userrequests()
 
@@ -404,4 +434,7 @@ def admin_panel_add_code(product_id):
 
             break
 
-        return render_template('admin/panel/generic-form.html', **params)
+        return render_template(
+            'admin/panel/generic-form.html',
+            **params
+        )

@@ -11,8 +11,11 @@ body{
     color: white;
 }
 
+.navbar-toggle .icon-bar {
+    background-color: white;
+}
+
 .s-commerce-navbar{
-    height: 55px;
     color: white;
     padding-top: 16px;
 }
@@ -55,7 +58,6 @@ body{
     color: #fdb832 !important;
     font-weight: 600;
 }
-
 
 .s-commerce-navbar-item.active{
     background-color: #24945c;

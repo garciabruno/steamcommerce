@@ -80,7 +80,12 @@
         <li class="notification-container">
             <a class="s-commerce-user-nav-notifications" href="#">
                 <span>
-                    <i class="glyphicon glyphicon-bell"> </i>
+                    <i class="glyphicon glyphicon-bell hidden-xs"> </i>
+
+                    <span class="visible-xs">
+                        <i class="glyphicon glyphicon-bell"> </i>
+                        Notificaciones
+                    </span>
                 </span>
             </a>
 
@@ -94,7 +99,12 @@
         <li>
             <a id="cd-cart-trigger" href="#">
                 <span class="s-commerce-user-nav-cart">
-                    <i class="glyphicon glyphicon-shopping-cart"></i>
+                    <i class="glyphicon glyphicon-shopping-cart hidden-xs"></i>
+
+                    <span class="visible-xs">
+                        <i class="glyphicon glyphicon-shopping-cart"></i>
+                        Carrrito
+                    </span>
                 </span>
             </a>
         </li>
@@ -102,7 +112,12 @@
         <li>
             <a href="{{ url_for('views.user.user_wishlist') }}">
                 <span class="s-commerce-user-wishlist">
-                    <i class="glyphicon glyphicon-heart"> </i>
+                    <i class="glyphicon glyphicon-heart hidden-xs"></i>
+
+                    <span class="visible-xs">
+                        <i class="glyphicon glyphicon-heart"></i>
+                        Lista de deseados
+                    </span>
                 </span>
             </a>
         </li>
@@ -110,9 +125,10 @@
         <li>
             <a href="{{ url_for('views.user.user_logout') }}">
                 <span class="s-commerce-user-nav-cart">
-                    <i class="glyphicon glyphicon-log-out"></i>
+                    <i class="glyphicon glyphicon-log-out hidden-xs"></i>
 
                     <span class="visible-xs">
+                        <i class="glyphicon glyphicon-log-out"></i>
                         Desconectarse
                     </span>
                 </span>

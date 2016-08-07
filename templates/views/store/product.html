@@ -3,8 +3,8 @@
 {% block title %}ExtremeGaming - {{ product.title }} {% if product.price %}- ${{ product.price.price|price_format }}{% endif %}{% endblock %}
 
 {% block header %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.timeago.es.js') }}"></script>
+    {{ url_for('static', filename='js/jquery.timeago.js')|js_file|safe }}
+    {{ url_for('static', filename='js/jquery.timeago.es.js')|js_file|safe }}
 {% endblock %}
 
 {% block body %}
@@ -138,7 +138,7 @@
 
                     <div class="s-commerce-product-body">
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-xs-12 col-sm-10">
                                 <div class="s-commerce-body-inner">
                                     {% if product.get('description') %}
                                         <div class="s-commerce-description-title">
@@ -164,7 +164,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-xs-12 col-sm-6">
                                 {% if session.get('admin') %}
                                     <div class="s-commerce-product-admin-hud">
                                         <a class="btn btn-default" href="https://steamdb.info/{{ 'app' if product.get('app_id') else 'sub' }}/{{ product.get('app_id') or product.get('sub_id') }}" target="_blank">
@@ -190,7 +190,7 @@
                                 </div>
 
                                 <div class="s-commerce-product-specs">
-                                    {% for spec in product.get('specs', []) %}
+                                    {% for spec in product.get('product_specs', []) %}
                                         {% if spec['visible'] %}
                                             <span class="s-commerce-spec">
                                                 <a href="#">{{ spec['title'] }}</a>
@@ -204,7 +204,7 @@
                                 </div>
 
                                 <div class="s-commerce-product-categories">
-                                    {% for tag in product.get('tags', []) %}
+                                    {% for tag in product.get('product_tags', []) %}
                                         {% if tag['visible'] %}
                                             <span class="s-commerce-category">
                                                 <a href="#">{{ tag['title'] }}</a>

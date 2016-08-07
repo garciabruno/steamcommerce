@@ -1,8 +1,6 @@
 {% extends "layout/base.html" %}
 
 {% block header %}
-    {{ url_for('static', filename='js/jquery.range-min.js')|js_file|safe }}
-    {{ url_for('static', filename='css/jquery.range.css')|css_file|safe }}
     {{ url_for('static', filename='js/jquery.bootpag.min.js')|js_file|safe }}
 {% endblock %}
 

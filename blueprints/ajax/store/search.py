@@ -26,4 +26,7 @@ def ajax_search_products():
     if len(matches) == 0:
         return ({'success': False, 'status': 0}, 500)
 
-    return render_template('views/store/products.html', products=matches)
+    return render_template(
+        'views/store/products.html',
+        products=matches
+    )

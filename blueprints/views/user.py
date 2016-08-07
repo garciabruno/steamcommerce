@@ -110,6 +110,7 @@ def user_register():
             )
 
         user.User().set_email(user_id, None, form.email.data)
+        session['email'] = form.email.data
 
         return redirect(url_for('views.store.store_catalog'))
 
@@ -206,7 +207,10 @@ def user_history(history_identifier):
             'userrequest': userrequest_data
         }
 
-        return render_template('views/user/user-history.html', **params)
+        return render_template(
+            'views/user/user-history.html',
+            **params
+        )
     elif request_type == 'B':
         try:
             creditrequest_data = creditrequest.CreditRequest().get_id(
@@ -224,7 +228,10 @@ def user_history(history_identifier):
             'creditrequest': creditrequest_data
         }
 
-        return render_template('views/user/user-history.html', **params)
+        return render_template(
+            'views/user/user-history.html',
+            **params
+        )
     elif request_type == 'C':
         try:
             paidrequest_data = paidrequest.PaidRequest().get_id(request_id)
@@ -240,7 +247,10 @@ def user_history(history_identifier):
             'paidrequest': paidrequest_data
         }
 
-        return render_template('views/user/user-history.html', **params)
+        return render_template(
+            'views/user/user-history.html',
+            **params
+        )
 
 
 @user_view.route('/notifications/seen/')
@@ -425,7 +435,10 @@ def user_notifications():
         'notifications': notifications
     }
 
-    return render_template('views/user/nav-notifications.html', **params)
+    return render_template(
+        'views/user/nav-notifications.html',
+        **params
+    )
 
 
 @oid.after_login
@@ -463,7 +476,10 @@ def steam_after_login(resp):
         return redirect(url_for('views.user.user_register'))
 
     if steam_user.is_banned:
-        return render_template('views/user/banned.html', user=steam_user)
+        return render_template(
+            'views/user/banned.html',
+            user=steam_user
+        )
 
     session['user'] = steam_user.id
     session['email'] = steam_user.email

@@ -80,7 +80,10 @@ def admin_resume():
 
         if not form.validate():
             params.update({'form': form})
-            return render_template('admin/views/resumes.html', **params)
+            return render_template(
+                'admin/views/resumes.html',
+                **params
+            )
 
         userrequests = []
         paidrequests = []
@@ -373,12 +376,18 @@ def queue_product_add():
     if request.method == 'GET':
         form = admin.SteamProduct()
 
-        return render_template('admin/panel/generic-form.html', form=form)
+        return render_template(
+            'admin/panel/generic-form.html',
+            form=form
+        )
     elif request.method == 'POST':
         form = admin.SteamProduct(request.form)
 
         if not form.validate():
-            return render_template('admin/panel/generic-form.html', form=form)
+            return render_template(
+                'admin/panel/generic-form.html',
+                form=form
+            )
 
         new_form = admin.SteamProduct()
 
@@ -389,7 +398,8 @@ def queue_product_add():
                 flash(u'La AppID ya existe en la base de datos')
 
                 return render_template(
-                    'admin/panel/generic-form.html', form=new_form
+                    'admin/panel/generic-form.html',
+                    form=new_form
                 )
             except:
                 pass
@@ -399,7 +409,8 @@ def queue_product_add():
             flash(u'AppID añadido a la cola de adición de productos')
 
             return render_template(
-                'admin/panel/generic-form.html', form=new_form
+                'admin/panel/generic-form.html',
+                form=new_form
             )
         elif form.sub_id.data:
             try:
@@ -408,7 +419,8 @@ def queue_product_add():
                 flash(u'La SubID ya existe en la base de datos')
 
                 return render_template(
-                    'admin/panel/generic-form.html', form=new_form
+                    'admin/panel/generic-form.html',
+                    form=new_form
                 )
             except:
                 pass
@@ -418,11 +430,13 @@ def queue_product_add():
             flash(u'SubID añadido a la cola de adición de productos')
 
             return render_template(
-                'admin/panel/generic-form.html', form=new_form
+                'admin/panel/generic-form.html',
+                form=new_form
             )
 
         flash(u'Se requiere AppID o SubID')
 
         return render_template(
-            'admin/panel/generic-form.html', form=new_form
+            'admin/panel/generic-form.html',
+            form=new_form
         )

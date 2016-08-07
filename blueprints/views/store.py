@@ -51,7 +51,11 @@ def store_old_route():
 @store.route('/preguntas-frecuentes')
 def store_faqs():
     questions = question.Question().get_active()
-    return render_template('views/store/faqs.html', questions=questions)
+
+    return render_template(
+        'views/store/faqs.html',
+        questions=questions
+    )
 
 
 @store.route('/')
@@ -112,7 +116,10 @@ def store_catalog():
         'pending_testimonials': pending_testimonials
     }
 
-    return render_template('views/store/catalog.html', **template_params)
+    return render_template(
+        'views/store/catalog.html',
+        **template_params
+    )
 
 
 @store.route('/products/', methods=['POST'])

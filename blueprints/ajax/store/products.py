@@ -15,6 +15,9 @@ def ajax_store_products_page(section, page_id):
     products = product.Product().get_by_section(section, page_id)
 
     if len(products) > 0:
-        return render_template('views/store/products.html', products=products)
+        return render_template(
+            'views/store/products.html',
+            products=products
+        )
     else:
         return abort(404)
