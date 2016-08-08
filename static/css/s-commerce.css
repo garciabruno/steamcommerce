@@ -1438,3 +1438,54 @@ ol.progress-meter li.todo:before {
     font-size: 23px;
     color: #1C262F;
 }
+
+.s-commerce-welcome-container{
+    padding: 50px 0;
+}
+
+.s-commerce-welcome-title{
+    text-align: center;
+}
+
+.welcome-title{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 35px;
+    color: white;
+    margin-top: 20px;
+}
+
+.s-commerce-welcome-container{
+    background-image: url('../img/welcome-bg.jpg');
+    background-repeat: repeat-x;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.welcome-message{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 19px;
+    color: white;
+    margin-top: 10px;
+}
+
+.welcome-login-button{
+    margin-top: 23px;
+}
+
+.welcome-login-button a{
+    margin-top: 23px;
+    display: inline-block;
+}
+
+.login-text{
+    color: #FDB832;
+    font-weight: 400;
+}
+
+.payments-footer{
+    margin-top: 15px;
+    text-align: center;
+    padding: 20px 0px;
+}

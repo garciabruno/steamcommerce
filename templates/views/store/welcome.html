@@ -1,0 +1,25 @@
+<div class="s-commerce-welcome-container">
+    <div class="s-commerce-welcome-title">
+        <img src="{{ url_for('static', filename='img/logo.svg') }}?{{ config.CACHE_BREAK_RAND }}">
+
+        <div class="welcome-title">Comprá juegos de Steam en efectivo sin necesidad de tarjetas de crédito</div>
+
+        <div class="container">
+            <div class="welcome-message">
+                ¡Sistema simple de compras con boletas de Rápipago/Págofacil y muchos médios de pago mas, buscador con extensos filtros, todo el catálogo de Steam disponible, ofertas de Steam al día y mucho más!
+
+                <div class="welcome-login-button">
+                    <div class="login-text">Registrate con tu cuenta de Steam en cuestión de segundos</div>
+
+                    <a href="{{ url_for('views.user.user_login') }}">
+                        <img src="{{ url_for('static', filename='img/sits_small.png') }}">
+                    </a>
+                </div>
+
+                <div class="payments-footer">
+                    <img src="{{ url_for('static', filename='img/payments_small.png') }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
