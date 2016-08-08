@@ -36,6 +36,8 @@ from steamcommerce_api.api import storepromotion
 from inputs import store_inputs
 from forms import user as user_form
 
+import datetime
+
 
 store = Blueprint('views.store', __name__)
 
@@ -222,6 +224,69 @@ def store_offers():
     template_params = {
         'page': 1,
         'section_id': promotions[0]['id'],
+        'sections': promotions,
+        'promotions': promotions,
+        'active_section': 'offers',
+        'sliders': sliders,
+        'announces': announces,
+        'products': promotion_products,
+        'pending_requests': pending_requests,
+        'pending_testimonials': pending_testimonials
+    }
+
+    return render_template('views/store/catalog.html', **template_params)
+
+
+@store.route('/ofertas/<short_url>')
+@store.route('/oferta/<short_url>')
+def store_promotion_short_url(short_url):
+    spromotion = storepromotion.StorePromotion()
+
+    sliders = slider.Slider().get_active()
+    announces = announce.Announce().get_active()
+    promotions = spromotion.get_active()
+
+    promotion_products = []
+    promotion_products_ids = []
+
+    promotion = spromotion.get_by_short_url(short_url)
+
+    if not promotion:
+        return redirect(url_for('views.store.store_catalog'))
+
+    if (
+        promotion['visibility_state'] == 1 and
+        promotion['enabled'] and
+        promotion['ending_date'] > datetime.datetime.now()
+    ):
+        promotion_products_ids = spromotion.get_products(promotion['id'], 1)
+
+    for promotion_product_id in promotion_products_ids:
+        promotion_products.append(
+            product.Product().get_id(
+                promotion_product_id
+            )
+        )
+
+    pending_testimonials = []
+    pending_requests = []
+
+    user_id = session.get('user')
+
+    if user_id:
+        pending_testimonials = testimonial.Testimonial().get_unsubmited(
+            user_id,
+            excludes=['all']
+        )
+
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                user_id
+            )
+
+    template_params = {
+        'page': 1,
+        'section_id': promotion['id'],
         'sections': promotions,
         'promotions': promotions,
         'active_section': 'offers',
