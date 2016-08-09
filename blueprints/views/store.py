@@ -366,12 +366,12 @@ def store_search():
 @store.route('/reservas/', methods=['GET', 'POST'])
 @route_decorators.is_logged_in
 def store_reservations():
-    if request.method == 'GET':
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
-                session.get('user')
-            )
+    pending_requests = userrequest.UserRequest().\
+        get_user_not_informed_userrequests(
+            session.get('user')
+        )
 
+    if request.method == 'GET':
         params = {
             'pending_requests': pending_requests
         }
