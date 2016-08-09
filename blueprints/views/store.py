@@ -385,7 +385,7 @@ def store_reservations():
 
         request_id = int(form.request_id.data)
 
-        if not request_id in [x.get('id') for x in g.pending_requests]:
+        if not request_id in [x.get('id') for x in pending_requests]:
             return redirect(url_for('views.store.store_reservations'))
 
         if not request.files.get('image'):
