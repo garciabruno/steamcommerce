@@ -362,6 +362,11 @@ def store_search():
     return render_template('views/store/search.html', **params)
 
 
+@store.route('/soporte')
+def store_support():
+    return render_template('views/store/support.html')
+
+
 @store.route('/reservas', methods=['GET', 'POST'])
 @store.route('/reservas/', methods=['GET', 'POST'])
 @route_decorators.is_logged_in

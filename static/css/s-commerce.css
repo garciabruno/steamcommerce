@@ -15,6 +15,11 @@ body{
     background-color: white;
 }
 
+.navbar-nav > li > a {
+    padding-left: 10px !important;
+    padding-right: 10px !important
+}
+
 .s-commerce-navbar{
     color: white;
     padding-top: 16px;
@@ -1488,4 +1493,23 @@ ol.progress-meter li.todo:before {
     margin-top: 15px;
     text-align: center;
     padding: 20px 0px;
+}
+
+.s-commerce-support{
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
+.s-commerce-support-title{
+    color: white;
+    font-size: 35px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.s-commerce-support-text{
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
 }

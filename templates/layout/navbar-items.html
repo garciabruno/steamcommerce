@@ -42,10 +42,17 @@
         </a>
     </li>
 
+    {% if g.user %}
+        <li>
+            <a href="{{ url_for('views.store.store_support') }}" class="s-commerce-navbar-item">
+                Soporte
+            </a>
+        </li>
+    {% endif %}
+
     <li>
         <a target="_blank" href="http://wasd.com.ar" class="s-commerce-navbar-item">
             Blog
-            <span id="new">¡Nuevo!</span>
         </a>
     </li>
 
