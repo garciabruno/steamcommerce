@@ -5,7 +5,6 @@
 External imports
 '''
 
-from flask import g
 from flask import flash
 from flask import request
 from flask import session

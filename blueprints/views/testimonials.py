@@ -24,7 +24,15 @@ testimonials = Blueprint('views.testimonials', __name__)
 @testimonials.route('/', methods=['GET', 'POST'])
 def testimonials_root():
     if request.method == 'GET':
-        testimonials_data = testimonial.Testimonial().get_active(1)
+        testimonials_data = testimonial.Testimonial().get_active(
+            1,
+            excludes=[
+                'product_specs',
+                'product_codes',
+                'product_tags'
+            ]
+        )
+
         testimonials_count = testimonial.Testimonial().get_count()
 
         form = user_form.TestimonialsForm()
@@ -54,7 +62,12 @@ def testimonials_root():
 
         testimonials_count = testimonial.Testimonial().get_count()
         testimonials_data = testimonial.Testimonial().get_active(
-            int(form.page_id.data)
+            int(form.page_id.data),
+            excludes=[
+                'product_specs',
+                'product_codes',
+                'product_tags'
+            ]
         )
 
         form.page_id.data = int(form.page_id.data)

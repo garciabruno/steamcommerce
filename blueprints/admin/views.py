@@ -40,7 +40,7 @@ admin_view = Blueprint('admin.views', __name__)
 @route_decorators.is_logged_in
 @route_decorators.is_admin
 def admin_root():
-    logs = adminlog.AdminLog().get_logs(1)
+    logs = adminlog.AdminLog().get_logs(1, excludes=['product_codes'])
 
     params = {
         'logs': logs
