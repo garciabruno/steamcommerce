@@ -137,7 +137,10 @@ def user_logout():
 def user_profile():
     user_id = session.get('user')
     user_data = user.User().get_by_id(user_id)
-    notifications = notification.Notification().get_for_user(user_id)
+
+    notifications = notification.Notification().get_user_top_notifications(
+        user_id
+    )
 
     userrequests = userrequest.UserRequest().get_by_user_id(user_id)
     creditrequests = creditrequest.CreditRequest().get_by_user_id(user_id)
@@ -429,7 +432,17 @@ def user_cart():
 def user_notifications():
     user_id = session.get('user')
 
-    notifications = notification.Notification().get_for_user(user_id)
+    notifications = notification.Notification().get_user_top_notifications(
+        user_id,
+        excludes=[
+            'user',
+            'userrequest',
+            'paidrequest',
+            'product_tags',
+            'product_codes',
+            'product_specs',
+        ]
+    )
 
     params = {
         'notifications': notifications

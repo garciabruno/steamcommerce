@@ -39,6 +39,10 @@
             </script>
 
             <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='img/favicon.ico') }}"/>
+
+            <script type="text/javascript">
+                setTimeout('_gaq.push([\'_trackEvent\', \'NoBounce\', \'Over 30 seconds\'])',30000);
+            </script>
         {%- endif %}
 
         {% block header %}{% endblock %}
