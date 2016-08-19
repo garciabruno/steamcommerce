@@ -227,8 +227,7 @@ def css_file(filepath):
 
 @app.template_filter()
 def js_file(filepath):
-    JAVASCRIPT_FMT = u'<script type="text/javascript" src="{0}?{1}">\
-    </script>'
+    JAVASCRIPT_FMT = u'<script type="text/javascript" src="{0}?{1}"></script>'
 
     return JAVASCRIPT_FMT.format(
         filepath, config.CACHE_BREAK_RAND

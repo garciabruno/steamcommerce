@@ -1,6 +1,6 @@
 #!/usr/bin/env
 # -*- coding:Utf-8 -*-
 
-from flask.ext.openid import OpenID
+from flask_openid import OpenID
 
 oid = OpenID()
