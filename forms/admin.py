@@ -33,6 +33,12 @@ class SteamProduct(Form):
     submit = wtforms.SubmitField(validators=[DataRequired()])
 
 
+class SaleForm(Form):
+    title = wtforms.TextField(validators=[DataRequired()])
+    end_time_delta = wtforms.IntegerField(validators=[Optional()])
+    submit = wtforms.SubmitField(validators=[DataRequired()])
+
+
 class ResumeForm(Form):
     start_date = wtforms.DateTimeField(
         u'Fecha de inicio',

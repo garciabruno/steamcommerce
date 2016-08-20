@@ -10,6 +10,7 @@ from flask import Blueprint
 from flask import render_template
 
 from steamcommerce_tasks.tasks import product as product_task
+from steamcommerce_tasks.tasks import sales as sales_tasks
 
 from steamcommerce_api import config
 
@@ -439,4 +440,42 @@ def queue_product_add():
         return render_template(
             'admin/panel/generic-form.html',
             form=new_form
+        )
+
+
+@admin_view.route('/sales/', methods=['GET', 'POST'])
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def queue_sale_add():
+    if request.method == 'GET':
+        form = admin.SaleForm()
+
+        return render_template(
+            'admin/panel/generic-form.html',
+            form=form
+        )
+    elif request.method == 'POST':
+        form = admin.SaleForm(request.form)
+
+        if not form.validate():
+            return render_template(
+                'admin/panel/generic-form.html',
+                form=form
+            )
+
+        sales_tasks.load_sale_from_crawler.delay(
+            exclusive_title=form.title.data,
+            end_time_delta=form.end_time_delta.data or 24
+        )
+
+        flash(
+            (
+                u'success',
+                u'Añadido "{0}" a la cola de sales'.format(form.title.data)
+            )
+        )
+
+        return render_template(
+            'admin/panel/generic-form.html',
+            form=form
         )
