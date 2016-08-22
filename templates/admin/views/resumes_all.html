@@ -7,6 +7,7 @@
                 <th>Cantidad</th>
                 <th>Producto</th>
                 <th>URL</th>
+                <th>Currency</th>
             </tr>
         </thead>
 
@@ -26,6 +27,12 @@
                     <td>
                         <a href="{{ resume['product']['store_url'] }}">{{ resume['product']['store_url'] }}</a>
                     </td>
+
+                    <td>
+                        {% if resume['product'].get('price_currency') and session.get('admin') %}
+                            <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ resume['product'].get('price_currency') }}" width="16" height="11" class="flag flag-{{ resume['product'].get('price_currency')|lower }}">
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -39,6 +46,7 @@
                 <th>Cantidad</th>
                 <th>Producto</th>
                 <th>URL</th>
+                <th>Currency</th>
             </tr>
         </thead>
 
@@ -58,6 +66,12 @@
                     <td>
                         <a href="{{ resume['product']['store_url'] }}">{{ resume['product']['store_url'] }}</a>
                     </td>
+
+                    <td>
+                        {% if resume['product'].get('price_currency') and session.get('admin') %}
+                            <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ resume['product'].get('price_currency') }}" width="16" height="11" class="flag flag-{{ resume['product'].get('price_currency')|lower }}">
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -71,6 +85,7 @@
                 <th>Cantidad</th>
                 <th>Producto</th>
                 <th>URL</th>
+                <th>Currency</th>
             </tr>
         </thead>
 
@@ -89,6 +104,12 @@
 
                     <td>
                         <a href="{{ resume['product']['store_url'] }}">{{ resume['product']['store_url'] }}</a>
+                    </td>
+
+                    <td>
+                        {% if resume['product'].get('price_currency') and session.get('admin') %}
+                            <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ resume['product'].get('price_currency') }}" width="16" height="11" class="flag flag-{{ resume['product'].get('price_currency')|lower }}">
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
