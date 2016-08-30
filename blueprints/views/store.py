@@ -299,9 +299,9 @@ def store_promotion_short_url(short_url):
     return render_template('views/store/catalog.html', **template_params)
 
 
-@store.route('/tienda/<app_id>')
-@store.route('/catalogo/<app_id>')
-@store.route('/comprar/<app_id>/')
+@store.route('/tienda/<int:app_id>')
+@store.route('/catalogo/<int:app_id>')
+@store.route('/comprar/<int:app_id>/')
 def store_app_id(app_id):
     try:
         store_product = product.Product().get_app_id(app_id)
