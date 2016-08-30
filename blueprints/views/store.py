@@ -305,13 +305,13 @@ def store_promotion_short_url(short_url):
 def store_app_id(app_id):
     try:
         store_product = product.Product().get_app_id(app_id)
-    except product.Product().model.DoesNotExist:
+    except:
         store_product = None
 
     if not store_product:
         try:
             store_product = product.Product().get_sub_id(app_id)
-        except product.Product().model.DoesNotExist:
+        except:
             store_product = None
 
     if store_product is None:
