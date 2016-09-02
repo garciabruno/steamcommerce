@@ -18,6 +18,8 @@ from steamcommerce_api.api import paidrequest
 from steamcommerce_api.api import code_delivery
 from steamcommerce_api.api import notification
 
+import config
+import datetime
 import constants
 
 ajax_paidrequest = Blueprint('ajax.store.paidrequest', __name__)
@@ -60,6 +62,27 @@ def ajax_paidrequest_generate():
 
     if product_data.get('run_stock') and product_data.get('stock') == 0:
         return ({'success': False, 'status': 5}, 500)
+
+    if product_data.get('has_anticheat'):
+        incomes = user.User().get_user_spent_incomes(user_data['id'])
+
+        if incomes < config.MIN_SPENT_INCOMES_VAC_GAMES:
+            return ({'success': False, 'status': 6}, 500)
+
+        register_date = (
+            user_data['register_date'] or datetime.datetime(
+                year=2012,
+                day=15,
+                month=10,
+                hour=20,
+                minute=0
+            )
+        )
+
+        delta = datetime.datetime.now() - register_date
+
+        if delta < config.VAC_GAMES_TIME_DELTA:
+            return ({'success': False, 'status': 7}, 500)
 
     if user_data['money'] >= price:
         commerce_id = config.CUENTADIGITAL_EMILIANO_ID
@@ -162,6 +185,45 @@ def ajax_paidrequest_cart_generate():
         commerce_id = config.CUENTADIGITAL_EMILIANO_ID
     else:
         commerce_id = config.CUENTADIGITAL_NIN_ID
+
+    user_is_register_restricted = False
+    user_is_income_restricted = False
+
+    cart_items = user_cart.get('items')
+
+    for cart_item in cart_items:
+        cart_item_product = cart_item.get('product')
+
+        if cart_item_product.get('has_anticheat'):
+            incomes = user.User().get_user_spent_incomes(user_data['id'])
+
+            if incomes < config.MIN_SPENT_INCOMES_VAC_GAMES:
+                user_is_income_restricted = True
+
+                break
+
+            register_date = (
+                user_data['register_date'] or datetime.datetime(
+                    year=2012,
+                    day=15,
+                    month=10,
+                    hour=20,
+                    minute=0
+                )
+            )
+
+            delta = datetime.datetime.now() - register_date
+
+            if delta < config.VAC_GAMES_TIME_DELTA:
+                user_is_register_restricted = True
+
+                break
+
+    if user_is_income_restricted:
+        return ({'success': False, 'status': 3}, 500)
+
+    if user_is_register_restricted:
+        return ({'success': False, 'status': 4}, 500)
 
     invoice = paidrequest.PaidRequest().generate(
         user_id,
