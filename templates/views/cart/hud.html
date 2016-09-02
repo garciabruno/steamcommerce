@@ -70,6 +70,18 @@
                                 'El sistema no se pudo comunicar con el servicio de terceros para la emisiÃ³n de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente mÃ¡s tarde.',
                                 'error'
                             );
+                        } else if (json_data['status'] == 5) {
+                            swal(
+                                'Tu cuenta no está en condiciones de comprar este carrito',
+                                'Uno o más productos en tu carrito contiene una politica de AntiCheat. Debes haber gastado por lo menos ${{ config.MIN_SPENT_INCOMES_VAC_GAMES|price_format }} en ExtremeGaming.',
+                                'error'
+                            );
+                        } else if (json_data['status'] == 6) {
+                            swal(
+                                'Tu cuenta no está en condiciones de comprar este carrito',
+                                'Uno o más productos en tu carrito contiene una politica de AntiCheat. Debes estar registrado hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días en ExtremeGaming.',
+                                'error'
+                            );
                         }
                     }
                 });
@@ -121,6 +133,18 @@
                         swal('No hay precios activos', 'No se encontraron precios activos en los productos', 'error');
                     } else if (json_data['status'] == 2) {
                         swal('Créditos insuficientes', 'No dispones de suficientes créditos para realizar esta acción', 'error');
+                    } else if (json_data['status'] == 3) {
+                        swal(
+                            'Tu cuenta no está en condiciones de comprar este carrito',
+                            'Uno o más productos en tu carrito contiene una politica de AntiCheat. Debes haber gastado por lo menos ${{ config.MIN_SPENT_INCOMES_VAC_GAMES|price_format }} en ExtremeGaming.',
+                            'error'
+                        );
+                    } else if (json_data['status'] == 4) {
+                        swal(
+                            'Tu cuenta no está en condiciones de comprar este carrito',
+                            'Uno o más productos en tu carrito contiene una politica de AntiCheat. Debes estar registrado hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días en ExtremeGaming.',
+                            'error'
+                        );
                     }
                 }
             });

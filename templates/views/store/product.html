@@ -136,6 +136,18 @@
                         </div>
                     {% endif %}
 
+                    {% if product.get('has_anticheat') %}
+                        <div class="s-commerce-offer-hud s-commerce-product-alert">
+                            <div class="s-commerce-product-alert-title">
+                                Politica de AntiCheat presente en este producto
+                            </div>
+
+                            <span class="s-commerce-product-alert-body">
+                                Debes haber gastado por lo menos <strong>${{ config.MIN_SPENT_INCOMES_VAC_GAMES|price_format }}</strong> en ExtremeGaming y tener una cuenta hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días para adquirir este producto
+                            </span>
+                        </div>
+                    {% endif %}
+
                     <div class="s-commerce-product-body">
                         <div class="row">
                             <div class="col-xs-12 col-sm-10">
@@ -363,6 +375,18 @@
                                     'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
                                     'error'
                                 );
+                            } else if (json_data['status'] == 7) {
+                                swal(
+                                    'Tu cuenta no está en condiciones de comprar este producto',
+                                    'Debes haber gastado por lo menos ${{ config.MIN_SPENT_INCOMES_VAC_GAMES|price_format }} en ExtremeGaming.',
+                                    'error'
+                                );
+                            } else if (json_data['status'] == 8) {
+                                swal(
+                                    'Tu cuenta no está en condiciones de comprar este producto',
+                                    'Debes estar registrado hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días en ExtremeGaming.',
+                                    'error'
+                                );
                             }
                         }
                     });
@@ -420,6 +444,18 @@
                                 swal('Créditos insuficientes', 'No dispones de fondos suficientes para realizar esta acción. Para cargar fondos a tu cuenta presiona en tu monto actual en la parte superior del sitio', 'error');
                             } else if (json_data['status'] == 5) {
                                 swal('Producto fuera de stock', 'Se ha agotado el stock del producto solicitado', 'error');
+                            } else if (json_data['status'] == 6) {
+                                swal(
+                                    'Tu cuenta no está en condiciones de comprar este producto',
+                                    'Debes haber gastado por lo menos ${{ config.MIN_SPENT_INCOMES_VAC_GAMES|price_format }} en ExtremeGaming.',
+                                    'error'
+                                );
+                            } else if (json_data['status'] == 7) {
+                                swal(
+                                    'Tu cuenta no está en condiciones de comprar este producto',
+                                    'Debes estar registrado hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días en ExtremeGaming.',
+                                    'error'
+                                );
                             }
                         }
                     });
