@@ -346,7 +346,7 @@ def admin_panel_add_code(product_id):
             }
         )
 
-        paidrequests = paidrequest.PaidRequest().get_paid_paidrequests()
+        paidrequests = paidrequest.PaidRequest().get_paid()
         code_added = False
 
         new_form = admin.ProductCodeForm()
@@ -357,7 +357,7 @@ def admin_panel_add_code(product_id):
         }
 
         for paidrequest_data in paidrequests:
-            relations = paidrequest_data.get('relations')
+            relations = paidrequest_data.get('paidrequest_relations')
 
             if len(relations) != 1:
                 continue
@@ -404,10 +404,10 @@ def admin_panel_add_code(product_id):
                 **params
             )
 
-        userrequests = userrequest.UserRequest().get_paid_userrequests()
+        userrequests = userrequest.UserRequest().get_paid()
 
         for userrequest_data in userrequests:
-            relations = userrequest_data.get('relations')
+            relations = userrequest_data.get('userrequest_relations')
 
             if len(relations) != 1:
                 continue
