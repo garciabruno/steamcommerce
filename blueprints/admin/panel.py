@@ -337,7 +337,7 @@ def admin_panel_add_code(product_id):
         flash(('success', constants.PRODUCTCODE_ADDED.format(code_id)))
 
         code = productcode.ProductCode().get_id(code_id)
-        admin_id = code.user_owner
+        admin_id = code['user_owner']['id']
 
         adminlog.AdminLog().push(
             constants.ADMINLOG_CODE_ADDED, **{
@@ -370,7 +370,7 @@ def admin_panel_add_code(product_id):
             request_id = paidrequest_data.get('id')
 
             code_delivery.CodeDelivery().deliver_to_paidrequest(
-                code.id, request_id
+                code['id'], request_id
             )
 
             paidrequest.PaidRequest().accept_paidrequest(
@@ -420,7 +420,7 @@ def admin_panel_add_code(product_id):
             request_id = userrequest_data.get('id')
 
             code_delivery.CodeDelivery().deliver_to_userrequest(
-                code.id, request_id
+                code['id'], request_id
             )
 
             userrequest.UserRequest().accept_userrequest(
