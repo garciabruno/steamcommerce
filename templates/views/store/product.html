@@ -288,7 +288,7 @@
                     {% if product.get('product_codes')|length > 0 %}
                         <div class="s-commerce-product-admin">
                             {% for code in product.get('product_codes') %}
-                                {% if code.get('user_owner') == session.get('user') or session.get('user') == 1 %}
+                                {% if code.get('user_owner').get('id') == session.get('user') or session.get('user') == 1 %}
                                     <div style="margin: 5px 0;">
                                         <a class="btn btn-default" href="{{ url_for('admin.panel.admin_model_edit', model_name='ProductCode', object_id=code.get('id')) }}">
                                             Editar código #{{ code.get('id') }} ({{ code.get('code') }})
