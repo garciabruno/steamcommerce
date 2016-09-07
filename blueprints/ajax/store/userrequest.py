@@ -33,7 +33,15 @@ def ajax_userrequest_generate():
         return ({'success': False, 'status': 0}, 422)
 
     product_id = int(request.form.get('product_id'))
-    product_data = product.Product().get_id(product_id, excludes=['all'])
+    product_data = product.Product().get_id(
+        product_id,
+        excludes=[
+            'section',
+            'product_tags',
+            'product_codes',
+            'product_specs'
+        ]
+    )
 
     if product_data is None:
         return ({'success': False, 'status': 1}, 500)
