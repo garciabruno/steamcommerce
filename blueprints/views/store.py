@@ -123,6 +123,11 @@ def store_catalog():
     )
 
 
+@store.route('/3d')
+def store_3d_catalog():
+    return render_template('views/store/3dcatalog.html')
+
+
 @store.route('/products/', methods=['POST'])
 def store_products():
     form = store_inputs.ProductsInput(request)
@@ -285,6 +290,7 @@ def store_promotion_short_url(short_url):
 
     template_params = {
         'page': 1,
+        'selected_section': promotion['title'],
         'section_id': promotion['id'],
         'sections': promotions,
         'promotions': promotions,
@@ -293,7 +299,7 @@ def store_promotion_short_url(short_url):
         'announces': announces,
         'products': promotion_products,
         'pending_requests': pending_requests,
-        'pending_testimonials': pending_testimonials
+        'pending_testimonials': pending_testimonials,
     }
 
     return render_template('views/store/catalog.html', **template_params)
@@ -317,8 +323,7 @@ def store_app_id(app_id):
     if store_product is None:
         error = {
             'title': 'Producto inexistente',
-            'content': 'Este producto no existe :( Solicitalo?\
-             https://facebook.com/ExtremeGamingSTEAM'
+            'content': 'Este producto no existe :('
         }
 
         return render_template('views/error.html', **error)
@@ -338,8 +343,7 @@ def store_app_id(app_id):
     ):
         error = {
             'title': 'Producto fuera de stock',
-            'content': 'Este producto ha agotado su stock. \
-            Disculpe las molestias.'
+            'content': 'Este producto ha agotado su stock.'
         }
 
         return render_template('views/error.html', **error)
@@ -347,6 +351,9 @@ def store_app_id(app_id):
     params = {
         'product': store_product
     }
+
+    if store_product.get('product_type') == 3:
+        return render_template('views/store/3dproduct.html', **params)
 
     return render_template('views/store/product.html', **params)
 
