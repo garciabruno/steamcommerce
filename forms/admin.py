@@ -82,3 +82,18 @@ class ResumeForm(Form):
     )
 
     submit = wtforms.SubmitField(u'Enviar', validators=[DataRequired()])
+
+
+class SliderForm(Form):
+    title = wtforms.TextField(u'Titulo', validators=[DataRequired()])
+    content = wtforms.TextAreaField(u'Contenido', validators=[DataRequired()])
+
+    position = wtforms.IntegerField(
+        u'Posición',
+        default=1,
+        validators=[Optional()]
+    )
+
+    image = wtforms.FileField(u'Imagen')
+
+    submit = wtforms.SubmitField(u'Enviar', validators=[DataRequired()])
