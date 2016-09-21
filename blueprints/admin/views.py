@@ -14,7 +14,7 @@ from flask import render_template
 from steamcommerce_tasks.tasks import product as product_task
 from steamcommerce_tasks.tasks import sales as sales_tasks
 
-from steamcommerce import config as app_config
+import config as app_config
 from steamcommerce_api import config
 
 from steamcommerce_api.controllers import bot
