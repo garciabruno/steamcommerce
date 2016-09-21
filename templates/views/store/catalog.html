@@ -85,7 +85,7 @@
                     <div class="col-md-14">
                         <select class="form-control">
                             {% for section in sections %}
-                                <option value="{{ section.id }}">{{ section.title }}</option>
+                                <option value="{{ section.id }}"{% if selected_section and selected_section == section.title %} selected="selected" {% endif %}>{{ section.title }}</option>
                             {% endfor %}
                         </select>
                     </div>
