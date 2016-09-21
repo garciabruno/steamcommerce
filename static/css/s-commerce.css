@@ -1521,7 +1521,133 @@ ol.progress-meter li.todo:before {
     color: #1C262F;
 }
 
-
 .s-commerce-product-alert-title{
     font-size: 23px;
+}
+
+.products-3d-page{
+    margin-bottom: 50px;
+}
+
+.s-commerce-3d-presentation{
+    text-align: center;
+    font-size: 35px;
+    color: white;
+}
+
+.scommerce-3d-logo{
+    width: 120px;
+    height: 120px;
+}
+
+.s-commerce-3d-presentation a{
+    text-decoration: none;
+    color: white;
+}
+
+.s-commerce-3d-product-featured{
+    height: 350px;
+}
+
+.s-commerce-3d-product-featured a{
+    text-decoration: none;
+}
+
+
+.s-commerce-3d-product-inner-featured{
+    opacity: 0;
+    padding: 15px;
+    height: 350px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.s-commerce-3d-product-title-featured{
+    font-size: 28px;
+    font-weight: 600;
+    margin-top: 10px;
+    font-family: "Roboto",sans-erif;
+    color: white;
+}
+
+.s-commerce-3d-product-description{
+    color: white;
+    margin-top: 10px;
+    font-family: "Roboto",sans-erif;
+    font-weight: 300;
+}
+
+.s-commerce-3d-product-featured:hover .s-commerce-3d-product-inner-featured{
+    transition: all 0.2s ease-in-out;
+    opacity: 1;
+}
+
+.s-commerce-3d-featured-price-tag{
+    background-color: #2cb16e;
+    bottom: 0;
+    color: white;
+    font-family: "Roboto",sans-erif;
+    font-size: 23px;
+    font-weight: 400;
+    padding: 10px;
+    position: absolute;
+    z-index: 999;
+}
+
+.s-commerce-3d-product-shipment-warning{
+    background: #fdb832 none repeat scroll 0 0;
+    color: black;
+    padding: 4px;
+    position: absolute;
+    right: 15px;
+    top: 0;
+    font-size: 12px;
+    z-index: 999;
+}
+
+.s-commerce-3d-product{
+    margin-top: 15px;
+    height: 172px;
+}
+
+.s-commerce-3d-product-inner{
+    opacity: 0;
+    height: 172px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.s-commerce-3d-product-title{
+    font-size: 18px;
+    font-weight: 600;
+    font-family: "Roboto",sans-erif;
+    color: white;
+}
+
+.s-commerce-3d-product:hover .s-commerce-3d-product-inner{
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.s-commerce-3d-price-tag{
+    bottom: 0;
+    left: 15px;
+    position: absolute;
+    background-color: #2cb16e;
+    color: white;
+    font-family: "Roboto",sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    padding: 10px 19px 9px;
+}
+
+.s-commerce-product-3d-alert{
+    background: #1C262F;
+    font-size: 16px;
+    font-family: "Roboto",sans-erif;
+    color: white;
+}
+
+
+.s-commerce-product-image-thumbnail img{
+    margin: 5px 5px 5px 0;
 }
