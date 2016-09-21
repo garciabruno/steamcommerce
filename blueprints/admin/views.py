@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:Utf-8 -*-
 
+import os
+
 from flask import flash
 from flask import session
 from flask import request
@@ -12,9 +14,13 @@ from flask import render_template
 from steamcommerce_tasks.tasks import product as product_task
 from steamcommerce_tasks.tasks import sales as sales_tasks
 
+from steamcommerce import config as app_config
 from steamcommerce_api import config
 
+from steamcommerce_api.controllers import bot
+
 from steamcommerce_api.api import user
+from steamcommerce_api.api import slider
 from steamcommerce_api.api import product
 from steamcommerce_api.api import message
 from steamcommerce_api.api import history
@@ -32,6 +38,7 @@ from forms import admin
 from utils import route_decorators
 from forms import request_message
 
+import json
 import datetime
 
 admin_view = Blueprint('admin.views', __name__)
@@ -477,5 +484,99 @@ def queue_sale_add():
 
         return render_template(
             'admin/panel/generic-form.html',
+            form=form
+        )
+
+
+@admin_view.route('/bots/')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def admin_bots_dashboard():
+    if session.get('user') != 1:
+        return redirect('views.admin.admin_root')
+
+    return render_template('admin/bots/dashboard.html')
+
+
+@admin_view.route('/bots/get/ids/', methods=['POST'])
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def admin_get_bot_ids():
+    ids = request.form.get('bots')
+    bots = bot.Bot().get_bot_ids(json.loads(ids))
+
+    return render_template('admin/bots/bots.html', bots=bots)
+
+
+@admin_view.route('/tools/sliders/', methods=['GET', 'POST'])
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def admin_sliders_view():
+    if request.method == 'GET':
+        form = admin.SliderForm()
+
+        return render_template(
+            'admin/panel/file-form.html',
+            form=form
+        )
+    elif request.method == 'POST':
+        form = admin.SliderForm(request.form)
+
+        if not form.validate():
+            return render_template(
+                'admin/panel/file-form.html',
+                form=form
+            )
+
+        if not request.files.get(form.image.name):
+            flash(('danger', u'No se encontró una imagen en el formulario'))
+
+            return render_template(
+                'admin/panel/file-form.html',
+                form=form
+            )
+
+        image_data = request.files.get(form.image.name).stream.read()
+
+        if not len(image_data):
+            flash(('danger', u'La imagen se encontraba vacía'))
+
+            return render_template(
+                'admin/panel/file-form.html',
+                form=form
+            )
+
+        extension = request.files.get(form.image.name).filename.rsplit('.')[-1]
+
+        slider_id = slider.Slider().create(**{
+            'extension': extension,
+            'title': form.title.data,
+            'content': form.content.data,
+            'position': form.position.data
+        })
+
+        slider_path = os.path.join(
+            app_config.UPLOAD_DIRECTORY,
+            'img',
+            'slider',
+            '%d' % slider_id
+        )
+
+        if not os.path.isfile(slider_path) and not os.path.isdir(slider_path):
+            os.makedirs(slider_path)
+
+        f = open(
+            os.path.join(slider_path, '%d.%s' % (slider_id, extension)),
+            'wb+'
+        )
+
+        f.write(image_data)
+        f.close()
+
+        flash(('success', 'Slider creado satisfactoriamente'))
+        form = admin.SliderForm()
+
+        return render_template(
+            'admin/panel/file-form.html',
             form=form
         )
