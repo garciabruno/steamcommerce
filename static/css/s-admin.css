@@ -829,3 +829,29 @@
 .flag-zw {
     background-position: -176px -165px;
 }
+
+.scommerce_bots_container,
+.scommerce_realtime_console{
+    border: 1px solid #CECECE;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+
+.bot_avatar img{
+    width: 120px;
+    height: 120px;
+}
+
+.table-listing{
+    padding-left: 50px;
+}
+
+.scommerce_console{
+    resize: vertical;
+    width: 100%;
+}
+
+.scommerce_console_submit{
+    margin-top: 10px;
+}
