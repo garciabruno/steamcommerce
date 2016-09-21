@@ -1,0 +1,132 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - Bots Lab{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="main">
+			<div class="scommerce_realtime_console">
+				<h4>Console</h4>
+
+				<div class="row">
+					<div class="col-md-8">
+						<div class="well well-default server_messages">
+
+						</div>
+					</div>
+
+					<div class="col-md-8">
+						<textarea class="form-control scommerce_console"></textarea>
+						<button class="btn btn-default scommerce_console_submit">Send message</button>
+					</div>
+				</div>
+
+				<script type="text/javascript">
+					if (!String.prototype.format) {
+						String.prototype.format = function() {
+				        	var str = this.toString();
+					        if (!arguments.length)
+					            return str;
+					        var args = typeof arguments[0],
+					            args = (("string" == args || "number" == args) ? arguments : arguments[0]);
+					        for (arg in args)
+					            str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
+					        return str;
+					    }
+					}
+
+					Callbacks = function() {
+						var self = this;
+
+						this.connected_clients = function(clients) {
+							$.ajax({
+								url: '/admin/bots/get/ids/',
+								type: 'POST',
+								data: {
+									'bots': JSON.stringify(clients)
+								},
+								success: function(data) {
+									$('.scommerce_bots_container').append(data);
+								},
+								error: function(error) {
+									console.log(error);
+								}
+							});
+						};
+
+						this.client_connected = function(client) {
+							$.ajax({
+								url: '/admin/bots/get/ids/',
+								type: 'POST',
+								data: {
+									'bots': JSON.stringify([client])
+								},
+								success: function(data) {
+									$('.scommerce_bots_container').append(data);
+								},
+								error: function(error) {
+									console.log(error);
+								}
+							});
+						};
+
+						this.callbacks = {
+							'connected_clients': this.connected_clients,
+							'client_connected': this.client_connected
+						};
+					};
+
+					ws = new WebSocket('ws://127.0.0.1:8080?id=master.HbYEFhrNpRNIsPJteZE-6AvMtOg');
+
+					ws.onmessage = function(message){
+						console.info(message);
+
+						push_to_console(' << ' + message.data);
+
+						var callbacks = new Callbacks;
+						var data = JSON.parse(message.data);
+						var callback_name = data['action'].replace('.', '_')
+
+						if (callbacks[callback_name] != undefined) {
+							callbacks[callback_name].apply(null, [data['data']] || null);
+						}
+					}
+
+					ws.onopen = function(){
+						push_to_console('Connected to server');
+						push_to_sever(JSON.stringify({"to": "server", "action": "get.connected.clients"}));
+					}
+
+					function push_to_console(data){
+						var date = new Date();
+
+						var day = date.getDate();
+						var monthIndex = date.getMonth();
+						var year = date.getFullYear();
+						var hour = date.getHours();
+						var minutes = date.getMinutes();
+						var seconds = date.getSeconds();
+
+						$('.server_messages').prepend(
+							'<div class="message"><span class="date">[{0}/{1}/{2} {3}:{4}:{5}]</span> {6}</div>'.format(day, monthIndex, year, hour, minutes, seconds, data)
+						);
+					}
+
+					function push_to_sever(message) {
+						ws.send(message);
+						push_to_console(' >> ' + message);
+					}
+
+					$('.scommerce_console_submit').on('click', function(){
+						var json_data = $('.scommerce_console').val();
+						push_to_sever(json_data);
+					});
+				</script>
+			</div>
+
+			<div class="scommerce_bots_container">
+				<h4>Bots</h4>
+			</div>
+		</div>
+	</div>
+{% endblock %}

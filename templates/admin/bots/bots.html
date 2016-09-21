@@ -1,0 +1,135 @@
+{% for bot in bots %}
+    <div class="scommerce_bot" data-networkid="{{ bot.bot_network_id }}">
+    	<div class="row">
+    		<div class="col-md-2">
+    			<div class="bot_avatar">
+    				<img src="{{ bot.avatar_url }}" alt="">
+    			</div>
+    		</div>
+
+    		<div class="col-md-10">
+    			<table cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td>Bot id</td>
+
+                            <td class="table-listing">
+                                #{{ bot.bot_network_id }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Bot name</td>
+
+                            <td class="table-listing">
+                                {{ bot.name }}
+                            </td>
+                        </tr>
+
+                     	<tr>
+                            <td>Bot type</td>
+
+                            <td class="table-listing">
+                                {% if bot.bot_type == 1 %}
+                                    Normal
+                                {% elif bot.bot_type == 2 %}
+                                    VAC Games
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Enabled</td>
+
+                            <td class="table-listing">
+                                {% if bot.enabled %}
+                                    ENABLED
+                                {% else %}
+                                    DISABLED
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Current state</td>
+
+                            <td class="table-listing">
+                                {% if bot.current_state == 1 %}
+                                    WAITING FOR ORDERS
+                                {% elif bot.current_state == 2 %}
+                                    PROCESSING CART
+                                {% elif bot.current_state == 3 %}
+                                    BLOCKED FOR PURCHASES
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Account balance</td>
+
+                            <td class="table-listing">
+                                {{ bot.account_balance }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Bot currency</td>
+
+                            <td class="table-listing">
+                                <img src="{{ url_for('static', filename='img/p.gif') }}" alt="BR" width="16" height="11" class="flag flag-{{ bot.bot_currency.lower() }}"> {{ bot.bot_currency }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Bot last cart push</td>
+
+                            <td class="table-listing">
+                                {{ bot.last_cart_push or 'Never' }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Bot last purchase</td>
+
+                            <td class="table-listing">
+                                {{ bot.last_purchase or 'Never' }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Bot last failed purchase</td>
+
+                            <td class="table-listing">
+                                {{ bot.last_failed_purchase or 'Never' }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Bot current cart count</td>
+
+                            <td class="table-listing">
+                                {{ bot.current_cart_count }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Max cart count until purchase</td>
+
+                            <td class="table-listing">
+                                {{ bot.max_cart_until_purchase }}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Max timespan until purchase</td>
+
+                            <td class="table-listing">
+                                {{ bot.max_timespan_until_purchase }} (minutes)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    		</div>
+    	</div>
+    </div>
+{% endfor %}
