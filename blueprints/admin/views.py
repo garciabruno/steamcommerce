@@ -403,7 +403,7 @@ def queue_product_add():
             try:
                 product.Product().get_app_id(form.app_id.data)
 
-                flash(u'La AppID ya existe en la base de datos')
+                flash(('danger', u'La AppID ya existe en la base de datos'))
 
                 return render_template(
                     'admin/panel/generic-form.html',
@@ -414,7 +414,9 @@ def queue_product_add():
 
             product_task.add_product_to_store.delay(app_id=form.app_id.data)
 
-            flash(u'AppID añadido a la cola de adición de productos')
+            flash(
+                ('success', u'AppID añadido a la cola de adición de productos')
+            )
 
             return render_template(
                 'admin/panel/generic-form.html',
@@ -435,14 +437,16 @@ def queue_product_add():
 
             product_task.add_product_to_store.delay(sub_id=form.sub_id.data)
 
-            flash(u'SubID añadido a la cola de adición de productos')
+            flash(
+                ('success', u'SubID añadido a la cola de adición de productos')
+            )
 
             return render_template(
                 'admin/panel/generic-form.html',
                 form=new_form
             )
 
-        flash(u'Se requiere AppID o SubID')
+        flash(('danger', u'Se requiere AppID o SubID'))
 
         return render_template(
             'admin/panel/generic-form.html',
