@@ -14,61 +14,6 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="request-hud">
-                            <div class="request-buttons">
-                                {% if not request['accepted'] and request['visible'] %}
-                                    <div class="btn btn-lg btn-success accept_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
-                                        Aceptar
-                                    </div>
-                                {% endif %}
-
-                                {% if request['visible'] and not request['accepted '] and request_type != 'B' %}
-                                    <div class="btn btn-lg btn-danger deny_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
-                                        Denegar
-                                    </div>
-                                {% endif %}
-
-                                {% if request_type != 'C' and not request['paid'] and request['visible'] %}
-                                    <div class="btn btn-lg btn-warning pay_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
-                                        Marcar como cobrado
-                                    </div>
-                                {% endif %}
-
-                                {% if request['promotion'] and not request['informed'] %}
-                                    <div class="btn btn-lg btn-default inform_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
-                                        Marcar como informado
-                                    </div>
-                                {% elif request['promotion'] and request['informed'] %}
-                                    <div class="btn btn-lg btn-default uninform_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
-                                        Marcar como no informado
-                                    </div>
-                                {% endif %}
-
-                                {% if request['visible'] and not request['accepted '] %}
-                                    <input id="deny_reason" type="text" class="form-control" placeholder="Motivo de denegación">
-                                {% endif %}
-                            </div>
-
-                            {% if request['assigned'] %}
-                                <div class="request-assigment">
-                                    <div class="well">
-                                        <img src="{{ request['assigned']['avatar_url'] }}" alt="">
-                                        Asignado a <a href="#">{{ request['assigned']['username'] }}</a>
-
-                                        {% if request['assigned_date'] %}
-                                            {{ request['assigned_date']|timesince }}
-                                        {% endif%}
-                                    </div>
-                                </div>
-                            {% endif %}
-
-                            {% if not request['visible'] and not request['accepted'] %}
-                                <div class="request-assigment">
-                                    <div class="well">
-                                        Pedido denegado. Motivo de denegación: {{ request['reason'] }}
-                                    </div>
-                                </div>
-                            {% endif %}
-
                             <div class="request-assigment">
                                 <select class="form-control">
                                     {% for admin in admins %}
@@ -92,6 +37,63 @@
                                     {% endif %}
                                 </div>
                             </div>
+
+                            <div class="request-buttons">
+                                {% if not request['accepted'] and request['visible'] %}
+                                    <div class="btn btn-lg btn-success accept_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Aceptar
+                                    </div>
+                                {% endif %}
+
+                                {% if request['visible'] and not request['accepted '] and request_type != 'B' %}
+                                    <div class="btn btn-lg btn-danger deny_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Denegar
+                                    </div>
+                                {% endif %}
+
+                                {% if request_type != 'C' and not request['paid'] and request['visible'] %}
+                                    <div class="btn btn-lg btn-warning pay_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Marcar como cobrado
+                                    </div>
+                                {% endif %}
+
+                                {% if request['promotion'] and not request['informed'] and not request['paid_before_promotion_end_date'] %}
+                                    <div class="btn btn-lg btn-default inform_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Marcar como informado
+                                    </div>
+                                {% elif request['promotion'] and request['informed'] %}
+                                    <div class="btn btn-lg btn-default uninform_request" data-requesttype="{{ request_type }}" data-requestid="{{ request['id'] }}">
+                                        Marcar como no informado
+                                    </div>
+                                {% endif %}
+
+                                {% if request['visible'] and not request['accepted '] %}
+                                    <input id="deny_reason" type="text" class="form-control" placeholder="Motivo de denegación">
+                                {% endif %}
+                            </div>
+
+                            {% if request['assigned'] %}
+                                <div class="request-assigment">
+                                    <div class="well">
+                                        <img src="{{ request['assigned']['avatar_url'] }}" alt="">
+                                        Asignado a <a href="#">{{ request['assigned']['username'] }}</a>
+
+                                        {% if request['assigned_date'] %}
+                                            {{ request['assigned_date']|timesince }}
+                                        {% endif%}
+
+                                        ({{ request['assigned_date']|date_format}})
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if not request['visible'] and not request['accepted'] %}
+                                <div class="request-assigment">
+                                    <div class="well">
+                                        Pedido denegado. Motivo de denegación: {{ request['reason'] }}
+                                    </div>
+                                </div>
+                            {% endif %}
 
                             {% if request['accepted'] and request['accepted_by'] %}
                                  <div class="request-assigment">
@@ -119,14 +121,31 @@
                             {% if request_type == 'A' and request['promotion'] %}
                                  <div class="request-assigment">
                                     <div class="well">
-                                        {% if request['informed'] %}
-                                            <div class="text text-success">Reserva presentada</div>
+                                        {% if request['informed'] or request['paid_before_promotion_end_date'] %}
+                                            <div class="request-promotion-info">
+                                                {% if request['paid_before_promotion_end_date'] %}
+                                                    <div class="text text-success">
+                                                        <strong>Pago ingresado antes de finalización de oferta</strong>
+                                                    </div>
+                                                {% elif request['informed'] %}
+                                                    <div class="text text-success">
+                                                        <strong>Reserva presentada</strong>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
 
+                                            <div class="text text-primary">Titulo de oferta actual: {{ request['promotion']['title'] }}</div>
                                             {% if request['url'] %}
                                                 <a href="/static/userrequests/{{ request['url'] }}" target="_blank">Ver imagen de reserva</a>
                                             {% endif %}
                                         {% else %}
                                             <span class="text text-danger">Reserva no presentada</span>
+                                        {% endif %}
+
+                                        {% if request['promotion']['instance'] == request['promotion_instance'] %}
+                                            <div class="text text-success"><i class="glyphicon glyphicon-ok"></i> Instancia de oferta coincide</div>
+                                        {% else %}
+                                            <div class="text text-danger"><i class="glyphicon glyphicon-remove"></i> Instancia de oferta difiere</div>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -175,6 +194,10 @@
 
                                                             {% if crc %}
                                                                 <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ crc }}" width="16" height="11" class="flag flag-{{ crc|lower }}">
+                                                            {% endif %}
+
+                                                            {% if relation['gid'] and session.get('user') == 1 %}
+                                                                <div class="text text-muted">(gid: {{ relation['gid'] }})</div>
                                                             {% endif %}
                                                         </td>
 
