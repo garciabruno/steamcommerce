@@ -116,8 +116,30 @@ def admin_model_add(model_name):
         form.hidden_tag = do_nothing
 
         if form.validate():
+            controller = model_to_controller.CONTROLLERS.get(model_name, None)
+
+            if controller is None:
+                flash(
+                    ('danger', u'No se encontró un controlador para el modelo')
+                )
+
+                return render_template(
+                    'admin/panel/model-form.html',
+                    **params
+                )
+
+            if not hasattr(controller(), 'update'):
+                flash(('danger', u'El controlador no posee método "update"'))
+
+                return render_template(
+                    'admin/panel/model-form.html',
+                    **params
+                )
+
             form.populate_obj(new_model)
             new_model.save()
+
+            controller().update(**{'id': new_model.id})
 
             flash(('success', 'Objecto creado satisfactoriamente'))
 
