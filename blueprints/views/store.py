@@ -411,10 +411,11 @@ def store_reservations():
 
         if request.files.get('image').mimetype not in config.ALLOWED_MIMETYPES:
             flash(u'El formato de la imagen no está permitido')
+
             return render_template('views/store/reservations.html')
 
         image = request.files['image']
-        filename = '{0}.{1}'.format(request_id, image.filename.split('.')[1])
+        filename = '{0}.{1}'.format(request_id, image.filename.split('.')[-1])
 
         UPLOAD_PATH = os.path.join(
             config.UPLOAD_DIRECTORY, 'userrequests', filename
