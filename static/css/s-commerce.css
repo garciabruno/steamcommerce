@@ -1651,3 +1651,8 @@ ol.progress-meter li.todo:before {
 .s-commerce-product-image-thumbnail img{
     margin: 5px 5px 5px 0;
 }
+
+.scommerce_slider_content img{
+    width: 100%;
+    height: 320px;
+}
