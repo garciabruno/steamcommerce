@@ -24,9 +24,7 @@
         {% include "views/store/pending_alert.html" %}
     {% endif %}
 
-    <div class="container hidden-xs">
-        {% include "views/store/sliders.html" %}
-    </div>
+    {% include "views/store/sliders.html" %}
 
     {% macro plural(singular, count) %}{{ singular }}{% if count > 1 %}s{% endif %}{% endmacro %}
 
