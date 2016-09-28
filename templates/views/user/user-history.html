@@ -141,7 +141,9 @@
                                                 <td class="table-listing">
                                                     {% if userrequest['informed'] %}
                                                         <strong><span class="text text-success">Si</span></strong>
-                                                    {% else %}
+                                                    {% elif userrequest['paid_before_promotion_end_date'] %}
+                                                        <strong><span class="text text-success">Pago ingresado antes de finalización de oferta (No es necesario reservar)</span></strong>
+                                                    {% else%}
                                                         <strong><span class="text text-danger">No</span></strong>
                                                     {% endif %}
                                                 </td>
