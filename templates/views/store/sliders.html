@@ -12,7 +12,9 @@
                 <div class="carousel-inner">
                     {% for slider in sliders %}
                         <div class="item{% if loop.first %} active{% endif %}">
-                            <img src="/static/img/slider/{{ slider['id'] }}/{{ slider['id'] }}.{{ slider['extension'] }}?{{ config.CACHE_BREAK_RAND }}" alt=" " style="width: 100%;">
+                            <div class="scommerce_slider_content">
+                                <img src="/static/img/slider/{{ slider['id'] }}/{{ slider['id'] }}.{{ slider['extension'] }}?{{ config.CACHE_BREAK_RAND }}" alt=" ">
+                            </div>
 
                             <div class="carousel-caption" style="bottom: 50px;">
                                 <h3>{{ slider['title'] or '' }}</h3>
