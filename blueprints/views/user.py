@@ -435,12 +435,7 @@ def user_notifications():
     notifications = notification.Notification().get_user_top_notifications(
         user_id,
         excludes=[
-            'user',
-            'userrequest',
-            'paidrequest',
-            'product_tags',
-            'product_codes',
-            'product_specs',
+            'all',
         ]
     )
 
