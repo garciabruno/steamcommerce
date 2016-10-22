@@ -860,3 +860,7 @@
 .request-promotion-info{
     margin: 10px 0;
 }
+
+.s-commerce-promotional-request {
+    border: 2px dashed #fdb832;
+}
