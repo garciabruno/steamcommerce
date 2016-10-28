@@ -2,7 +2,7 @@
     {% if notification.action == 1 %}
         Se aceptó el pedido <a href="/historial/A-{{ notification.userrequest }}">#A-{{ notification.userrequest }}</a>
     {% elif notification.action == 2 %}
-        ${{ notification.creditrequest.amount|price_format }} créditos fueron agregados a su cuenta
+        Créditos fueron agregados a su cuenta (Pedido #{{ notification.creditrequest }})
     {% elif notification.action == 3 %}
         Has realizado la compra del producto <a href="/comprar/{{ notification.product.app_id or notification.product.sub_id }}">{{ notification.product.title }}</a>
     {% elif notification.action == 4 %}
