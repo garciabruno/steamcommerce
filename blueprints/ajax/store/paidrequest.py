@@ -8,7 +8,7 @@ from flask import Blueprint
 from inputs import store_inputs
 from utils import route_decorators
 
-from steamcommerce_api import config
+import config
 
 from steamcommerce_api.api import user
 from steamcommerce_api.api import cart
