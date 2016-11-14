@@ -400,7 +400,7 @@ def admin_panel_add_code(product_id):
                 user_id=admin_id
             )
 
-            if len(relations[0].get('product').get('codes')) == 1:
+            if len(relations[0].get('product').get('product_codes')) == 1:
                 product.Product().update(**{
                     'id': product_id,
                     'product_type': 1
