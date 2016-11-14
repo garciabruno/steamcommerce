@@ -179,8 +179,7 @@
                                                         </td>
 
                                                         <td>
-                                                            <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through;"{% endif %}>
-                                                                {{ relation['product']['title'] }}</a>
+                                                            <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through;"{% endif %}>{{ relation['product']['title'] }}</a>
 
                                                             <a class="btn btn-xs btn-default" href="https://steamdb.info/{{ 'app' if relation.get('product').get('app_id') else 'sub' }}/{{ relation.get('product').get('app_id') or relation.get('product').get('sub_id') }}" target="_blank">
                                                                 SteamDB
@@ -196,8 +195,37 @@
                                                                 <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ crc }}" width="16" height="11" class="flag flag-{{ crc|lower }}">
                                                             {% endif %}
 
+                                                            {% macro parse_commitment_level(level) %}
+                                                                {% if level == 0 %}
+                                                                    Uncommited
+                                                                {% elif level == 1 %}
+                                                                    Added to cart
+                                                                {% elif level == 2 %}
+                                                                    Purchased
+                                                                {% endif %}
+                                                            {% endmacro %}
+
                                                             {% if relation['gid'] and session.get('user') == 1 %}
-                                                                <div class="text text-muted">(gid: {{ relation['gid'] }})</div>
+                                                                <div class="text text-muted">
+                                                                    Gift gid: {{ relation['gid'] }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {% if relation['commited_on_bot'] and session.get('user') == 1 %}
+                                                                <div class="text text-muted">
+                                                                    Commited on bot: {{ relation['commited_on_bot'] }}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if relation['commitment_level'] and session.get('user') == 1 %}
+                                                                <div class="text text-muted">
+                                                                    Commitment level: {{ parse_commitment_level(relation['commitment_level']) }}
+                                                                </div>
+                                                            {% endif %}
+
+                                                            {% if relation['shopping_cart_gid'] and session.get('user') == 1 %}
+                                                                <div class="text text-muted">
+                                                                    Shopping cart gid: {{ relation['shopping_cart_gid'] }}
+                                                                </div>
                                                             {% endif %}
                                                         </td>
 
