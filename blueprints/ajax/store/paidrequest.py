@@ -18,7 +18,6 @@ from steamcommerce_api.api import paidrequest
 from steamcommerce_api.api import code_delivery
 from steamcommerce_api.api import notification
 
-import config
 import datetime
 import constants
 
