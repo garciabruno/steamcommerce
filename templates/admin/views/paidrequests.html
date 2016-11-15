@@ -30,6 +30,10 @@
                         {% for relation in request['paidrequest_relations'] %}
                             <div class="s-commerce-relation{% if relation['sent'] %} relation-sent{% endif %}">
                                 <span class="s-commerce-relation-product-title">
+                                    {% if relation.get('commitment_level') and session.get('user') == 1 %}
+                                        <span class="badge badge-default">{{ relation.get('commitment_level') }}</span>
+                                    {% endif %}
+
                                     <a href="{{ url_for('views.store.store_app_id', app_id=(relation['product']['app_id'] or relation['product']['sub_id'])) }}">{{ relation['product']['title'] }}</a>
                                 </span>
 
