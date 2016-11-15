@@ -220,13 +220,13 @@
                                                                     Shopping cart gid: {{ relation['shopping_cart_gid'] }}
                                                                 </div>
 
-                                                                <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
-                                                                    Uncommit relation #{{ relation.get('id') }}
-                                                                </a>
-
                                                                 <div class="text text-muted">
                                                                     Commited on bot: {{ relation['commited_on_bot'] }}
                                                                 </div>
+
+                                                                <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
+                                                                    Uncommit relation #{{ relation.get('id') }}
+                                                                </a>
                                                             {% endif %}
                                                         <td>
                                                             <span class="s-commerce-relation-product-price">
