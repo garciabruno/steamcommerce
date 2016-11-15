@@ -211,24 +211,23 @@
                                                                 </div>
                                                             {% endif %}
 
-                                                            {% if relation['commited_on_bot'] and session.get('user') == 1 %}
-                                                                <div class="text text-muted">
-                                                                    Commited on bot: {{ relation['commited_on_bot'] }}
-                                                                </div>
-                                                            {% endif %}
                                                             {% if relation['commitment_level'] and session.get('user') == 1 %}
                                                                 <div class="text text-muted">
                                                                     Commitment level: {{ parse_commitment_level(relation['commitment_level']) }}
                                                                 </div>
-                                                            {% endif %}
 
-                                                            {% if relation['shopping_cart_gid'] and session.get('user') == 1 %}
                                                                 <div class="text text-muted">
                                                                     Shopping cart gid: {{ relation['shopping_cart_gid'] }}
                                                                 </div>
-                                                            {% endif %}
-                                                        </td>
 
+                                                                <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
+                                                                    Uncommit relation #{{ relation.get('id') }}
+                                                                </a>
+
+                                                                <div class="text text-muted">
+                                                                    Commited on bot: {{ relation['commited_on_bot'] }}
+                                                                </div>
+                                                            {% endif %}
                                                         <td>
                                                             <span class="s-commerce-relation-product-price">
                                                                 ${{ relation['price']|price_format }}

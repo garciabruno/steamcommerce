@@ -472,3 +472,18 @@ def admin_panel_add_code(product_id):
             'admin/panel/generic-form.html',
             **params
         )
+
+
+@admin_panel.route('/relation/uncommit/<int:relation_id>/<int:relation_type>')
+@route_decorators.is_admin
+def admin_uncommit_relation(relation_id, relation_type):
+    if relation_type == 1:
+        userrequest.UserRequest().set_commitment(
+            relation_id, 0, None, shopping_cart_gid=None
+        )
+    elif relation_type == 2:
+        paidrequest.PaidRequest().set_commitment(
+            relation_id, 0, None, shopping_cart_gid=None
+        )
+
+    return redirect(request.headers.get('Referer'))
