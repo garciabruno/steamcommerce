@@ -5,6 +5,7 @@
 External imports
 '''
 
+from flask import g
 from flask import flash
 from flask import request
 from flask import session
@@ -23,6 +24,7 @@ Internal imports
 import config
 from utils import route_decorators
 
+from steamcommerce_api.api import user
 from steamcommerce_api.api import slider
 from steamcommerce_api.api import section
 from steamcommerce_api.api import product
@@ -351,6 +353,19 @@ def store_app_id(app_id):
     params = {
         'product': store_product
     }
+
+    if session.get('user'):
+        spent_incomes = user.User().get_user_spent_incomes(session.get('user'))
+
+        register_delta = datetime.datetime.now() - g.user.get(
+            'register_date',
+            datetime.datetime(year=2012, month=8, day=1)
+        )
+
+        params.update({
+            'spent_incomes': spent_incomes,
+            'register_delta': register_delta
+        })
 
     if store_product.get('product_type') == 3:
         return render_template('views/store/3dproduct.html', **params)

@@ -745,7 +745,6 @@ body{
 .s-commerce-offer-hud{
     padding: 15px;
     background-color: white;
-    border-bottom: 1px solid #e6e6e6;
 }
 
 .s-commerce-product-offer-date{
@@ -1519,6 +1518,20 @@ ol.progress-meter li.todo:before {
     font-size: 16px;
     font-family: "Roboto",sans-erif;
     color: #1C262F;
+}
+
+.s-commerce-product-alert-success{
+    background: #2CB16E;
+    font-size: 16px;
+    font-family: "Roboto",sans-erif;
+    color: white;
+}
+
+.s-commerce-product-alert-fail{
+    background: #C9302C;
+    font-size: 16px;
+    font-family: "Roboto",sans-erif;
+    color: white;
 }
 
 .s-commerce-product-alert-title{
