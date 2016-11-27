@@ -357,8 +357,8 @@ def store_app_id(app_id):
     if session.get('user'):
         spent_incomes = user.User().get_user_spent_incomes(session.get('user'))
 
-        register_delta = datetime.datetime.now() - g.user.get(
-            'register_date',
+        register_delta = datetime.datetime.now() - (
+            g.user.get('register_date') or
             datetime.datetime(year=2012, month=8, day=1)
         )
 
