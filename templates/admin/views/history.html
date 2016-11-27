@@ -189,6 +189,10 @@
                                                                 Dispenser
                                                             </a>
 
+                                                            <button class="btn btn-xs btn-default btn-clipboard" data-clipboard-text="entregas+{{ relation.get('id') }}{{ request_type }}{{ request['id'] }}@extremegaming-arg.com.ar">
+                                                                Link entregas
+                                                            </button>
+
                                                             {% set crc = relation.get('product').get('price_currency') %}
 
                                                             {% if crc %}
@@ -380,27 +384,6 @@
                             {% endfor %}
 
                             {{ wtf.quick_form(message_form, url_for("admin.views.admin_message_add")) }}
-
-                            {% if session.get('user') == 1 %}
-                                <div class="hidden-admin-json" style="margin-top: 20px;">
-                                    {{ url_for('static', filename='css/jquery.json-viewer.css')|css_file|safe }}
-                                    {{ url_for('static', filename='js/jquery.json-viewer.js')|js_file|safe }}
-
-                                    <button class="btn btn-default" onclick="$('.json').toggle();">Mostrar JSON</button>
-
-                                    <pre id="json-renderer" class="json" style="display: none;"> </pre>
-
-                                    <script type="text/javascript">
-                                        $('#json-renderer').jsonViewer({{ request|as_json|safe }});
-                                    </script>
-
-                                    <pre id="json-renderer-history" class="json" style="display: none;"> </pre>
-
-                                    <script type="text/javascript">
-                                        $('#json-renderer-history').jsonViewer({{ history_items|as_json|safe }});
-                                    </script>
-                                {% endif %}
-                            </div>
                         </div>
                     </div>
                 </div>
