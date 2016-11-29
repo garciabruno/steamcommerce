@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:Utf-8 -*-
 
-from flask import g
 from flask import request
 from flask import session
 from flask import Blueprint
