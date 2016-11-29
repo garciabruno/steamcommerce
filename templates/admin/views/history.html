@@ -80,9 +80,8 @@
 
                                         {% if request['assigned_date'] %}
                                             {{ request['assigned_date']|timesince }}
+                                            ({{ request['assigned_date']|date_format}})
                                         {% endif%}
-
-                                        ({{ request['assigned_date']|date_format}})
                                     </div>
                                 </div>
                             {% endif %}
