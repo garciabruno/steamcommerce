@@ -86,12 +86,18 @@ def ajax_userrequest_generate():
         if product_data.get('promotion').get('ending_date'):
             promotion = product_data.get('promotion').get('id')
 
+    is_article = False
+
+    if product_data.get('product_type') == 3:
+        is_article = True
+
     invoice = userrequest.UserRequest().generate(
         curr_user['id'],
         price,
         curr_user['email'],
         [product_data.get('id')],
-        promotion=promotion
+        promotion=promotion,
+        is_article=is_article
     )
 
     if not invoice.get('success'):
@@ -110,6 +116,9 @@ def ajax_userrequest_generate():
     )
 
     invoice.update({'promotional': promotion is not None})
+
+    if is_article:
+        invoice.update({'is_article': True})
 
     return invoice
 
@@ -132,6 +141,7 @@ def ajax_userrequest_cart_generate():
     cart_items = user_cart.get('items')
 
     promotion = None
+
     user_is_register_restricted = False
     user_is_income_restricted = False
 
@@ -176,12 +186,17 @@ def ajax_userrequest_cart_generate():
     if user_is_register_restricted:
         return ({'success': False, 'status': 6}, 500)
 
+    is_article = 3 in [
+        x.get('product').get('product_type') for x in cart_items
+    ]
+
     invoice = userrequest.UserRequest().generate(
         curr_user['id'],
         user_cart.get('prices').get('normal'),
         curr_user['email'],
         [x.get('product').get('id') for x in cart_items],
-        promotion=promotion
+        promotion=promotion,
+        is_article=is_article
     )
 
     if not invoice.get('success'):
@@ -195,5 +210,8 @@ def ajax_userrequest_cart_generate():
 
     cart.Cart().empty_user_cart(curr_user['id'])
     invoice.update({'promotional': promotion is not None})
+
+    if is_article:
+        invoice.update({'is_article': True})
 
     return invoice
