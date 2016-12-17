@@ -226,6 +226,11 @@ def css_file(filepath):
 
 
 @app.template_filter()
+def todict(t):
+    return dict(map(reversed, t))
+
+
+@app.template_filter()
 def js_file(filepath):
     JAVASCRIPT_FMT = u'<script type="text/javascript" src="{0}?{1}"></script>'
 
