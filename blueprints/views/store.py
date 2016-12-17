@@ -92,6 +92,8 @@ def store_catalog():
     user_id = session.get('user')
 
     pending_testimonials = []
+
+    pending_shipping = []
     pending_requests = []
 
     if user_id:
@@ -105,6 +107,12 @@ def store_catalog():
                 user_id
             )
 
+        pending_shipping = userrequest.UserRequest().\
+            get_user_shipping_pending(
+                user_id,
+                excludes=['all']
+            )
+
     template_params = {
         'page': 1,
         'section_id': sections[0]['id'],
@@ -114,9 +122,10 @@ def store_catalog():
         'sections': sections,
         'promotions': promotions,
         'active_section': 'catalog',
+        'pending_shipping': pending_shipping,
         'pending_requests': pending_requests,
         'promotion_products': promotion_products,
-        'pending_testimonials': pending_testimonials
+        'pending_testimonials': pending_testimonials,
     }
 
     return render_template(
@@ -127,7 +136,18 @@ def store_catalog():
 
 @store.route('/3d')
 def store_3d_catalog():
-    return render_template('views/store/3dcatalog.html')
+    sections = section.Section().get_active(section_type=2)
+    products = product.Product().get_by_section(sections[0]['id'], 1)
+
+    params = {
+        'page': 1,
+        'sections': sections,
+        'products': products,
+        'active_section': '3d',
+        'section_id': sections[0]['id']
+    }
+
+    return render_template('views/store/3dcatalog.html', **params)
 
 
 @store.route('/products/', methods=['POST'])
@@ -454,3 +474,40 @@ def store_reservations():
         }
 
         return render_template('views/store/reservations.html', **params)
+
+
+@store.route('/envios')
+@route_decorators.is_logged_in
+def store_shipping_form():
+    user_id = session.get('user')
+
+    pending_userrequest_shipping = userrequest.UserRequest().\
+        get_user_shipping_pending(user_id)
+
+    if not len(pending_userrequest_shipping):
+        return redirect(url_for('views.store.store_catalog'))
+
+    user_id = session.get('user')
+    user_data = user.User().get_by_id(user_id)
+
+    form = user_form.ShippingForm()
+
+    params = {
+        'form': form,
+        'user': user_data,
+        'userrequests': pending_userrequest_shipping
+    }
+
+    return render_template('views/store/shipping.html', **params)
+
+
+@store.route('/envios/cancelar')
+@route_decorators.is_logged_in
+def store_cancel_shipping():
+    if session.get('userrequest'):
+        session.pop('userrequest')
+
+    if session.get('paidrequest'):
+        session.pop('paidrequest')
+
+    return redirect(url_for('views.store.store_catalog'))
