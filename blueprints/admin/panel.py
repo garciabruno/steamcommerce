@@ -100,20 +100,24 @@ def admin_model_add(model_name):
         'Enviar', validators=[DataRequired()]
     )
 
+    params = {
+        'model_name': model_name,
+        'models': models.models_list
+    }
+
     if request.method == 'GET':
         form = raw_form(obj=model())
         form.hidden_tag = do_nothing
 
-        params = {
-            'form': form,
-            'model_name': model_name,
-            'models': models.models_list
-        }
+        params.update({'form': form})
+
     elif request.method == 'POST':
         new_model = model()
 
         form = raw_form(request.form, obj=new_model)
         form.hidden_tag = do_nothing
+
+        params.update({'form': form})
 
         if form.validate():
             controller = model_to_controller.CONTROLLERS.get(model_name, None)
