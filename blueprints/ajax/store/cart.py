@@ -41,10 +41,23 @@ def ajax_cart_add():
     if form_product.get('product_type') == 2:
         return json.dumps({'success': False, 'status': 3}), 500
 
-    user_cart = cart.Cart().get_user_cart(user_id, trim=True)
+    user_cart = cart.Cart().get_user_cart(user_id)
+    cart_items = user_cart.get('items')
 
-    if len(user_cart.get('items')) >= 25:
+    if len(cart_items) >= 25:
         return json.dumps({'success': False, 'status': 4}), 500
+
+    if len(cart_items) > 0:
+        cart_has_normal_products = 1 in [
+            x.get('product').get('product_type') for x in cart_items
+        ]
+
+        product_type = form_product.get('product_type')
+
+        if product_type == 3 and cart_has_normal_products:
+            return json.dumps({'success': False, 'status': 6}), 500
+        elif product_type == 1 and not cart_has_normal_products:
+            return json.dumps({'success': False, 'status': 7}), 500
 
     success = cart.Cart().add_to_user_cart(user_id, product_id)
 
