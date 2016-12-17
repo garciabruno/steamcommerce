@@ -1,223 +1,58 @@
-<div id="products-page-1-1" class="products-3d-page">
-    <div class="s-commerce-3d-featured-products">
+<div id="products-page-{{ page }}-{{ section_id }}" class="products-page">
+    {% for row in products|batch(4, {}) %}
         <div class="row">
-            <div class="col-xs-12 col-sm-8">
-                <div class="s-commerce-3d-product-featured" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                    <div class="s-commerce-3d-product-shipment-warning">
-                        ¡No incluye costos de envío!
-                    </div>
-
-                    <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                        <div class="s-commerce-3d-product-inner-featured">
-                            <div class="s-commerce-3d-product-title-featured">
-                                Star Wars' StormTrooper + Darth Vader
+            {% for product in row %}
+                {% if product %}
+                    <div class="col-xs-12 col-sm-8 col-md-4">
+                        <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="visible-xs visible-sm">
+                            <div class="s-commerce-product-title-mobile">
+                                {{ product['title'] }}
                             </div>
+                        </a>
 
-                            <div class="s-commerce-3d-product-description">
-                                Luchá en las guerras de las galaxias desde la comodidad de tu casa lalalalala 100mm de alto
+                        {% set background = None %}
+                        {% set assets = product['assets'] %}
+
+                        {% if assets['capsule'] %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/capsule.jpg?' + config.CACHE_BREAK_RAND|string %}
+                        {% elif assets['header'] %}
+                            {% set background = '/static/img/product/' + product['id']|string + '/' + assets['header'] + '?' + config.CACHE_BREAK_RAND|string %}
+                        {% else %}
+                            {% set background = '/static/steam_avatar_null.jpg?' + config.CACHE_BREAK_RAND|string %}
+                        {% endif %}
+
+                        {% if session.get('admin') %}
+                            <div class="s-commerce-admin-hud">
+                                <a class="btn btn-default btn-xs" href="{{ url_for('admin.panel.admin_model_edit', object_id=product['id'], model_name='Product') }}">Editar producto</a>
                             </div>
+                        {% endif %}
+
+                        <div class="s-commerce-3d-product" style="background-image: url('{{ background }}'); margin-top: 10px;">
+                            <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-3d-product-wrapper">
+                                <div class="s-commerce-3d-product-inner">
+                                    <div class="s-commerce-3d-product-title">
+                                        {{ product['title'] }}
+                                    </div>
+                                </div>
+
+                                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
+                                    <div class="s-commerce-3d-price-tag">
+                                        {% if product.get('price_active') and product.get('price_value') %}
+                                            ${{ product.get('price_value')|price_format }}
+
+                                            {% if product.get('price_currency') and session.get('admin') %}
+                                                <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ product.get('price_currency') }}" width="16" height="11" class="flag flag-{{ product.get('price_currency')|lower }}">
+                                            {% endif %}
+                                        {% else %}
+                                            No activo
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            </a>
                         </div>
-                    </a>
-
-                    <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                        <div class="s-commerce-3d-featured-price-tag">
-                            $100.00 ARS
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-xs-12 col-sm-8">
-                <div class="s-commerce-3d-product-featured" style="background: url('http://cdn.akamai.steamstatic.com/steam/apps/4000/capsule_616x353.jpg?t=1435852002')">
-                    <div class="s-commerce-3d-product-shipment-warning">
-                        ¡No incluye costos de envío!
                     </div>
-
-                    <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                        <div class="s-commerce-3d-product-inner-featured">
-                            <div class="s-commerce-3d-product-title-featured">
-                                Garry's Mod 3D Physics Gun
-                            </div>
-
-                            <div class="s-commerce-3d-product-description">
-                                Garry's Mod 3D printed Physics gun very beautiful yes yes Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illo voluptatum, ipsum odit reprehenderit aut doloremque ipsam aperiam eius rem quidem adipisci unde voluptate, quae totam deserunt fuga. Consequatur numquam, molestias cupiditate? Ullam ducimus, vero perferendis enim accusantium inventore fugit, quia iure facere iste maiores, voluptates, optio consequuntur corrupti eaque cupiditate!
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                        <div class="s-commerce-3d-featured-price-tag">
-                            $100.00 ARS
-                        </div>
-                    </a>
-                </div>
-            </div>
+                {% endif %}
+            {% endfor %}
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-8">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover; height: 317px;">
-                <div class="s-commerce-3d-product-inner" style="height: 317px;">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12 col-sm-8 col-md-8">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover; height: 317px;">
-                <div class="s-commerce-3d-product-inner" style="height: 317px;">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col-sm-8 col-md-4">
-            <div class="s-commerce-3d-product" style="background: url('https://all3dp.com/wp-content/uploads/2015/12/lowpoly_starwars2_display_large-e1449161532780.jpg?{{ config.CACHE_BREAK_RAND }}') repeat scroll center center / cover">
-                <div class="s-commerce-3d-product-inner">
-                    <div class="s-commerce-3d-product-title">
-                        Star Wars StormTrooper + Darth Vader
-                    </div>
-                </div>
-
-                <a href="{{ url_for('views.store.store_app_id', app_id='3d-garrys-mod') }}">
-                    <div class="s-commerce-3d-price-tag">
-                        $100.00 ARS
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>

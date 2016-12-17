@@ -67,6 +67,24 @@
                         </div>
                     {% endif %}
 
+                    {% if 'carousel' in product.get('assets').keys() %}
+                        <div class="s-commerce-product-carousel">
+                            <div class="s-commerce-product-carousel-active">
+                                <img src="{{ url_for('static', filename='img/product/' + product.get('id')|string + '/' + product.get('assets').get('carousel')[0]) }}">
+                            </div>
+
+                            <div class="s-commerce-product-carousel-thumbs">
+                                {% for asset in product.get('assets').get('carousel') %}
+                                    {% if asset[-10:-4] == '_thumb' %}
+                                        <span class="s-commerce-product-thumb" data-parent="{{ url_for('static', filename='img/product/' + product.get('id')|string + '/' + asset[:-10] + asset[-4:]) }}">
+                                            <img src="{{ url_for('static', filename='img/product/' + product.get('id')|string + '/' + asset) }}">
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
                     <div class="s-commerce-product-top-hud">
                         <span class="s-commerce-product-hud-title">
                             {{ product.get('title') }}
@@ -87,7 +105,7 @@
                         </div>
 
                         <span class="s-commerce-product-alert-body">
-                            Este producto se entrega físicamente a través de sistema de correo OCA. Todos los gastos de envío corren por parte del usuario. <br><strong>Datos adicionales deberán ser proporcionados al realizar la primer compra.</strong>
+                            Este producto se entrega físicamente a través de Correo Argentino. Todos los gastos de envío corren por parte del usuario. <br><strong>Datos adicionales deberán ser proporcionados para realizar compras.</strong>
                         </span>
                     </div>
 
@@ -119,7 +137,7 @@
 
                     <div class="s-commerce-product-body">
                         <div class="row">
-                            <div class="col-xs-16 col-sm-16">
+                            <div class="col-xs-16 col-sm-10">
                                 <div class="s-commerce-body-inner">
                                     {% if product.get('description') %}
                                         <div class="s-commerce-description-title">
@@ -142,6 +160,56 @@
                                             });
                                         </script>
                                     {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6">
+                                {% if session.get('admin') %}
+                                    <div class="s-commerce-product-admin-hud">
+                                        <a class="btn btn-default" href="https://steamdb.info/{{ 'app' if product.get('app_id') else 'sub' }}/{{ product.get('app_id') or product.get('sub_id') }}" target="_blank">
+                                            Ver en SteamDB
+                                        </a>
+
+                                        <a class="btn btn-default" href="https://dispenser.tf?s={{ '+'.join(product.title.split(' ')) }}">
+                                            Buscar en Dispenser.TF
+                                        </a>
+
+                                        <a class="btn btn-default" href="{{ url_for('admin.views.queue_price_add', product_id=product.get('id')) }}">
+                                            Añadir a la cola de precios
+                                        </a>
+
+                                        <a class="btn btn-default" href="{{ url_for('admin.views.queue_assets_add', product_id=product.get('id')) }}">
+                                            Añadir a la cola de recursos
+                                        </a>
+                                    </div>
+                                {% endif %}
+
+                                <div class="s-commerce-description-title">
+                                    Características
+                                </div>
+
+                                <div class="s-commerce-product-specs">
+                                    {% for spec in product.get('product_specs', []) %}
+                                        {% if spec['visible'] %}
+                                            <span class="s-commerce-spec">
+                                                <a href="#">{{ spec['title'] }}</a>
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                <div class="s-commerce-description-title">
+                                    Categorías
+                                </div>
+
+                                <div class="s-commerce-product-categories">
+                                    {% for tag in product.get('product_tags', []) %}
+                                        {% if tag['visible'] %}
+                                            <span class="s-commerce-category">
+                                                <a href="#">{{ tag['title'] }}</a>
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -233,32 +301,7 @@
                             product_id: {{ product.get('id') }}
                         },
                         success: function(data){
-                            var json_data = data;
-                            var alert_message = '';
-
-                            {% if product.get('is_promotional') %}
-                                var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="#" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, ¡de otra manera nos veremos obligados a devolverte el monto abonado!';
-                            {% endif %}
-
-                            swal(
-                                {
-                                    title: '¡Pedido #A-' + json_data['userrequest'] + ' generado!',
-                                    text: 'Tu código de barras manual es: <b>' + json_data['bar_code'] + '</b>' + alert_message,
-                                    type: 'success',
-                                    html: true,
-                                    confirmButtonText: 'Ver boleta para imprimir',
-                                    cancelButtonText: 'Cerrar',
-                                    closeOnConfirm: false,
-                                    closeOnCancel: true,
-                                    showCancelButton: true,
-                                },
-                                function(){
-                                    window.open('https://www.cuentadigital.com/verfactura.php?id=' + json_data['bar_code'], '_blank');
-                                    {% if product.get('is_promotional') %}
-                                        swal({title: 'Un recordatorio', text: alert_message, html: true});
-                                    {% endif %}
-                                }
-                            );
+                            document.location = '/envios';
                         },
                         error: function(data){
                             var json_data = $.parseJSON(data.responseText);
@@ -316,22 +359,7 @@
                             product_id: {{ product.get('id') }}
                         },
                         success: function(data){
-                            var json_data = data;
-
-                            if (!json_data['instant']) {
-                                text_content = 'En las próximas 1hs a 48hs estaremos procesando tu pedido. En caso de que se haya encontrado en "Entrega Inmediata" entonces se creará una nota con tu código/link de activación en tu pedido.';
-                            } else {
-                                text_content = '¡Tu pedido fue entregado inmediatamente! En el historial de tu pedido podrás encontrar un nuevo mensaje con tu código/link de activación. <strong>También te copiamos el mensaje aquí:<br><br>' + json_data['message'] + '</strong>';
-                            }
-
-                            swal({
-                                title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',
-                                text: text_content,
-                                type: 'success',
-                                showCancelButton: true,
-                                html: true,
-                                cancelButtonText: "Cerrar"
-                            });
+                            document.location = '/envios';
                         },
                         error: function(data) {
                             var json_data = $.parseJSON(data.responseText);

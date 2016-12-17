@@ -1,0 +1,14 @@
+<div class="s-commerce-pending-shipping-alert">
+    <div class="container">
+        <div class="main">
+            <span class="pending-requests-title">¡Tienes pedidos pendientes que requiere de tus datos!</span>
+            <div class="pending-requests-speech">Tienes {{ pending_shipping|length }} pedido(s) que requiere de tus datos para realizar el envío a través de Correo Argentino</div>
+
+            <div class="pending-requests-hotlink">
+                <a href="{{ url_for('views.store.store_shipping_form') }}" class="btn btn-default">
+                    Completar datos de envío
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,168 @@
+{% extends "layout/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}ExtremeGaming - Datos de Envíos{% endblock %}
+
+{% block header %}
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="main">
+			<div class="s-commerce-shipping-title">
+				<div>¡Hola {{ user['name'] }}!</div>
+
+				<div>Antes de continuar, vamos a necesitar unos datos para realizar tu envío</div>
+			</div>
+
+			<div class="s-commerce-shipping-small-alert text text-warning">
+				<i class="glyphicon glyphicon-alert"></i>
+				Para averiguar cual es tu Código Postal Argentino consultar aqui: <a href="http://www.correoargentino.com.ar/formularios/cpa" target="_blank">Consulta CPA</a>
+			</div>
+
+			{% macro print_shipping_form(userrequest, paidrequest) %}
+				<a href="{{ url_for('views.store.store_cancel_shipping') }}" class="btn btn-danger" style="margin: 10px 0;">
+					<i class="glyphicon glyphicon-remove"></i>
+					Cancelar este pedido
+				</a>
+
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="s-commerce-shipping-form-container">
+							{{ wtf.quick_form(form) }}
+						</div>
+
+						<script type="text/javascript">
+							$('select').select2();
+						</script>
+					</div>
+
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="s-commerce-shipping-details">
+							<div class="s-commerce-shipping-detail-title">
+								{% if userrequest %}
+									Tu pedido #A-{{ userrequest['id'] }} es por:
+								{% elif paidrequest %}
+									Tu pedido #C-{{ paidrequest['id'] }} es por:
+								{% endif %}
+							</div>
+
+							{% if userrequest %}
+								{% set relations = userrequest.get('userrequest_relations') %}
+							{% elif paidrequest %}
+								{% set relations = paidrequest.get('paidrequest_relations') %}
+							{% endif %}
+
+							{% for relation in relations %}
+								{% set product = relation.get('product') %}
+
+								<div class="s-commerce-shipping-detail">
+									<span class="shipping-detail-product">
+										<a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+											{{ product.get('title') }}
+										</a>
+									</span>
+
+									<span class="shipping-detail-price">
+										(${{ relation.get('price')|price_format }} ARS)
+									</span>
+								</div>
+							{% endfor %}
+
+							<div class="s-commerce-shipping-detail s-commerce-shipping-cost" style="display: none;">
+								<span class="shipping-detail-product detail-shipping-price">
+									Envío por Correo Argentino hacia:
+								</span>
+
+								<span class="shipping-detail-product shipping-detail-destiny"> </span>
+
+								<span class="shipping-detail-price"> </span>
+							</div>
+						</div>
+
+						{% if userrequest %}
+							<div class="s-commerce-shipping-details-final" data-finalprice="{{ userrequest.get('price') }}">
+								Total: <span class="s-commerce-shipping-details-final-price">${{ userrequest.get('price')|price_format }} ARS</span>
+							</div>
+						{% elif paidrequest %}
+							<div class="s-commerce-shipping-details-final" data-finalprice="{{ paidrequest.get('price') }}">
+								Total: <span class="s-commerce-shipping-details-final-price">${{ paidrequest.get('price')|price_format }} ARS</span>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			{% endmacro %}
+
+			{% if userrequests|length > 0 %}
+				{{ print_shipping_form(userrequests[0], None) }}
+			{% endif %}
+
+			<script type="text/javascript">
+				function update_shipping_price() {
+					var province_letter = $('select#province option:selected').val();
+					var city_id = $('select#city option:selected').val();
+
+					$.ajax({
+						url: '/ajax/store/products/shipping/price/',
+						type: 'POST',
+						data:{
+							province_letter: province_letter,
+							city_id: city_id
+						},
+						success: function(data) {
+							$('.s-commerce-shipping-cost').show();
+
+							var province_name = $('select#province option:selected').text();
+							var city_name = $('select#city option:selected').text();
+							var old_price = $('.s-commerce-shipping-details-final').data('finalprice');
+							var new_price = parseInt(data['price']) + parseInt(old_price);
+
+							$('.shipping-detail-destiny').text(province_name + ', ' + city_name);
+							$('.s-commerce-shipping-cost .shipping-detail-price').text('($' + data['price'] + '.00 ARS)');
+							$('.s-commerce-shipping-details-final-price').text('$' + new_price + '.00 ARS');
+						},
+						error: function(error) {
+							var notification = new Notification();
+							notification.push('No se pudo actualizar el precio para el envío');
+
+							$('.s-commerce-shipping-cost .s-commerce-shipping-cost').hide();
+						}
+					});
+				}
+
+				$('select#province').on('change', function(){
+					$('select#city option').remove();
+
+					var notification = new Notification();
+					notification.push('Cargando ciudades, un momento por favor');
+
+					$.ajax({
+						url: '/ajax/store/products/cities/',
+						type: 'POST',
+						data: {
+							'letter': $('select#province option:selected').val()
+						},
+						success: function(data) {
+							var list = $("select#city");
+
+							$.each(data, function(index, item) {
+								list.append(new Option(item.name, item.internal_id));
+							});
+
+							update_shipping_price();
+						},
+						error: function() {
+        					notification.push('No se pudieron encontrar ciudades para esta provincia');
+						}
+					});
+				});
+
+				$('select#city').on('change', function() {
+					update_shipping_price();
+				});
+			</script>
+		</div>
+	</div>
+{% endblock %}

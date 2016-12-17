@@ -37,6 +37,12 @@
                         $('.cd-cart-total').fadeOut();
                         $('.checkout-btn').fadeOut();
 
+                        if (json_data['is_article']) {
+                            document.location = '/envios';
+
+                            return;
+                        }
+
                         swal(
                             {
                                 title: '¡Pedido #A-' + json_data['userrequest'] + ' generado!',
@@ -61,7 +67,7 @@
                         var json_data = JSON.parse(data.responseText);
 
                         if (json_data['status'] == 0) {
-                            swal('Carrito vacÃ­o', 'Tu carrito se encuentra vacÃ­o, por favor aÃ±ade algÃºn producto e intentalo nuevamente', 'error');
+                            swal('Carrito vacío', 'Tu carrito se encuentra vacío, por favor añade algún producto e intentalo nuevamente', 'error');
                         } else if (json_data['status'] == 1) {
                             swal('Precios no disponibles', 'No se han podido encontrar precios activos para los productos en tu carrito', 'error');
                         } else if (json_data['status'] == 3 || json_data['status'] == 4) {
@@ -114,6 +120,11 @@
                     $('.cd-cart-items').fadeOut();
                     $('.cd-cart-total').fadeOut();
                     $('.checkout-btn').fadeOut();
+
+                    if (json_data['is_article']) {
+                        document.location = '/envios';
+                        return;
+                    }
 
                     swal({
                         title: 'Pedido #C-' + json_data['paidrequest'] + ' realizado',

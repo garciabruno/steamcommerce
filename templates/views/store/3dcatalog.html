@@ -30,8 +30,41 @@
             <div class="s-commerce-products-title">
                 Productos
             </div>
+        </div>
 
-            {% include "views/store/3dproducts.html" %}
+        <div class="container">
+            <div class="s-commerce-section-selector">
+                <div class="row">
+                    <div class="col-md-2">
+                        <span class="s-commerce-section-title">Sección</span>
+                    </div>
+
+                    <div class="col-md-14">
+                        <select class="form-control">
+                            {% for section in sections %}
+                                <option value="{{ section.id }}"{% if selected_section and selected_section == section.title %} selected="selected" {% endif %}>{{ section.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            {% for section in sections %}
+                <div class="s-commerce-products-list" data-sectionid="{{ section.id }}">
+                    {% if loop.first and not selected_section %}
+                        {% include "views/store/3dproducts.html" %}
+                    {% elif section.title == selected_section %}
+                        {% include "views/store/3dproducts.html" %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="s-commerce-products-selection">
+                <div id="page-selection" class="hidden-xs"> </div>
+                <div id="mobile-page-selection" class="visible-xs"> </div>
+            </div>
         </div>
     </div>
 

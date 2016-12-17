@@ -24,6 +24,10 @@
         {% include "views/store/pending_alert.html" %}
     {% endif %}
 
+    {% if session.get('user') and pending_shipping|length > 0 %}
+        {% include "views/store/pending_shipping.html" %}
+    {% endif %}
+
     {% include "views/store/sliders.html" %}
 
     {% macro plural(singular, count) %}{{ singular }}{% if count > 1 %}s{% endif %}{% endmacro %}
