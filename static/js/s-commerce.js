@@ -262,8 +262,14 @@ $('.s-commerce-cart-button, .s-commerce-offer-cart-button').on('click', function
                 notification.push('No puedes añadir productos de entrega inmediata a tu carrito');
             } else if (json_data['status'] == 4) {
                 notification.push('Tu carrito se encuentra lleno');
-            } else {
+            } else if (json_data['status'] == 5) {
                 notification.push('No se pudo añadir al carrito, intentelo nuevamente');
+            } else if (json_data['status'] == 6) {
+                notification.push('No puedes añadir productos físicos cuando hay juegos en tu carrito');
+            } else if (json_data['status'] == 7) {
+                notification.push('No puedes añadir juegos cuando hay productos físicos en tu carrito');
+            } else {
+                notification.push('Ocurrió un error inesperado, internarlo nuevamente...');
             }
 
             button.restore_loading();
@@ -288,4 +294,10 @@ $('#cd-cart-trigger').on('click', function(){
             }
         });
     }
+});
+
+$('.s-commerce-product-thumb').on('click', function(){
+    var $this = $(this);
+
+    $('.s-commerce-product-carousel-active img').attr('src', $this.data('parent'));
 });
