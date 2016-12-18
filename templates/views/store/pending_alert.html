@@ -6,7 +6,11 @@
             </span>
 
             <div class="pending-requests-speech">
-                Tienes {{ pending_requests|length }} pedido{% if pending_requests|length > 1 %}s{% endif %} que requieren una reserva <strong>una vez que hayan sido abonados</strong>
+                {% if pending_requests_ids %}
+                    Tienes {{ pending_requests_ids|length }} pedido{% if pending_requests_ids|length > 1 %}s{% endif %} que requieren una reserva <strong>una vez que hayan sido abonados</strong>
+                {% elif pending_requests %}
+                    Tienes {{ pending_requests|length }} pedido{% if pending_requests|length > 1 %}s{% endif %} que requieren una reserva <strong>una vez que hayan sido abonados</strong>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -100,3 +104,15 @@
         </div>
     </div>
 </div>
+
+{% for request_id in pending_requests_ids %}
+    <script type="text/javascript">
+        $.ajax({
+            url: '/ajax/store/userrequest/reservation/seen/',
+            type: 'POST',
+            data:{
+                'request_id': {{ request_id }}
+            }
+        })
+    </script>
+{% endfor %}

@@ -20,7 +20,7 @@
         {% include "views/store/welcome.html" %}
     {% endif %}
 
-    {% if session.get('user') and pending_requests|length > 0 %}
+    {% if session.get('user') and pending_requests_ids|length > 0 %}
         {% include "views/store/pending_alert.html" %}
     {% endif %}
 
