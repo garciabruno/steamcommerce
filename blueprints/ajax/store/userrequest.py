@@ -13,6 +13,7 @@ from steamcommerce_api.api import userrequest
 
 from inputs import store_inputs
 from utils import route_decorators
+from forms import user as user_form
 
 import datetime
 import config
@@ -197,3 +198,35 @@ def ajax_userrequest_cart_generate():
     invoice.update({'promotional': promotion is not None})
 
     return invoice
+
+
+@ajax_userrequest.route('/reservation/seen/', methods=['POST'])
+@route_decorators.ajax_is_logged_in
+@route_decorators.as_json
+def ajax_userrequest_reservation_seen():
+    form = user_form.ReservationForm(request.form, csrf_enabled=False)
+
+    if not form.validate():
+        return {'success': False}
+
+    request_id = int(form.request_id.data)
+
+    pending_requests_ids = userrequest.UserRequest().\
+        _get_uninformed_by_user_id(
+            session.get('user')
+        )
+
+    if not request_id in pending_requests_ids:
+        return {'success': False}
+
+    userrequest_data = userrequest.UserRequest().get_id(
+        request_id,
+        excludes=['all']
+    )
+
+    userrequest.UserRequest().set_times_seen(
+        request_id,
+        userrequest_data.get('times_seen') + 1
+    )
+
+    return {'success': True}
