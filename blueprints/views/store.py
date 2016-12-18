@@ -397,10 +397,12 @@ def store_reservations():
             session.get('user')
         )
 
+    params = {
+        'pending_requests': pending_requests
+    }
+
     if request.method == 'GET':
-        params = {
-            'pending_requests': pending_requests
-        }
+        params.update({'active_section': 'reservations'})
 
         return render_template('views/store/reservations.html', **params)
     elif request.method == 'POST':
@@ -415,19 +417,25 @@ def store_reservations():
             return redirect(url_for('views.store.store_reservations'))
 
         if not request.files.get('image'):
-            flash('El formulario no contiene una imagen adjuntada')
-            return render_template('views/store/reservations.html')
+            flash(
+                ('danger', u'El formulario no contiene una imagen adjuntada')
+            )
+
+            return render_template('views/store/reservations.html', **params)
 
         stream = request.files.get('image').stream.read()
 
         if len(stream) > config.MAX_IMAGE_BYTES_SIZE:
-            flash('El archivo adjuntado supera los 5MB')
-            return render_template('views/store/reservations.html')
+            flash(('danger', u'El archivo adjuntado supera los 5 MB'))
+
+            return render_template('views/store/reservations.html', **params)
 
         if request.files.get('image').mimetype not in config.ALLOWED_MIMETYPES:
-            flash(u'El formato de la imagen no está permitido')
+            flash(
+                ('danger', u'El formato de la imagen no está permitido')
+            )
 
-            return render_template('views/store/reservations.html')
+            return render_template('views/store/reservations.html', **params)
 
         image = request.files['image']
         filename = '{0}.{1}'.format(request_id, image.filename.split('.')[-1])
@@ -447,10 +455,73 @@ def store_reservations():
                 session.get('user')
             )
 
-        flash('Pedido reservado satisfactoriamente')
+        flash(
+            (
+                'success',
+                u'Pedido #A-{0} reservado exitosamente'.format(
+                    request_id
+                )
+            )
+        )
 
         params = {
             'pending_requests': pending_requests
         }
 
         return render_template('views/store/reservations.html', **params)
+
+
+@store.route('/reservas/cancelar', methods=['GET', 'POST'])
+@route_decorators.is_logged_in
+def store_cancel_reservations():
+    pending_requests = userrequest.UserRequest().\
+        get_user_not_informed_userrequests(
+            session.get('user')
+        )
+
+    params = {
+        'pending_requests': pending_requests
+    }
+
+    if request.method == 'GET':
+        params.update({'active_section': 'cancel_reservations'})
+
+        return render_template(
+            'views/store/cancel_reservations.html',
+            **params
+        )
+    elif request.method == 'POST':
+        form = user_form.ReservationForm(request.form, csrf_enabled=False)
+
+        if not form.validate():
+            return redirect(url_for('views.store.store_cancel_reservations'))
+
+        request_id = int(form.request_id.data)
+
+        if not request_id in [x.get('id') for x in pending_requests]:
+            return redirect(url_for('views.store.store_cancel_reservations'))
+
+        userrequest.UserRequest().set_cancelled(request_id)
+
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                session.get('user')
+            )
+
+        flash(
+            (
+                'success',
+                u'Pedido #A-{0} cancelado exitosamente'.format(
+                    request_id
+                )
+            )
+        )
+
+        params = {
+            'pending_requests': pending_requests
+        }
+
+        return render_template(
+            'views/store/cancel_reservations.html',
+            **params
+        )
