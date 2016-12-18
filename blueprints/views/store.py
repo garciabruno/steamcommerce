@@ -92,7 +92,7 @@ def store_catalog():
     user_id = session.get('user')
 
     pending_testimonials = []
-    pending_requests = []
+    pending_requests_ids = []
 
     if user_id:
         pending_testimonials = testimonial.Testimonial().get_unsubmited(
@@ -100,8 +100,8 @@ def store_catalog():
             excludes=['all']
         )
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
+        pending_requests_ids = userrequest.UserRequest().\
+            _get_uninformed_by_user_id(
                 user_id
             )
 
@@ -114,7 +114,7 @@ def store_catalog():
         'sections': sections,
         'promotions': promotions,
         'active_section': 'catalog',
-        'pending_requests': pending_requests,
+        'pending_requests_ids': pending_requests_ids,
         'promotion_products': promotion_products,
         'pending_testimonials': pending_testimonials
     }
@@ -212,7 +212,7 @@ def store_offers():
         )
 
     pending_testimonials = []
-    pending_requests = []
+    pending_requests_ids = []
 
     user_id = session.get('user')
 
@@ -222,8 +222,8 @@ def store_offers():
             excludes=['all']
         )
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
+        pending_requests_ids = userrequest.UserRequest().\
+            _get_uninformed_by_user_id(
                 user_id
             )
 
@@ -236,7 +236,7 @@ def store_offers():
         'sliders': sliders,
         'announces': announces,
         'products': promotion_products,
-        'pending_requests': pending_requests,
+        'pending_requests_ids': pending_requests_ids,
         'pending_testimonials': pending_testimonials
     }
 
@@ -275,7 +275,7 @@ def store_promotion_short_url(short_url):
         )
 
     pending_testimonials = []
-    pending_requests = []
+    pending_requests_ids = []
 
     user_id = session.get('user')
 
@@ -285,8 +285,8 @@ def store_promotion_short_url(short_url):
             excludes=['all']
         )
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
+        pending_requests_ids = userrequest.UserRequest().\
+            _get_uninformed_by_user_id(
                 user_id
             )
 
@@ -300,7 +300,7 @@ def store_promotion_short_url(short_url):
         'sliders': sliders,
         'announces': announces,
         'products': promotion_products,
-        'pending_requests': pending_requests,
+        'pending_requests_ids': pending_requests_ids,
         'pending_testimonials': pending_testimonials,
     }
 
