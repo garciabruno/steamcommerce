@@ -120,6 +120,8 @@
                             {% if request_type == 'A' and request['promotion'] %}
                                  <div class="request-assigment">
                                     <div class="well">
+                                        <div class="text text-primary">Titulo de oferta actual: {{ request['promotion']['title'] }}</div>
+
                                         {% if request['informed'] or request['paid_before_promotion_end_date'] %}
                                             <div class="request-promotion-info">
                                                 {% if request['paid_before_promotion_end_date'] %}
@@ -133,7 +135,6 @@
                                                 {% endif %}
                                             </div>
 
-                                            <div class="text text-primary">Titulo de oferta actual: {{ request['promotion']['title'] }}</div>
                                             {% if request['url'] %}
                                                 <a href="/static/userrequests/{{ request['url'] }}" target="_blank">Ver imagen de reserva</a>
                                             {% endif %}
@@ -146,6 +147,10 @@
                                         {% else %}
                                             <div class="text text-danger"><i class="glyphicon glyphicon-remove"></i> Instancia de oferta difiere</div>
                                         {% endif %}
+
+                                        <div class="text text-primary">
+                                            Alerta de reserva vista {{ request['times_seen'] }} veces
+                                        </div>
                                     </div>
                                 </div>
                             {% endif %}
