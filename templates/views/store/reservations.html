@@ -5,59 +5,147 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block body %}
+    {% if pending_requests and pending_requests|length > 0 %}
+        {% include "views/store/pending_alert.html" %}
+    {% endif %}
+
+    {% if not pending_requests %}
+        <div class="s-commerce-cancel-reservations-warning">
+            <div class="container">
+                <div class="s-commerce-warning-title">
+                    No tienes pedidos pendientes para reservar
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="container">
         <div class="main">
-            {% if not pending_requests %}
-                <div class="reservation-title" style="margin-top: 50px;">
-                    No tienes reservas pendientes
-                </div>
-            {% endif %}
-
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="reservation-body" style="margin-top: 50px; background: #FDB832; padding: 10px; color: #1C262F;">
-                            {{ message }}
+                        <div class="alert alert-{{ message[0] }}" role="alert" style="margin: 10px 0;">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            {{ message[1] }}
                         </div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
 
+            {% if pending_requests|length > 0 %}
+                <div class="s-commerce-pending-title">
+                    Tus reservas pendientes ({{ pending_requests|length }})
+                </div>
+            {% endif %}
+
             <div class="s-commerce-reservations-container">
                 {% for request in pending_requests %}
-                    <div class="s-commerce-reservation">
-                        <div class="reservation-title">
-                            Pedido <a href="/historial/A-{{ request['id'] }}">#A-{{ request['id'] }}</a>
+                    <div class="s-commerce-reservation-wrapper">
+                        <div class="s-commerce-reservation-title">
+                            Pedido #A-{{ request.get('id') }} (Código de barras: {{ request.get('bar_code') }})
                         </div>
 
-                        <div class="reservation-body">
-                            <ul>
-                                <li>Oferta correspondiente: {{ request['promotion']['title'] }}</li>
-                                <li>Fecha de finalización: {{ request['promotion']['ending_date']|date_format }}
-                            </ul>
+                        <div class="s-commerce-reservation">
+                            <table cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td>Número de pedido</td>
 
-                            Adjuntar boleta con comprobante:
-                        </div>
+                                        <td class="table-listing">
+                                            #A-{{ request.get('id') }}
+                                        </td>
+                                    </tr>
 
-                        <div class="reservation-form">
-                            <form method="POST" enctype="multipart/form-data" action="{{ url_for('views.store.store_reservations') }}">
-                                <div class="form-group">
-                                    <label for="InputFile">Imagen</label>
-                                    <input type="file" name="image" id="InputFile" accept="image/*">
+                                    <tr>
+                                        <td>Código de barras</td>
 
-                                    <p class="help-block">Adjuntar imagen de boleta pagada con comprobante de pago (Max 5 MB)</p>
-                                </div>
+                                        <td class="table-listing">
+                                            {{ request.get('bar_code') }}
+                                        </td>
+                                    </tr>
 
-                                <input type="hidden" value="{{ request['id'] }}" name="request_id">
+                                    <tr>
+                                        <td>Oferta</td>
 
-                                <div class="form-group">
-                                    <input type="submit" class="btn btn-success" value="Reservar pedido">
-                                </div>
-                            </form>
+                                        <td class="table-listing">
+                                            {{ request.get('promotion').get('title') }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Tiempo hasta finalización de oferta</td>
+
+                                        <td class="table-listing">
+                                            {{ request.get('promotion').get('ending_date')|date_format }} ({{ request.get('promotion').get('ending_date')|timeuntil }})
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Productos solicitados</td>
+
+                                        <td class="table-listing">
+                                            {{ request.get('userrequest_relations')|length }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td></td>
+                                        <td class="table-listing"><br></td>
+                                    </tr>
+
+                                    {% for relation in request.get('userrequest_relations') %}
+                                        <tr>
+                                            <td>
+                                                {% set product = relation.get('product') %}
+
+                                                <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through"{% endif %}>
+                                                    {{ relation.get('product').get('title') }}
+                                                </a>
+                                            </td>
+
+                                            <td class="table-listing">
+                                                ${{ relation.get('price')|price_format }} ARS
+                                            </td>
+
+                                            {% if relation.get('sent') %}
+                                                <td>*Este producto ha sido marcado como enviado por un Administrador</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+
+                                    <tr>
+                                        <td></td>
+                                        <td class="table-listing"><br></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Monto total</td>
+
+                                        <td class="table-listing">
+                                            ${{ request.get('price')|price_format }} ARS
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="reservation-form">
+                                <form method="POST" enctype="multipart/form-data" action="{{ url_for('views.store.store_reservations') }}">
+                                    <div class="form-group">
+                                        <label for="InputFile">Imagen</label>
+                                        <input type="file" name="image" id="InputFile" accept="image/*">
+
+                                        <p class="help-block">Adjuntar imagen de boleta pagada con comprobante de pago (Max 5 MB)</p>
+                                    </div>
+
+                                    <input type="hidden" value="{{ request['id'] }}" name="request_id">
+
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-default" value="Reservar pedido">
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-
-                    <hr>
                 {% endfor %}
             </div>
         </div>

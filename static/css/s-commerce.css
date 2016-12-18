@@ -1041,10 +1041,6 @@ CART.CSS
     font-size: 23px;
 }
 
-.pending-requests-ending {
-    display: none;
-}
-
 #pending-requests-btn{
     margin-top: 10px;
 }
@@ -1055,10 +1051,6 @@ CART.CSS
 
 .pending-requests-hotlink{
     margin-top: 10px;
-}
-
-.s-commerce-reservations-container{
-    margin-top: 50px;
 }
 
 .reservation-title{
@@ -1665,6 +1657,100 @@ ol.progress-meter li.todo:before {
     margin: 5px 5px 5px 0;
 }
 
+.s-commerce-reservation-recommendations{
+    padding: 10px;
+    background: white;
+    font-size: 16px;
+    font-family: "Roboto",sans-erif;
+}
+
+.s-commerce-pending-faq{
+    padding: 10px;
+    background-color: white;
+    font-family: "Roboto",sans-serif;
+}
+
 .scommerce_slider_content img{
     width: 100%;
+}
+
+.s-commerce-history-buttons{
+    margin-top: 15px;
+}
+
+.reservation-question{
+    font-weight: 300;
+    font-size: 23px;
+}
+
+.reservation-answer{
+    margin-top: 5px;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.s-commerce-pending-hints{
+    font-family: "Roboto",sans-serif;
+    font-weight: 200;
+    font-size: 16px;
+}
+
+.pending-hint-major{
+    font-family: "Roboto",sans-serif;
+    font-weight: 400;
+    font-size: 23px;
+    margin: 10px 0;
+}
+
+.s-commerce-pending-title{
+    font-family: "Roboto",sans-serif;
+    font-weight: 300;
+    font-size: 32px;
+    color: white;
+    margin: 10px 0;
+}
+
+.s-commerce-reservation{
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 10px 0;
+}
+
+.reservation-form{
+    margin-top: 20px;
+}
+
+.s-commerce-reservation-title{
+    padding: 10px;
+    font-family: "Roboto",sans-serif;
+    font-weight: 400;
+    font-size: 23px;
+    background-color: #FDB832;
+    color: #1C262F;
+}
+
+.s-commerce-reservation-wrapper{
+    margin: 15px 0;
+}
+
+@media (min-width: 900px) {
+    .s-commerce-reservation table {
+        font-family: "Roboto",sans-serif;
+        font-weight: 300;
+        font-size: 16px;
+    }
+}
+
+.s-commerce-cancel-reservations-warning{
+    padding: 10px;
+    font-family: "Roboto",sans-serif;
+    background-color: #FDB832;
+    font-weight: 400;
+    color: #1C262F;
+    font-size: 16px;
+}
+
+
+.s-commerce-warning-title{
+    font-size: 30px;
 }

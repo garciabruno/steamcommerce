@@ -1,31 +1,102 @@
 <div class="s-commerce-pending-requests-alert">
     <div class="container">
         <div class="main">
-            <span class="pending-requests-title">¡Tienes pedidos pendientes sin reservar!</span>
-            <div class="pending-requests-speech">Tienes {{ pending_requests|length }} pedido(s) que requieren una reserva <strong>una vez que hayan sido abonados</strong></div>
+            <span class="pending-requests-title">
+                ¡Tienes pedidos pendientes sin reservar!
+            </span>
 
-            <button class="btn btn-default" id="pending-requests-btn">Ver instrucciones para reservar</button>
-
-            <div class="pending-requests-ending">
-                Reservar un pedido es fácil:
-                <ul>
-                    <li>Debes abonar tu boleta antes del tiempo de finalización de la oferta correspondiente</li>
-                    <li>Debes preservar tu boleta con el respectivo comprobante de pago</li>
-                    <li>Una vez vez que abones tu boleta, debes subir al sitio una foto, tomada con tu celular o por scanner, de la boleta. <strong>No realizar esto antes de la finalización de la oferta resultará en la devolución del monto abonado en forma de créditos</strong></li>
-                </ul>
+            <div class="pending-requests-speech">
+                Tienes {{ pending_requests|length }} pedido{% if pending_requests|length > 1 %}s{% endif %} que requieren una reserva <strong>una vez que hayan sido abonados</strong>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="s-commerce-pending-faq">
+    <div class="container">
+        <div class="main">
+            <div class="reservation-question">
+                ¿Por qué debo realizar una reserva obligatoriamente?
+            </div>
+
+            <div class="reservation-answer">
+                Debes realizar una reserva porque tienes un pedido con algún producto que se encuentran en oferta.<br>
+                <span class="text text-danger">Al reservar tu pedido mantendremos stock de los productos que compraste a precio de oferta.</span>
+            </div>
+
+            <div class="reservation-question">
+                ¿Que pasa si la oferta finalizó y todavía no hice la reserva?
+            </div>
+
+            <div class="reservation-answer">
+                Si la oferta ha finalizado <strong>en ExtremeGaming</strong> y no has realizado una reserva tu pedido será denegado. Si abonas un pedido que no fue reservado se te devolverá el monto en créditos del sitio.
+            </div>
+
+            <div class="reservation-question">
+                ¿Hasta cuando tengo para realizar una reserva?
+            </div>
+
+            <div class="reservation-answer">
+                Las reservas se pueden realizar hasta la fecha de finalización de la oferta. Luego de esa fecha el sistema no permite mas reservas. <span class="text text-danger">No se harán excepciones.</span>
+            </div>
+
+            <div class="reservation-question">
+                ¿Puedo contactarme vía Facebook/Email/Otro medio para realizar la reserva?
+            </div>
+
+            <div class="reservation-answer">
+                <span class="text text-danger">No aceptamos reservas por ningún otro medio. Solo a través del sitio.</span>
+            </div>
+        </div>
+
+        <div class="main">
+            {% if active_section == 'reservations' %}
+                <hr>
+
+                <h3>Antes que reserves tu pedido, por favor leé nuestras recomendaciones</h3>
+
+                <div class="s-commerce-pending-hints">
+                    <div class="pending-hint">
+                        * La reserva es <strong>obligatoria para pedidos realizados con boletas</strong>. No hay excepciones.
+                    </div>
+
+                    <div class="pending-hint">
+                        * Subir cualquier tipo de imagen que no sea una boleta con su respectivo comprobante <strong>resultará en la invalidación inmediata del pedido.</strong>
+                    </div>
+
+                    <div class="pending-hint">
+                        * En la imagen subida debe poder leerse <strong>el código de barras correspondiente al pedido y su respectivo comprobante de pago</strong>. Al no cumplir uno de estos requisitos resultará en la invalidación inmediata del pedido.
+                    </div>
+
+                    <div class="pending-hint">
+                        * Si por algún motivo generaste una o varias boletas <strong>que no deseas abonar</strong> pueden cancelar reservas pendientes para deshacerse de este mensaje.<br>
+                    </div>
+                </div>
+            {% endif %}
+
+            <hr>
 
             <div class="pending-requests-hotlink">
-                <a href="{{ url_for('views.store.store_reservations') }}" class="btn btn-default">
-                    Ver reservas pendientes
-                </a>
-            </div>
+                <div class="pending-hint-major text text-danger">
+                    Por favor leer las indicaciones antes de realizar una reserva.
+                </div>
 
-            <script type="text/javascript">
-                $('#pending-requests-btn').on('click', function(){
-                    $('.pending-requests-ending').slideToggle('fast');
-                });
-            </script>
+                <div class="row">
+                    {% if active_section != 'reservations' %}
+                        <div class="col-xs-16 col-sm-5 col-md-3" style="margin-bottom: 5px">
+                            <a href="{{ url_for('views.store.store_reservations') }}" class="btn btn-default">
+                                Realizar reservas
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <div class="col-xs-16 col-sm-5 col-md-13">
+                        <a href="{{ url_for('views.store.store_cancel_reservations') }}" class="btn btn-danger">
+                            Cancelar reservas
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

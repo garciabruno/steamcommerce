@@ -140,11 +140,21 @@
 
                                                 <td class="table-listing">
                                                     {% if userrequest['informed'] %}
-                                                        <strong><span class="text text-success">Si</span></strong>
+                                                        <strong>
+                                                            <span class="text text-success">Si</span>
+                                                        </strong>
                                                     {% elif userrequest['paid_before_promotion_end_date'] %}
-                                                        <strong><span class="text text-success">Pago ingresado antes de finalización de oferta (No es necesario reservar)</span></strong>
+                                                        <strong>
+                                                            <span class="text text-success">Pago ingresado antes de finalización de oferta (No es necesario realizar una reserva)</span>
+                                                        </strong>
                                                     {% else%}
-                                                        <strong><span class="text text-danger">No</span></strong>
+                                                        <strong>
+                                                            <span class="text text-danger">No</span>
+
+                                                            <a href="{{ url_for('views.store.store_reservations') }}" class="btn btn-default">
+                                                                Realizar reservas
+                                                            </a>
+                                                        </strong>
                                                     {% endif %}
                                                 </td>
                                             </tr>
@@ -213,6 +223,14 @@
                                     {% endif %}
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="s-commerce-history-buttons">
+                            {% if request_type == 'A' %}
+                                <a class="btn btn-default" target="_blank" href="https://www.cuentadigital.com/verfactura.php?id={{ userrequest.get('bar_code') }}">Ver factura para imprimir</a>
+                            {% elif request_type == 'B' %}
+                                <a class="btn btn-default" target="_blank" href="https://www.cuentadigital.com/verfactura.php?id={{ creditrequest.get('bar_code') }}">Ver factura para imprimir</a>
+                            {% endif %}
                         </div>
                     </div>
 
