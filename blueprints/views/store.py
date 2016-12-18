@@ -392,17 +392,16 @@ def store_support():
 @store.route('/reservas/', methods=['GET', 'POST'])
 @route_decorators.is_logged_in
 def store_reservations():
-    pending_requests = userrequest.UserRequest().\
-        get_user_not_informed_userrequests(
-            session.get('user')
-        )
-
-    params = {
-        'pending_requests': pending_requests
-    }
-
     if request.method == 'GET':
-        params.update({'active_section': 'reservations'})
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                session.get('user')
+            )
+
+        params = {
+            'pending_requests': pending_requests,
+            'active_section': 'reservations'
+        }
 
         return render_template('views/store/reservations.html', **params)
     elif request.method == 'POST':
@@ -412,6 +411,11 @@ def store_reservations():
             return redirect(url_for('views.store.store_reservations'))
 
         request_id = int(form.request_id.data)
+
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                session.get('user')
+            )
 
         if not request_id in [x.get('id') for x in pending_requests]:
             return redirect(url_for('views.store.store_reservations'))
@@ -431,9 +435,7 @@ def store_reservations():
             return render_template('views/store/reservations.html', **params)
 
         if request.files.get('image').mimetype not in config.ALLOWED_MIMETYPES:
-            flash(
-                ('danger', u'El formato de la imagen no está permitido')
-            )
+            flash(('danger', u'El formato de la imagen no está permitido'))
 
             return render_template('views/store/reservations.html', **params)
 
@@ -465,7 +467,8 @@ def store_reservations():
         )
 
         params = {
-            'pending_requests': pending_requests
+            'pending_requests': pending_requests,
+            'active_section': 'reservations'
         }
 
         return render_template('views/store/reservations.html', **params)
@@ -474,17 +477,16 @@ def store_reservations():
 @store.route('/reservas/cancelar', methods=['GET', 'POST'])
 @route_decorators.is_logged_in
 def store_cancel_reservations():
-    pending_requests = userrequest.UserRequest().\
-        get_user_not_informed_userrequests(
-            session.get('user')
-        )
-
-    params = {
-        'pending_requests': pending_requests
-    }
-
     if request.method == 'GET':
-        params.update({'active_section': 'cancel_reservations'})
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                session.get('user')
+            )
+
+        params = {
+            'pending_requests': pending_requests,
+            'active_section': 'cancel_reservations'
+        }
 
         return render_template(
             'views/store/cancel_reservations.html',
@@ -497,6 +499,11 @@ def store_cancel_reservations():
             return redirect(url_for('views.store.store_cancel_reservations'))
 
         request_id = int(form.request_id.data)
+
+        pending_requests = userrequest.UserRequest().\
+            get_user_not_informed_userrequests(
+                session.get('user')
+            )
 
         if not request_id in [x.get('id') for x in pending_requests]:
             return redirect(url_for('views.store.store_cancel_reservations'))
@@ -518,7 +525,8 @@ def store_cancel_reservations():
         )
 
         params = {
-            'pending_requests': pending_requests
+            'pending_requests': pending_requests,
+            'active_section': 'cancel_reservations'
         }
 
         return render_template(
