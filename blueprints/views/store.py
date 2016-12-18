@@ -412,12 +412,12 @@ def store_reservations():
 
         request_id = int(form.request_id.data)
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
+        pending_requests_ids = userrequest.UserRequest().\
+            _get_uninformed_by_user_id(
                 session.get('user')
             )
 
-        if not request_id in [x.get('id') for x in pending_requests]:
+        if not request_id in pending_requests_ids:
             return redirect(url_for('views.store.store_reservations'))
 
         if not request.files.get('image'):
@@ -500,12 +500,12 @@ def store_cancel_reservations():
 
         request_id = int(form.request_id.data)
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
+        pending_requests_ids = userrequest.UserRequest().\
+            _get_uninformed_by_user_id(
                 session.get('user')
             )
 
-        if not request_id in [x.get('id') for x in pending_requests]:
+        if not request_id in pending_requests_ids:
             return redirect(url_for('views.store.store_cancel_reservations'))
 
         userrequest.UserRequest().set_cancelled(request_id)
