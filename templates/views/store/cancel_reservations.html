@@ -1,0 +1,147 @@
+{% extends "layout/base.html" %}
+
+{% block title %}ExtremeGaming - Reserva de pedidos{% endblock %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block body %}
+	{% if pending_requests and pending_requests|length > 0 %}
+		<div class="s-commerce-cancel-reservations-warning">
+			<div class="container">
+				<div class="s-commerce-warning-title">
+					¡Atención!
+				</div>
+
+				Al cancelar un pedido estás renunciando a obtener los productos a precio de oferta. <span class="text text-danger">Una vez cancelado, el pedido no podrá ser reservado.</span> <br>
+				Si abonas un pedido cancelado el monto del mismo será devuelto en forma de créditos.
+			</div>
+		</div>
+	{% else %}
+		<div class="s-commerce-cancel-reservations-warning">
+			<div class="container">
+				<div class="s-commerce-warning-title">
+					No tienes pedidos pendientes para cancelar
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+	<div class="container">
+		<div class="main">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message[0] }}" role="alert" style="margin: 10px 0;">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            {{ message[1] }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+			<div class="s-commerce-reservations-container">
+                {% for request in pending_requests %}
+                    <div class="s-commerce-reservation-wrapper">
+                        <div class="s-commerce-reservation-title">
+                            Pedido #A-{{ request.get('id') }} (Código de barras: {{ request.get('bar_code') }})
+                        </div>
+
+                        <div class="s-commerce-reservation">
+                            <table cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr>
+                                        <td>Número de pedido</td>
+
+                                        <td class="table-listing">
+                                            #A-{{ request.get('id') }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Código de barras</td>
+
+                                        <td class="table-listing">
+                                            {{ request.get('bar_code') }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Oferta</td>
+
+                                        <td class="table-listing">
+                                            {{ request.get('promotion').get('title') }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Tiempo hasta finalización de oferta</td>
+
+                                        <td class="table-listing">
+                                            {{ request.get('promotion').get('ending_date')|date_format }} ({{ request.get('promotion').get('ending_date')|timeuntil }})
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Productos solicitados</td>
+
+                                        <td class="table-listing">
+                                            {{ request.get('userrequest_relations')|length }}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td></td>
+                                        <td class="table-listing"><br></td>
+                                    </tr>
+
+                                    {% for relation in request.get('userrequest_relations') %}
+                                        <tr>
+                                            <td>
+                                                {% set product = relation.get('product') %}
+
+                                                <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through"{% endif %}>
+                                                    {{ relation.get('product').get('title') }}
+                                                </a>
+                                            </td>
+
+                                            <td class="table-listing">
+                                                ${{ relation.get('price')|price_format }} ARS
+                                            </td>
+
+                                            {% if relation.get('sent') %}
+                                                <td>*Este producto ha sido marcado como enviado por un Administrador</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+
+                                    <tr>
+                                        <td></td>
+                                        <td class="table-listing"><br></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Monto total</td>
+
+                                        <td class="table-listing">
+                                            ${{ request.get('price')|price_format }} ARS
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="reservation-form">
+                                <form method="POST" action="{{ url_for('views.store.store_cancel_reservations') }}">
+                                    <input type="hidden" value="{{ request['id'] }}" name="request_id">
+
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-danger" value="Cancelar este pedido">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+		</div>
+	</div>
+{% endblock %}
