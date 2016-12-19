@@ -584,3 +584,16 @@ def admin_sliders_view():
             'admin/panel/file-form.html',
             form=form
         )
+
+
+@admin_view.route('/tools/reservations')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def admin_reservations_view():
+    informed = userrequest.UserRequest().get_informed()
+
+    params = {
+        'userrequests': informed
+    }
+
+    return render_template('admin/views/informed_tool.html', **params)
