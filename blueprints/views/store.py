@@ -425,19 +425,19 @@ def store_reservations():
                 ('danger', u'El formulario no contiene una imagen adjuntada')
             )
 
-            return render_template('views/store/reservations.html', **params)
+            return render_template('views/store/reservations.html')
 
         stream = request.files.get('image').stream.read()
 
         if len(stream) > config.MAX_IMAGE_BYTES_SIZE:
             flash(('danger', u'El archivo adjuntado supera los 5 MB'))
 
-            return render_template('views/store/reservations.html', **params)
+            return render_template('views/store/reservations.html')
 
         if request.files.get('image').mimetype not in config.ALLOWED_MIMETYPES:
             flash(('danger', u'El formato de la imagen no está permitido'))
 
-            return render_template('views/store/reservations.html', **params)
+            return render_template('views/store/reservations.html')
 
         image = request.files['image']
         filename = '{0}.{1}'.format(request_id, image.filename.split('.')[-1])
