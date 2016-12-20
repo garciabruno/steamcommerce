@@ -7,6 +7,32 @@
         <div class="container">
             <div class="main">
                 <div class="s-commerce-request-history">
+                    {% macro print_messages(messages) %}
+                        <div class="s-commerce-history-tracking">
+                            <div class="tracking-title">
+                                Mensajes del staff ({{ messages|length }})
+                            </div>
+
+                            {% for message in messages %}
+                                <div class="tracking-message">
+                                    <div class="tracking-message-date">
+                                        Mensaje del día {{ message.get('date')|date_format }}
+                                    </div>
+
+                                    <div class="tracking-message-content" style="white-space: pre-line;">{{ message.get('content') }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endmacro %}
+
+                    {% if request_type == 'A' and userrequest.get('userrequest_messages')|length > 0 %}
+                        {{ print_messages(userrequest.get('userrequest_messages')) }}
+                    {% elif request_type == 'B' and creditrequest.get('creditrequest_messages')|length > 0 %}
+                        {{ print_messages(creditrequest.get('creditrequest_messages')) }}
+                    {% elif request_type == 'C' and paidrequest.get('paidrequest_messages')|length > 0 %}
+                        {{ print_messages(paidrequest.get('paidrequest_messages')) }}
+                    {% endif %}
+
                     <div class="s-commerce-history-body">
                         <div class="history-body-top">
                             <div class="history-pre-title">Pedido</div>
@@ -329,32 +355,6 @@
                             })
                         </script>
                     </div>
-
-                    {% macro print_messages(messages) %}
-                        <div class="s-commerce-history-tracking">
-                            <div class="tracking-title">
-                                Mensajes del staff ({{ messages|length }})
-                            </div>
-
-                            {% for message in messages %}
-                                <div class="tracking-message">
-                                    <div class="tracking-message-date">
-                                        Mensaje del día {{ message.get('date')|date_format }}
-                                    </div>
-
-                                    <div class="tracking-message-content" style="white-space: pre-line;">{{ message.get('content') }}</div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endmacro %}
-
-                    {% if request_type == 'A' and userrequest.get('userrequest_messages')|length > 0 %}
-                        {{ print_messages(userrequest.get('userrequest_messages')) }}
-                    {% elif request_type == 'B' and creditrequest.get('creditrequest_messages')|length > 0 %}
-                        {{ print_messages(creditrequest.get('creditrequest_messages')) }}
-                    {% elif request_type == 'C' and paidrequest.get('paidrequest_messages')|length > 0 %}
-                        {{ print_messages(paidrequest.get('paidrequest_messages')) }}
-                    {% endif %}
                 </div>
             </div>
         </div>
