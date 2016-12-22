@@ -186,6 +186,7 @@ def store_products():
 
 
 @store.route('/')
+@store.route('/ofertas')
 def store_offers():
     spromotion = storepromotion.StorePromotion()
     sliders = slider.Slider().get_active()
