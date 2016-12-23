@@ -64,7 +64,11 @@
                                 {% if testimonial['userrequest']['userrequest_relations']|length > 0 %}
                                     {% set product = testimonial['userrequest']['userrequest_relations'][0]['product'] %}
 
-                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">{{ product['title'] }}</a>
+                                    {% if product.get('app_id') %}
+                                        <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">{{ product['title'] }}</a>
+                                    {% elif product.get('sub_id') %}
+                                        <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">{{ product['title'] }}</a>
+                                    {% endif %}
 
                                     {% if testimonial['userrequest']['userrequest_relations']|length - 1 > 0 %}
                                         y {{ testimonial['userrequest']['userrequest_relations']|length -1 }} productos más
@@ -74,7 +78,11 @@
                                 {% if testimonial['paidrequest']['paidrequest_relations']|length > 0 %}
                                     {% set product = testimonial['paidrequest']['paidrequest_relations'][0]['product'] %}
 
-                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">{{ product['title'] }}</a>
+                                    {% if product.get('app_id') %}
+                                        <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">{{ product['title'] }}</a>
+                                    {% elif product.get('sub_id') %}
+                                        <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">{{ product['title'] }}</a>
+                                    {% endif %}
 
                                     {% if testimonial['paidrequest']['paidrequest_relations']|length - 1 > 0 %}
                                         y {{ testimonial['paidrequest']['paidrequest_relations']|length -1 }} productos más

@@ -20,7 +20,13 @@
 
                     <td>
                         <span class="s-commerce-relation-product-title">
-                            <a href="{{ url_for('views.store.store_app_id', app_id=(resume['product']['app_id'] or resume['product']['sub_id'])) }}">{{ resume['product']['title'] }}</a>
+                            {% set product = resume.get('product') %}
+
+                            {% if product.get('app_id') %}
+                                <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">{{ product.get('title') }}</a>
+                            {% elif product.get('sub_id') %}
+                                <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">{{ product.get('title') }}</a>
+                            {% endif %}
                         </span>
                     </td>
 
@@ -59,7 +65,13 @@
 
                     <td>
                         <span class="s-commerce-relation-product-title">
-                            <a href="{{ url_for('views.store.store_app_id', app_id=(resume['product']['app_id'] or resume['product']['sub_id'])) }}">{{ resume['product']['title'] }}</a>
+                            {% set product = resume.get('product') %}
+
+                            {% if product.get('app_id') %}
+                                <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">{{ product.get('title') }}</a>
+                            {% elif product.get('sub_id') %}
+                                <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">{{ product.get('title') }}</a>
+                            {% endif %}
                         </span>
                     </td>
 
@@ -98,7 +110,14 @@
 
                     <td>
                         <span class="s-commerce-relation-product-title">
-                            <a href="{{ url_for('views.store.store_app_id', app_id=(resume['product']['app_id'] or resume['product']['sub_id'])) }}">{{ resume['product']['title'] }}</a>
+
+                            {% set product = resume.get('product') %}
+
+                            {% if product.get('app_id') %}
+                                <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">{{ product.get('title') }}</a>
+                            {% elif product.get('sub_id') %}
+                                <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">{{ product.get('title') }}</a>
+                            {% endif %}
                         </span>
                     </td>
 

@@ -350,13 +350,10 @@ def queue_price_add(product_id):
 
     flash(('success', u'Producto añadido a la cola de precios'))
 
-    app_id = product_data.get('app_id') or product_data.get('sub_id')
-
-    return redirect(
-        url_for(
-            'views.store.store_app_id', app_id=app_id
-        )
-    )
+    if product_data.get('app_id'):
+        return redirect(url_for('views.store.store_app_id', app_id=product_data.get('app_id')))
+    elif product_data.get('sub_id'):
+        return redirect(url_for('views.store.store_sub_id', sub_id=product_data.get('sub_id')))
 
 
 @admin_view.route('/queue/assets/add/<int:product_id>/')
@@ -368,13 +365,10 @@ def queue_assets_add(product_id):
 
     flash(('success', u'Producto añadido a la cola de recursos'))
 
-    app_id = product_data.get('app_id') or product_data.get('sub_id')
-
-    return redirect(
-        url_for(
-            'views.store.store_app_id', app_id=app_id
-        )
-    )
+    if product_data.get('app_id'):
+        return redirect(url_for('views.store.store_app_id', app_id=product_data.get('app_id')))
+    elif product_data.get('sub_id'):
+        return redirect(url_for('views.store.store_sub_id', sub_id=product_data.get('sub_id')))
 
 
 @admin_view.route('/steam/', methods=['GET', 'POST'])

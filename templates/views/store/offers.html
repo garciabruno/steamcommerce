@@ -27,7 +27,12 @@
                                         {% if promotion_product %}
                                             <div class="col-md-8">
                                                 <div class="s-commerce-offer-product-wrapper">
-                                                    <a href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
+                                                    {% if promotion_product.get('app_id') %}
+                                                        <a href="{{ url_for('views.store.store_app_id', app_id=promotion_product.get('app_id')) }}">
+                                                    {% elif promotion_product.get('sub_id') %}
+                                                        <a href="{{ url_for('views.store.store_sub_id', sub_id=promotion_product.get('sub_id')) }}">
+                                                    {% endif %}
+
                                                         {% set background = None %}
                                                         {% set assets = promotion_product['assets'] %}
 
@@ -53,7 +58,11 @@
                                                             </div>
 
                                                             <div class="s-commerce-offer-buttons">
-                                                                <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=(promotion_product.get('app_id') or promotion_product.get('sub_id'))) }}">
+                                                                {% if promotion_product.get('app_id') %}
+                                                                    <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_app_id', app_id=promotion_product.get('app_id')) }}">
+                                                                {% elif promotion_product.get('sub_id') %}
+                                                                    <a class="s-commerce-offer-price" href="{{ url_for('views.store.store_sub_id', sub_id=promotion_product.get('sub_id')) }}">
+                                                                {% endif %}
                                                                     {% if promotion_product['price_active'] and promotion_product['price_value'] %}
                                                                         ${{ promotion_product['price_value']|price_format }}
 

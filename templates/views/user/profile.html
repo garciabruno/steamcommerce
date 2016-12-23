@@ -116,7 +116,14 @@
                                                     <td>
                                                         {% for relation in userrequest['userrequest_relations'] %}
                                                             <div class="s-commerce-table-product">
-                                                                <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
+                                                                {% set product = relation.get('product') %}
+
+                                                                {% if product.get('app_id') %}
+                                                                    <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">
+                                                                {% elif product.get('sub_id') %}
+                                                                    <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">
+                                                                {% endif %}
+
                                                                 {{ relation['product']['title'] }}
                                                                 </a>
                                                             </div>
@@ -194,7 +201,14 @@
                                                     <td>
                                                         {% for relation in paidrequest['paidrequest_relations'] %}
                                                             <div class="s-commerce-table-product">
-                                                                <a href="{{ url_for('views.store.store_app_id', app_id=(relation.get('product').get('app_id') or relation.get('product').get('sub_id'))) }}">
+                                                                {% set product = relation.get('product') %}
+
+                                                                {% if product.get('app_id') %}
+                                                                    <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">
+                                                                {% elif product.get('sub_id') %}
+                                                                    <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">
+                                                                {% endif %}
+
                                                                 {{ relation['product']['title'] }}
                                                                 </a>
                                                             </div>

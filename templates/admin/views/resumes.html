@@ -65,9 +65,16 @@
 
                                 <td>
                                     {% for relation in userrequest['request'].products %}
-                                        <a href="{{ url_for('views.store.store_app_id', app_id=(relation.product.app_id or relation.product.sub_id)) }}">
-                                            {{ relation.product.title }}
-                                        </a> ({{ relation.price|price_format }}) <br>
+                                        {% set product = relation.product %}
+
+                                        {% if product.app_id %}
+                                            <a href="{{ url_for('views.store.store_app_id', app_id=product.app_id) }}">{{ relation.product.title }}</a>
+                                        {% elif product.sub_id %}
+                                            <a href="{{ url_for('views.store.store_sub_id', sub_id=product.sub_id) }}">{{ relation.product.title }}</a>
+                                        {% endif %}
+
+                                        ({{ relation.price|price_format }}) <br>
+
                                     {% endfor %}
                                 </td>
 
@@ -127,9 +134,15 @@
 
                                 <td>
                                     {% for relation in paidrequest['request'].products %}
-                                        <a href="{{ url_for('views.store.store_app_id', app_id=(relation.product.app_id or relation.product.sub_id)) }}">
-                                            {{ relation.product.title }}
-                                        </a> ({{ relation.price|price_format }}) <br>
+                                        {% set product = relation.product %}
+
+                                        {% if product.app_id %}
+                                            <a href="{{ url_for('views.store.store_app_id', app_id=product.app_id) }}">{{ relation.product.title }}</a>
+                                        {% elif product.sub_id %}
+                                            <a href="{{ url_for('views.store.store_sub_id', sub_id=product.sub_id) }}">{{ relation.product.title }}</a>
+                                        {% endif %}
+
+                                        ({{ relation.price|price_format }}) <br>
                                     {% endfor %}
                                 </td>
 

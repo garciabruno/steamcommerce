@@ -98,7 +98,12 @@
                                             <td>
                                                 {% set product = relation.get('product') %}
 
-                                                <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" {% if relation.get('sent') %}style="text-decoration: line-through"{% endif %}>
+                                                {% if product.get('app_id') %}
+                                                    <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">
+                                                {% elif product.get('sub_id') %}
+                                                    <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">
+                                                {% endif %}
+
                                                     {{ relation.get('product').get('title') }}
                                                 </a>
                                             </td>

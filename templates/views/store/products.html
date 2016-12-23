@@ -28,7 +28,12 @@
                         {% endif %}
 
                         <div class="s-commerce-product" style="background-image: url('{{ background }}'); margin-top: 10px;">
-                            <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}">
+                            {% if product.get('app_id') %}
+                                <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}">
+                            {% elif product.get('sub_id') %}
+                                <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}">
+                            {% endif %}
+
                                 <div class="s-commerce-product-hud">
                                     <div class="s-commerce-product-title">
                                         {{ product['title'] }}
@@ -36,7 +41,12 @@
                                 </div>
 
                                 <div class="s-commerce-product-buttons">
-                                    <a href="{{ url_for('views.store.store_app_id', app_id=(product.get('app_id') or product.get('sub_id'))) }}" class="s-commerce-product-price">
+                                    {% if product.get('app_id') %}
+                                        <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}" class="s-commerce-product-price">
+                                    {% elif product.get('sub_id') %}
+                                        <a href="{{ url_for('views.store.store_sub_id', sub_id=product.get('sub_id')) }}" class="s-commerce-product-price">
+                                    {% endif %}
+
                                         {% if product.get('price_active') and product.get('price_value') %}
                                             ${{ product.get('price_value')|price_format }}
 

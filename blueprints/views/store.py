@@ -308,25 +308,76 @@ def store_promotion_short_url(short_url):
     return render_template('views/store/catalog.html', **template_params)
 
 
-@store.route('/tienda/<app_id>')
-@store.route('/catalogo/<app_id>')
 @store.route('/comprar/<app_id>/')
+@store.route('/app/<app_id>')
 def store_app_id(app_id):
     try:
         store_product = product.Product().get_app_id(app_id)
     except:
         store_product = None
 
-    if not store_product:
-        try:
-            store_product = product.Product().get_sub_id(app_id)
-        except:
-            store_product = None
+    if store_product is None:
+        error = {
+            'title': 'Producto inexistente',
+            'content': 'Este producto no existe en nuestra Base de Datos'
+        }
+
+        return render_template('views/error.html', **error)
+
+    if not store_product.get('visible') and not session.get('admin'):
+        error = {
+            'title': 'Producto no disponible',
+            'content': 'Este producto no se encuentra disponible temporalmente'
+        }
+
+        return render_template('views/error.html', **error)
+
+    if (
+        store_product.get('run_stock') and
+        store_product.get('stock') == 0
+        and not session.get('admin')
+    ):
+        error = {
+            'title': 'Producto fuera de stock',
+            'content': 'Este producto ha agotado su stock.'
+        }
+
+        return render_template('views/error.html', **error)
+
+    params = {
+        'product': store_product
+    }
+
+    if session.get('user'):
+        spent_incomes = user.User().get_user_spent_incomes(session.get('user'))
+
+        register_delta = datetime.datetime.now() - (
+            g.user.get('register_date') or
+            datetime.datetime(year=2012, month=8, day=1)
+        )
+
+        params.update({
+            'spent_incomes': spent_incomes,
+            'register_delta': register_delta
+        })
+
+    if store_product.get('product_type') == 3:
+        return render_template('views/store/3dproduct.html', **params)
+
+    return render_template('views/store/product.html', **params)
+
+
+@store.route('/sub/<sub_id>')
+def store_sub_id(sub_id):
+    try:
+        store_product = product.Product().get_sub_id(sub_id)
+    except:
+        store_product = None
 
     if store_product is None:
         error = {
             'title': 'Producto inexistente',
-            'content': 'Este producto no existe :('
+            'content': 'Este producto no existe en nuestra Base de Datos'
         }
 
         return render_template('views/error.html', **error)
