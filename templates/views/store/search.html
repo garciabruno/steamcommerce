@@ -13,7 +13,15 @@
                 {{^assets.capsule}}
                     <div class="s-commerce-product" style="background-image: url('/static/img/product/{{ id }}/{{ assets.header }}');">
                 {{/assets.capsule}}
-                    <a href="/comprar/{{#app_id}}{{app_id}}{{/app_id}}{{#sub_id}}{{sub_id}}{{/sub_id}}">
+
+                {{#app_id}}
+                    <a href="/app/{{app_id}}">
+                {{/app_id}}
+
+                {{#sub_id}}
+                <a href="/sub/{{sub_id}}">
+                {{/sub_id}}
+
                         <div class="s-commerce-product-hud">
                             <div class="s-commerce-product-title">
                                 {{title}}
