@@ -5,6 +5,7 @@
 External imports
 '''
 
+from flask import abort
 from flask import request
 from flask import url_for
 from flask import redirect
@@ -84,3 +85,5 @@ def testimonials_root():
             'views/testimonials/view.html',
             **template_params
         )
+    else:
+        return abort(200)

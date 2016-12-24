@@ -13,7 +13,13 @@
                     {% for slider in sliders %}
                         <div class="item{% if loop.first %} active{% endif %}">
                             <div class="scommerce_slider_content">
-                                <img src="/static/img/slider/{{ slider['id'] }}/{{ slider['id'] }}.{{ slider['extension'] }}?{{ config.CACHE_BREAK_RAND }}" alt=" ">
+                                {% if slider.get('url') %}
+                                    <a href="{{ slider['url'] }}">
+                                        <img src="/static/img/slider/{{ slider['id'] }}/{{ slider['id'] }}.{{ slider['extension'] }}?{{ config.CACHE_BREAK_RAND }}" alt=" ">
+                                    </a>
+                                {% else %]
+                                    <img src="/static/img/slider/{{ slider['id'] }}/{{ slider['id'] }}.{{ slider['extension'] }}?{{ config.CACHE_BREAK_RAND }}" alt=" ">
+                                {% endif %}
                             </div>
 
                             <div class="carousel-caption" style="bottom: 50px;">
