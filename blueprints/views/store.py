@@ -308,8 +308,10 @@ def store_promotion_short_url(short_url):
     return render_template('views/store/catalog.html', **template_params)
 
 
+@store.route('/comprar/<app_id>')
 @store.route('/comprar/<app_id>/')
 @store.route('/app/<app_id>')
+@store.route('/app/<app_id>/')
 def store_app_id(app_id):
     try:
         store_product = product.Product().get_app_id(app_id)
@@ -368,6 +370,7 @@ def store_app_id(app_id):
 
 
 @store.route('/sub/<sub_id>')
+@store.route('/sub/<sub_id>/')
 def store_sub_id(sub_id):
     try:
         store_product = product.Product().get_sub_id(sub_id)
