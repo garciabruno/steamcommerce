@@ -51,7 +51,34 @@
                         </div>
 
                         <div id="tab5" class="tab-pane">
-                            Herramientas
+                            <div class="main" style="margin-top: 10px;">
+                                {% if session.get('user') == 1 %}
+                                    <button class="btn btn-default hide_relation" data-relationcommitment="0">
+                                        Hide/Show "Uncommited" relations
+                                    </button>
+
+                                    <button class="btn btn-default hide_relation" data-relationcommitment="1">
+                                        Hide/Show "Added to Cart" relations
+                                    </button>
+
+                                    <button class="btn btn-default hide_relation" data-relationcommitment="2">
+                                        Hide/Show "Purchased" relations
+                                    </button>
+
+                                    <button class="btn btn-default hide_relation" data-relationcommitment="3">
+                                        Hide/Show "Failed to Add to Cart" relations
+                                    </button>
+
+                                    <script type="text/javascript">
+                                        $('.hide_relation').on('click', function(){
+                                            var commitment = $(this).data('relationcommitment');
+                                            console.log(commitment);
+
+                                            $('.s-commerce-relation[data-relationcommitment="' + commitment + '"]').toggle();
+                                        });
+                                    </script>
+                                {% endif %}
+                            </div>
                         </div>
 
                         <script type="text/javascript">
