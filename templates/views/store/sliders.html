@@ -1,7 +1,7 @@
 <div class="s-commerce-sliders">
     <div class="container hidden-sm">
         {% if sliders|length > 0 %}
-            <div id="sliders" class="carousel slide" data-ride="carousel" data-interval="10000">
+            <div id="sliders" class="carousel slide" data-ride="carousel" data-interval="3500">
 
                 <ol class="carousel-indicators">
                     {% for slider in sliders %}
@@ -22,10 +22,12 @@
                                 {% endif %}
                             </div>
 
-                            <div class="carousel-caption" style="bottom: 50px;">
-                                <h3>{{ slider['title'] or '' }}</h3>
-                                <p>{{ (slider['content']|safe) or '' }}</p>
-                            </div>
+                            {% if not slider.get('url') %}
+                                <div class="carousel-caption" style="bottom: 50px;">
+                                    <h3>{{ slider['title'] or '' }}</h3>
+                                    <p>{{ (slider['content']|safe) or '' }}</p>
+                                </div>
+                            {% endif %}
                         </div>
                     {%- endfor %}
                 </div>
@@ -38,6 +40,10 @@
                     <span class="glyphicon glyphicon-chevron-right"></span>
                 </a>
             </div>
+
+            <script type="text/javascript">
+                $('.carousel').carousel();
+            </script>
         {%- endif %}
     </div>
 </div>

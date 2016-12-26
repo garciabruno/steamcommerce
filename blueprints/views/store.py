@@ -431,7 +431,10 @@ def store_sub_id(sub_id):
 @store.route('/buscar')
 @store.route('/buscador')
 def store_search():
+    sliders = slider.Slider().get_active()
+
     params = {
+        'sliders': sliders,
         'active_section': 'search'
     }
 
