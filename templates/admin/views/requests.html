@@ -69,12 +69,28 @@
                                         Hide/Show "Failed to Add to Cart" relations
                                     </button>
 
+                                    <button class="btn btn-default hide_sent" style="margin-top: 10px;">
+                                        Hide/Show Sent
+                                    </button>
+
+                                    <button class="btn btn-default hide_unsent" style="margin-top: 10px;">
+                                        Hide/Show Unsent
+                                    </button>
+
                                     <script type="text/javascript">
                                         $('.hide_relation').on('click', function(){
                                             var commitment = $(this).data('relationcommitment');
                                             console.log(commitment);
 
                                             $('.s-commerce-relation[data-relationcommitment="' + commitment + '"]').toggle();
+                                        });
+
+                                        $('.hide_sent').on('click', function(){
+                                            $('.s-commerce-relation[data-relationsent="1"]').toggle();
+                                        });
+
+                                        $('.hide_unsent').on('click', function(){
+                                            $('.s-commerce-relation[data-relationsent="0"]').toggle();
                                         });
                                     </script>
                                 {% endif %}
