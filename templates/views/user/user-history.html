@@ -14,9 +14,16 @@
                             </div>
 
                             {% for message in messages %}
+                                {% if message.get('has_code') %}
+                                    <div class="message-code-alert">
+                                        <i class="glyphicon glyphicon-alert"></i>&nbsp;&nbsp;Si este mensaje contiene un enlace de activación y <u>deseás enviarselo a un amigo</u> <strong>NO ABRAS EL ENLACE BAJO NINGÚN MOTIVO</strong>.
+                                        <br> Para regalar simplemente hay que enviar el enlace a quien deseés y que dicha persona abra el enlace con la cuenta de Steam que desea activar el producto abierta en su navegador
+                                    </div>
+                                {% endif %}
+
                                 <div class="tracking-message">
                                     <div class="tracking-message-date">
-                                        Mensaje del día {{ message.get('date')|date_format }}
+                                        Mensaje recibido el día {{ message.get('date')|date_format }}
                                     </div>
 
                                     <div class="tracking-message-content" style="white-space: pre-line;">{{ message.get('content') }}</div>

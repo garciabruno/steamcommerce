@@ -1754,3 +1754,11 @@ ol.progress-meter li.todo:before {
 .s-commerce-warning-title{
     font-size: 30px;
 }
+
+.message-code-alert{
+    padding: 15px;
+    color: white;
+    font-family: "Roboto",sans-serif;
+    font-weight: 400;
+    background-color: #C9302C;
+}
