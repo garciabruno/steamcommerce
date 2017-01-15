@@ -148,7 +148,7 @@
                         </div>
 
                         {% if session.get('user') and g.user and spent_incomes and register_delta %}
-                            {% if spent_incomes > config.MIN_SPENT_INCOMES_VAC_GAMES and register_delta > config.VAC_GAMES_TIME_DELTA %}
+                            {% if spent_incomes >= config.MIN_SPENT_INCOMES_VAC_GAMES and register_delta >= config.VAC_GAMES_TIME_DELTA %}
                                 <div class="s-commerce-offer-hud s-commerce-product-alert-success">
                                     <i class="glyphicon glyphicon-ok"></i> Tu cuenta satisface con los requerimientos para realizar compras de este producto
                                 </div>
