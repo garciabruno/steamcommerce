@@ -61,6 +61,12 @@ def user_admin_profile(username):
         user_data['id']
     )
 
+    spent_incomes = user.User().get_user_spent_incomes(user_data['id'])
+
+    register_delta = datetime.datetime.now() - (
+        user_data.get('register_date') or datetime.datetime(year=2012, month=8, day=1)
+    )
+
     form = user_form.ProfileForm(obj=user_data)
 
     params = {
@@ -69,7 +75,9 @@ def user_admin_profile(username):
         'userrequests': userrequests,
         'paidrequests': paidrequests,
         'notifications': notifications,
-        'creditrequests': creditrequests
+        'creditrequests': creditrequests,
+        'spent_incomes': spent_incomes,
+        'register_delta': register_delta
     }
 
     return render_template('views/user/profile.html', **params)
