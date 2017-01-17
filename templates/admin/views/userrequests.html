@@ -69,7 +69,11 @@
                     </td>
 
                     <td>
-                        {{ request['paid_date']|date_format }}
+                        {% if request.get('paid_date') %}
+                            {{ request['paid_date']|date_format }}
+                        {% else %}
+                            Inexistente
+                        {% endif %}
                     </td>
 
                     <td>
