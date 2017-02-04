@@ -334,8 +334,12 @@
                                     {% endif %}
 
                                     {% if creditrequest['accepted'] %}
-                                        {{ progress_point('Créditos añadidos', 'done', creditrequest.get('accepted_date')|date_format) }}
-                                    {% else %}
+                                        {% if creditrequest.get('accepted_date') %}
+                                            {{ progress_point('Créditos añadidos', 'done', creditrequest.get('accepted_date')|date_format) }}
+                                        {% else %}
+                                            {{ progress_point('Créditos añadidos', 'done') }}
+                                        {% endif %}
+                                    {% else%}
                                         {{ progress_point('Créditos añadidos', 'todo') }}
                                     {% endif %}
 
