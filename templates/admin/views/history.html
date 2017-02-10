@@ -185,6 +185,10 @@
                                                         <td>
                                                             {% set product = relation.get('product') %}
 
+                                                            {% if product.get('has_anticheat') %}
+                                                                <span class="badge" style="background-color: #D9534F">AntiCheat</span>
+                                                            {% endif %}
+
                                                             {% if product.get('app_id') %}
                                                                 <a href="{{ url_for('views.store.store_app_id', app_id=product.get('app_id')) }}"
                                                                 {% if relation.get('sent') %}style="text-decoration: line-through;"{% endif %}>{{ product.get('title') }}</a>
