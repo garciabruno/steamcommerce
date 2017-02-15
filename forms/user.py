@@ -13,7 +13,6 @@ from wtforms.validators import DataRequired
 from wtforms import TextField
 from wtforms import HiddenField
 from wtforms import SubmitField
-from wtforms import BooleanField
 
 
 class RegisterForm(Form):
@@ -24,7 +23,8 @@ class RegisterForm(Form):
         Length(
             min=4,
             max=100,
-            message=constants.FIELD_LENGTH_INVALID),
+            message=constants.FIELD_LENGTH_INVALID
+        ),
         Email(
             message=constants.FIELD_NOT_EMAIL
         )
@@ -58,11 +58,13 @@ class ProfileForm(Form):
     email = TextField(u'Dirección de email', validators=email_validator)
     name = TextField(u'Nombre', validators=[DataRequired()])
     last_name = TextField(u'Apellido', validators=[DataRequired()])
-    subscribe = BooleanField(
-        u'Suscribirse a la lista de emails',
-        default=True,
-        validators=[DataRequired()]
-    )
+
+    # subscribe = BooleanField(
+    #     u'Suscribirse a la lista de emails',
+    #     default=True,
+    #     validators=[DataRequired()]
+    # )
+
     submit = SubmitField('Enviar', validators=[DataRequired()])
 
 
