@@ -93,7 +93,7 @@ function move_navigation( $navigation, $MQ) {
     }
 }
 
- var Notification = function() {
+var Notification = function() {
     var self = this;
 
     this.push = function (message) {
