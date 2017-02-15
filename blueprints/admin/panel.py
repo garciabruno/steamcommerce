@@ -100,41 +100,36 @@ def admin_model_add(model_name):
         'Enviar', validators=[DataRequired()]
     )
 
+    params = {
+        'model_name': model_name,
+        'models': models.models_list
+    }
+
     if request.method == 'GET':
         form = raw_form(obj=model())
         form.hidden_tag = do_nothing
 
-        params = {
-            'form': form,
-            'model_name': model_name,
-            'models': models.models_list
-        }
+        params.update({'form': form})
     elif request.method == 'POST':
         new_model = model()
 
         form = raw_form(request.form, obj=new_model)
         form.hidden_tag = do_nothing
 
+        params.update({'form': form})
+
         if form.validate():
-            controller = model_to_controller.CONTROLLERS.get(model_name, None)
+            controller = model_to_controller.CONTROLLERS.get(model_name)
 
             if controller is None:
-                flash(
-                    ('danger', u'No se encontró un controlador para el modelo')
-                )
+                flash(('danger', u'No se encontró un controlador para el modelo'))
 
-                return render_template(
-                    'admin/panel/model-form.html',
-                    **params
-                )
+                return render_template('admin/panel/model-form.html', **params)
 
             if not hasattr(controller(), 'update'):
                 flash(('danger', u'El controlador no posee método "update"'))
 
-                return render_template(
-                    'admin/panel/model-form.html',
-                    **params
-                )
+                return render_template('admin/panel/model-form.html', **params)
 
             form.populate_obj(new_model)
             new_model.save()
@@ -142,12 +137,6 @@ def admin_model_add(model_name):
             controller().update(**{'id': new_model.id})
 
             flash(('success', 'Objecto creado satisfactoriamente'))
-
-        params = {
-            'form': form,
-            'model_name': model_name,
-            'models': models.models_list
-        }
 
     return render_template('admin/panel/model-form.html', **params)
 
