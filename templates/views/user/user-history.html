@@ -143,7 +143,9 @@
                                                 </td>
 
                                                 {% if relation.get('sent') %}
-                                                    <td>*Este producto ha sido marcado como enviado por un Administrador</td>
+                                                    <td>
+                                                        * Este producto ha sido marcado como enviado por un Administrador
+                                                    </td>
                                                 {% endif %}
                                             </tr>
                                         {% endfor %}
@@ -262,6 +264,8 @@
                                     {% endif %}
                                 </tbody>
                             </table>
+
+                            <div class="text text-danger" style="font-size: 16px; margin-top: 25px; font-family: 'Roboto',sans-serif;">Si no encuentra su código de activación en esta sección, significa que su pedido fue entregado por mail. <br>Le recomendamos verificar su casilla de mail registrada, incluida la sección "Spam" de la misma.</div>
                         </div>
 
                         <div class="s-commerce-history-buttons">
