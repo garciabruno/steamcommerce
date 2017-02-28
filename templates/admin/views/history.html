@@ -161,6 +161,58 @@
                         <div class="request-history">
                             <div class="request-relations">
                                 <div class="request-relation">
+                                    {% macro parse_commitment_level(level) %}
+                                        {% if level == 0 %}
+                                            Uncommited
+                                        {% elif level == 1 %}
+                                            Added to cart
+                                        {% elif level == 2 %}
+                                            Purchased
+                                        {% elif level == 3 %}
+                                            Failed to Add to Cart
+                                        {% elif level == 4 %}
+                                            Pushing to Cart
+                                        {% endif %}
+                                    {% endmacro %}
+
+                                    {% if session.get('user') in [1] %}
+                                        <table class="table table-bordered" style="margin-top: 5px;">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Product title</th>
+                                                    <th>Gift assetid</th>
+                                                    <th>Commitment Level</th>
+                                                    <th>ShoppingCartGID</th>
+                                                    <th>Commited On Bot</th>
+                                                    <th>Task_id</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {% set relations = request.get('userrequest_relations', []) or request.get('paidrequest_relations', []) %}
+
+                                                {% for relation in relations %}
+                                                    <tr>
+                                                        <td>{{ relation.id }}</td>
+                                                        <td>{{ relation.product.get('title') }}</td>
+                                                        <td>{{ relation.get('gid') }}</td>
+                                                        <td>{{ parse_commitment_level(relation.get('commitment_level')) }}</td>
+                                                        <td>{{ relation.get('shopping_cart_gid') }}</td>
+                                                        <td>{{ relation.get('commited_on_bot') }}</td>
+                                                        <td>{{ relation.get('task_id')}}</td>
+                                                        <td>
+                                                            <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
+                                                                Uncommit
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+
                                     <table class="table table-bordered">
                                         {% if request_type != 'B' %}
                                             <thead>
@@ -213,42 +265,6 @@
 
                                                             {% if crc %}
                                                                 <img src="{{ url_for('static', filename='img/p.gif') }}" alt="{{ crc }}" width="16" height="11" class="flag flag-{{ crc|lower }}">
-                                                            {% endif %}
-
-                                                            {% macro parse_commitment_level(level) %}
-                                                                {% if level == 0 %}
-                                                                    Uncommited
-                                                                {% elif level == 1 %}
-                                                                    Added to cart
-                                                                {% elif level == 2 %}
-                                                                    Purchased
-                                                                {% elif level == 3 %}
-                                                                    Failed to Add to Cart
-                                                                {% endif %}
-                                                            {% endmacro %}
-
-                                                            {% if relation['gid'] and session.get('user') == 1 %}
-                                                                <div class="text text-muted">
-                                                                    Gift gid: {{ relation['gid'] }}
-                                                                </div>
-                                                            {% endif %}
-
-                                                            {% if relation['commitment_level'] and session.get('user') == 1 %}
-                                                                <div class="text text-muted">
-                                                                    Commitment level: {{ parse_commitment_level(relation['commitment_level']) }}
-                                                                </div>
-
-                                                                <div class="text text-muted">
-                                                                    Shopping cart gid: {{ relation['shopping_cart_gid'] }}
-                                                                </div>
-
-                                                                <div class="text text-muted">
-                                                                    Commited on bot: {{ relation['commited_on_bot'] }}
-                                                                </div>
-
-                                                                <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
-                                                                    Uncommit relation #{{ relation.get('id') }}
-                                                                </a>
                                                             {% endif %}
                                                         <td>
                                                             <span class="s-commerce-relation-product-price">
