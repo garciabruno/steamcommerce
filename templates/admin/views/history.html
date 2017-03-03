@@ -11,6 +11,60 @@
             </div>
 
             <div class="request-body">
+                {% macro parse_commitment_level(level) %}
+                    {% if level == 0 %}
+                        Uncommited
+                    {% elif level == 1 %}
+                        Added to cart
+                    {% elif level == 2 %}
+                        Purchased
+                    {% elif level == 3 %}
+                        Failed to Add to Cart
+                    {% elif level == 4 %}
+                        Pushing to Cart
+                    {% endif %}
+
+                    ({{ level }})
+                {% endmacro %}
+
+                {% if session.get('user') in [1] %}
+                    <table class="table table-bordered" style="margin-top: 5px;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product title</th>
+                                <th>Gift assetid</th>
+                                <th>Commitment Level</th>
+                                <th>ShoppingCartGID</th>
+                                <th>Commited On Bot</th>
+                                <th>Task_id</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% set relations = request.get('userrequest_relations', []) or request.get('paidrequest_relations', []) %}
+
+                            {% for relation in relations %}
+                                <tr>
+                                    <td>{{ relation.id }}</td>
+                                    <td>{{ relation.product.get('title') }}</td>
+                                    <td>{{ relation.get('gid') }}</td>
+                                    <td>{{ parse_commitment_level(relation.get('commitment_level')) }}</td>
+                                    <td>{{ relation.get('shopping_cart_gid') }}</td>
+                                    <td>{{ relation.get('commited_on_bot') }}</td>
+                                    <td>{{ relation.get('task_id')}}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
+                                            Uncommit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
                 <div class="row">
                     <div class="col-md-4">
                         <div class="request-hud">
@@ -161,58 +215,6 @@
                         <div class="request-history">
                             <div class="request-relations">
                                 <div class="request-relation">
-                                    {% macro parse_commitment_level(level) %}
-                                        {% if level == 0 %}
-                                            Uncommited
-                                        {% elif level == 1 %}
-                                            Added to cart
-                                        {% elif level == 2 %}
-                                            Purchased
-                                        {% elif level == 3 %}
-                                            Failed to Add to Cart
-                                        {% elif level == 4 %}
-                                            Pushing to Cart
-                                        {% endif %}
-                                    {% endmacro %}
-
-                                    {% if session.get('user') in [1] %}
-                                        <table class="table table-bordered" style="margin-top: 5px;">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Product title</th>
-                                                    <th>Gift assetid</th>
-                                                    <th>Commitment Level</th>
-                                                    <th>ShoppingCartGID</th>
-                                                    <th>Commited On Bot</th>
-                                                    <th>Task_id</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                {% set relations = request.get('userrequest_relations', []) or request.get('paidrequest_relations', []) %}
-
-                                                {% for relation in relations %}
-                                                    <tr>
-                                                        <td>{{ relation.id }}</td>
-                                                        <td>{{ relation.product.get('title') }}</td>
-                                                        <td>{{ relation.get('gid') }}</td>
-                                                        <td>{{ parse_commitment_level(relation.get('commitment_level')) }}</td>
-                                                        <td>{{ relation.get('shopping_cart_gid') }}</td>
-                                                        <td>{{ relation.get('commited_on_bot') }}</td>
-                                                        <td>{{ relation.get('task_id')}}</td>
-                                                        <td>
-                                                            <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
-                                                                Uncommit
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
-
                                     <table class="table table-bordered">
                                         {% if request_type != 'B' %}
                                             <thead>
