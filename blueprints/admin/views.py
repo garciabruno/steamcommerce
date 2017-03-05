@@ -17,7 +17,9 @@ from steamcommerce_tasks.tasks import sales as sales_tasks
 import config as app_config
 from steamcommerce_api import config
 
+from steamcommerce_api.core import models
 from steamcommerce_api.controllers import bot
+
 
 from steamcommerce_api.api import user
 from steamcommerce_api.api import slider
@@ -55,6 +57,23 @@ def admin_root():
     }
 
     return render_template('admin/views/dashboard.html', **params)
+
+
+@admin_view.route('/network')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def admin_network():
+    edge_servers = models.EdgeServer.select()
+    edge_bots = models.EdgeBot.select().order_by(models.EdgeBot.network_id.asc())
+    edge_tasks = models.EdgeTask.select()
+
+    params = {
+        'edge_bots': edge_bots,
+        'edge_servers': edge_servers,
+        'edge_tasks': edge_tasks
+    }
+
+    return render_template('admin/views/network.html', **params)
 
 
 @admin_view.route('/activity/load/', methods=['POST'])

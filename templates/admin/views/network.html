@@ -1,0 +1,107 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - Dashboard{% endblock %}
+
+{% import "admin/views/activity.html" as activity %}
+
+{% block body %}
+    <div class="admin-dashboard">
+        <div class="container">
+            <div class="network_edge_servers">
+                <h3>Edge Servers</h3>
+
+                <table class="table table-bordered" style="margin-top: 5px;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>IP Address</th>
+                            <th>Currency Code</th>
+                            <th>Status</th>
+                            <th>Last Health Check</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for server in edge_servers %}
+                            <tr>
+                                <td>{{ server.id }}</td>
+                                <td>{{ server.ip_address }}</td>
+                                <td>{{ server.currency_code }}</td>
+                                <td>{{ server.status }}</td>
+                                {% if server.last_health_check %}
+                                    <td>{{ server.last_health_check|date_format }}</td>
+                                {% else %}
+                                    <td>Never</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h3>Edge BOTs</h3>
+
+                {% macro parse_bot_status(status) %}
+                    {% set statuses = {1: 'StandingBy',
+                        2: 'PushingItemsToCart',
+                        3: 'PurchasingCart',
+                        4: 'WaitingForSufficientFunds',
+                        5: 'BlockedForTooManyPurchases',
+                        6: 'BlockedForUnknownReason'
+                    } %}
+
+                    {{ statuses.get(status) }}
+                {% endmacro %}
+
+                <table class="table table-bordered" style="margin-top: 5px;">
+                    <thead>
+                        <tr>
+                            <th>Network id</th>
+                            <th>SteamID</th>
+                            <th>Currency Code</th>
+                            <th>Status</th>
+                            <th>BOT Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for bot in edge_bots %}
+                            <tr>
+                                <td>{{ bot.network_id }}</td>
+                                <td>{{ bot.steamid }}</td>
+                                <td>{{ bot.currency_code }}</td>
+                                <td>{{ parse_bot_status(bot.status) }} ({{ bot.status }})</td>
+                                <td>{{ bot.bot_type }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h3>Edge Tasks</h3>
+
+                <table class="table table-bordered" style="margin-top: 5px;">
+                    <thead>
+                        <tr>
+                            <th>Task id</th>
+                            <th>Task name</th>
+                            <th>Task status</th>
+                            <th>Edge Bot</th>
+                            <th>Edge Server</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for task in edge_tasks %}
+                            <tr>
+                                <td>{{ task.task_id }}</td>
+                                <td>{{ task.task_name }}</td>
+                                <td>{{ task.task_status }}</td>
+                                <td>{{ task.edge_bot.network_id }}</td>
+                                <td>#{{ task.edge_server.id }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
