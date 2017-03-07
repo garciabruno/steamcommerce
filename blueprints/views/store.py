@@ -450,10 +450,9 @@ def store_support():
 @route_decorators.is_logged_in
 def store_reservations():
     if request.method == 'GET':
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
-                session.get('user')
-            )
+        pending_requests = userrequest.UserRequest().get_uninformed_by_user_id(
+            session.get('user'), excludes=['userrequest_messages']
+        )
 
         params = {
             'pending_requests': pending_requests,
@@ -509,10 +508,9 @@ def store_reservations():
 
         userrequest.UserRequest().set_informed(request_id, filename)
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
-                session.get('user')
-            )
+        pending_requests = userrequest.UserRequest().get_uninformed_by_user_id(
+            session.get('user'), excludes=['userrequest_messages']
+        )
 
         flash(
             (
@@ -535,10 +533,9 @@ def store_reservations():
 @route_decorators.is_logged_in
 def store_cancel_reservations():
     if request.method == 'GET':
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
-                session.get('user')
-            )
+        pending_requests = userrequest.UserRequest().get_uninformed_by_user_id(
+            session.get('user'), excludes=['userrequest_messages']
+        )
 
         params = {
             'pending_requests': pending_requests,
@@ -567,10 +564,9 @@ def store_cancel_reservations():
 
         userrequest.UserRequest().set_cancelled(request_id)
 
-        pending_requests = userrequest.UserRequest().\
-            get_user_not_informed_userrequests(
-                session.get('user')
-            )
+        pending_requests = userrequest.UserRequest().get_uninformed_by_user_id(
+            session.get('user'), excludes=['userrequest_messages']
+        )
 
         flash(
             (
