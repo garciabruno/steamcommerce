@@ -74,10 +74,12 @@
                                     </tr>
 
                                     <tr>
-                                        <td>Tiempo hasta finalización de oferta</td>
+                                        <td>Tiempo hasta vencimiento de boleta</td>
 
                                         <td class="table-listing">
-                                            {{ request.get('promotion').get('ending_date')|date_format }} ({{ request.get('promotion').get('ending_date')|timeuntil }})
+                                            {% if request.get('expiration_date') %}
+                                                {{ request.get('expiration_date')|date_format }} ({{ request.get('expiration_date')|timeuntil }})
+                                            {% endif %}
                                         </td>
                                     </tr>
 

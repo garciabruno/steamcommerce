@@ -345,7 +345,7 @@
                             var alert_message = '';
 
                             {% if product.get('is_promotional') %}
-                                var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="#" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, ¡de otra manera nos veremos obligados a devolverte el monto abonado!';
+                                var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="/reservas" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, ¡de otra manera nos veremos obligados a devolverte el monto abonado!';
                             {% endif %}
 
                             swal(
