@@ -298,6 +298,7 @@ def admin_request(history_identifier):
         'message_form': message_form,
         'request_type': request_type,
         'history_items': history_items,
+        'now': datetime.datetime.now()
     }
 
     return render_template('admin/views/history.html', **params)

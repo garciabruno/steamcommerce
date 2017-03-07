@@ -196,10 +196,10 @@
                                             <span class="text text-danger">Reserva no presentada</span>
                                         {% endif %}
 
-                                        {% if request['promotion']['instance'] == request['promotion_instance'] %}
-                                            <div class="text text-success"><i class="glyphicon glyphicon-ok"></i> Instancia de oferta coincide</div>
-                                        {% else %}
-                                            <div class="text text-danger"><i class="glyphicon glyphicon-remove"></i> Instancia de oferta difiere</div>
+                                        {% if request.get('expiration_date') and request.get('expiration_date') < now %}
+                                            <div class="text text-danger">
+                                                El tiempo para reservar este pedido se ha vencido
+                                            </div>
                                         {% endif %}
 
                                         <div class="text text-primary">
