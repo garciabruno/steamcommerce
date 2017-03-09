@@ -1,6 +1,6 @@
 {% extends "admin/layout/base.html" %}
 
-{% block title %}Admin - Dashboard{% endblock %}
+{% block title %}Admin - Network{% endblock %}
 
 {% import "admin/views/activity.html" as activity %}
 
@@ -52,6 +52,17 @@
                     {{ statuses.get(status) }}
                 {% endmacro %}
 
+                {% macro parse_task_status(status) %}
+                    {% set statuses = {
+                        'PENDING': 'warning',
+                        'STARTED': 'text text-primary',
+                        'SUCCESS': 'success',
+                        'FAILURE': 'danger'
+                    } %}
+
+                    {{ statuses.get(status) }}
+                {% endmacro %}
+
                 <table class="table table-bordered" style="margin-top: 5px;">
                     <thead>
                         <tr>
@@ -91,7 +102,7 @@
 
                     <tbody>
                         {% for task in edge_tasks %}
-                            <tr>
+                            <tr class="{{ parse_task_status(task.task_status) }}">
                                 <td>{{ task.task_id }}</td>
                                 <td>{{ task.task_name }}</td>
                                 <td>{{ task.task_status }}</td>

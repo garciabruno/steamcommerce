@@ -65,7 +65,7 @@ def admin_root():
 def admin_network():
     edge_servers = models.EdgeServer.select()
     edge_bots = models.EdgeBot.select().order_by(models.EdgeBot.network_id.asc())
-    edge_tasks = models.EdgeTask.select()
+    edge_tasks = models.EdgeTask.select().order_by(models.EdgeTask.id.desc())
 
     params = {
         'edge_bots': edge_bots,
