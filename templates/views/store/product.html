@@ -1,10 +1,12 @@
 {% extends "layout/base.html" %}
 
-{% block title %}ExtremeGaming - {{ product.title }} {% if product.price %}- ${{ product.price.price|price_format }}{% endif %}{% endblock %}
+{% block title %}ExtremeGaming - Comprar {{ product.title }} en Argentina{% endblock %}
 
 {% block header %}
     {{ url_for('static', filename='js/jquery.timeago.js')|js_file|safe }}
     {{ url_for('static', filename='js/jquery.timeago.es.js')|js_file|safe }}
+
+    <meta content="comprar {{ product.title }} por PagoFacil, RapiPago, PagoExpress, BrapoPagos, Ripsa, comprar {{ product.title }} en argentina, comprar {{ product.title }} en pesos, comprar {{ product.title }} en efectivo" name="keywords"/>
 {% endblock %}
 
 {% block body %}
