@@ -2,8 +2,6 @@
 
 {% block title %}Admin - Network{% endblock %}
 
-{% import "admin/views/activity.html" as activity %}
-
 {% block body %}
     <div class="admin-dashboard">
         <div class="container">
@@ -78,10 +76,44 @@
                         {% for bot in edge_bots %}
                             <tr>
                                 <td>{{ bot.network_id }}</td>
-                                <td>{{ bot.steamid }}</td>
+
+                                <td>
+                                    <a href="https://steamcommunity.com/profiles/{{ bot.steamid }}">{{ bot.steamid }}</a>
+                                </td>
+
                                 <td>{{ bot.currency_code }}</td>
-                                <td>{{ parse_bot_status(bot.status) }} ({{ bot.status }})</td>
+
+                                <td>
+                                    {{ parse_bot_status(bot.status) }} ({{ bot.status }})
+                                </td>
+
                                 <td>{{ bot.bot_type }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <table class="table table-bordered" style="margin-top:10px">
+                    <thead>
+                        <tr>
+                            <th>Network id</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for bot in edge_bots %}
+                            <tr>
+                                <td>{{ bot.network_id }}</td>
+
+                                <td>
+                                    <a href="{{ url_for('admin.views.set_network_bot_status', network_id=bot.network_id, status=1) }}" class="btn btn-default">Standing By</a>
+                                    <a href="{{ url_for('admin.views.set_network_bot_status', network_id=bot.network_id, status=2) }}" class="btn btn-default">PushingItemsToCart</a>
+                                    <a href="{{ url_for('admin.views.set_network_bot_status', network_id=bot.network_id, status=3) }}" class="btn btn-default">Purchasing art</a>
+                                    <a href="{{ url_for('admin.views.set_network_bot_status', network_id=bot.network_id, status=4) }}" class="btn btn-default">WaitingForSufficientFunds</a>
+                                    <a href="{{ url_for('admin.views.set_network_bot_status', network_id=bot.network_id, status=5) }}" class="btn btn-default">BlockedForTooManyPurchases</a>
+                                    <a href="{{ url_for('admin.views.set_network_bot_status', network_id=bot.network_id, status=6) }}" class="btn btn-default">BlockedForUnknownReason</a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -103,7 +135,9 @@
                     <tbody>
                         {% for task in edge_tasks %}
                             <tr class="{{ parse_task_status(task.task_status) }}">
-                                <td>{{ task.task_id }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.views.network_task_id', task_id=task.task_id) }}">{{ task.task_id }}</a>
+                                </td>
                                 <td>{{ task.task_name }}</td>
                                 <td>{{ task.task_status }}</td>
                                 <td>{{ task.edge_bot.network_id }}</td>

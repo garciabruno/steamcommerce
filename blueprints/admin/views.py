@@ -65,7 +65,9 @@ def admin_root():
 def admin_network():
     edge_servers = models.EdgeServer.select()
     edge_bots = models.EdgeBot.select().order_by(models.EdgeBot.network_id.asc())
-    edge_tasks = models.EdgeTask.select().order_by(models.EdgeTask.id.desc())
+    edge_tasks = models.EdgeTask.select().order_by(
+        models.EdgeTask.id.desc()
+    ).paginate(1, 50)
 
     params = {
         'edge_bots': edge_bots,
@@ -74,6 +76,36 @@ def admin_network():
     }
 
     return render_template('admin/views/network.html', **params)
+
+
+@admin_view.route('/network/bot/status/<int:network_id>/<int:status>')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def set_network_bot_status(network_id, status):
+    models.EdgeBot.update(status=status).where(models.EdgeBot.network_id == network_id).execute()
+
+    return redirect(url_for('admin.views.admin_network'))
+
+
+@admin_view.route('/network/task/status/<task_id>/<status>')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def set_network_task_status(task_id, status):
+    models.EdgeTask.update(task_status=status).where(models.EdgeTask.task_id == task_id).execute()
+
+    return redirect(url_for('admin.views.admin_network'))
+
+
+@admin_view.route('/network/task/<task_id>')
+@route_decorators.is_logged_in
+@route_decorators.is_admin
+def network_task_id(task_id):
+    try:
+        task = models.EdgeTask.get(task_id=task_id)
+    except:
+        return redirect(url_for('admin.views.admin_network'))
+
+    return render_template('admin/views/network_task.html', task=task)
 
 
 @admin_view.route('/activity/load/', methods=['POST'])

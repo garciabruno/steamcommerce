@@ -1,0 +1,64 @@
+{% extends "admin/layout/base.html" %}
+
+{% block title %}Admin - Network Task{% endblock %}
+
+{% block body %}
+    <div class="admin-dashboard">
+        <div class="container">
+            <div class="network_edge_servers">
+                {% macro parse_task_status(status) %}
+                    {% set statuses = {
+                        'PENDING': 'warning',
+                        'STARTED': 'text text-primary',
+                        'SUCCESS': 'success',
+                        'FAILURE': 'danger'
+                    } %}
+
+                    {{ statuses.get(status) }}
+                {% endmacro %}
+
+                <h3>Edge Task {{ task.task_id }}</h3>
+
+                <table class="table table-bordered" style="margin-top: 5px;">
+                    <thead>
+                        <tr>
+                            <th>Task id</th>
+                            <th>Task name</th>
+                            <th>Task status</th>
+                            <th>Edge Bot</th>
+                            <th>Edge Server</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="{{ parse_task_status(task.task_status) }}">
+                            <td>
+                                <a href="{{ url_for('admin.views.network_task_id', task_id=task.task_id) }}">{{ task.task_id }}</a>
+                            </td>
+
+                            <td>
+                                {{ task.task_name }}
+                            </td>
+
+                            <td>
+                                {{ task.task_status }}
+                            </td>
+
+                            <td>
+                                {{ task.edge_bot.network_id }}
+                            </td>
+
+                            <td>
+                                #{{ task.edge_server.id }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <a href="{{ url_for('admin.views.set_network_task_status', task_id=task.task_id, status='PENDING') }}" class="btn btn-default">PENDING</a>
+                <a href="{{ url_for('admin.views.set_network_task_status', task_id=task.task_id, status='SUCCESS') }}" class="btn btn-default">SUCCESS</a>
+                <a href="{{ url_for('admin.views.set_network_task_status', task_id=task.task_id, status='FAILURE') }}" class="btn btn-default">FAILURE</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

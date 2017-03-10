@@ -125,11 +125,6 @@ def store_catalog():
     )
 
 
-@store.route('/3d')
-def store_3d_catalog():
-    return render_template('views/store/3dcatalog.html')
-
-
 @store.route('/products/', methods=['POST'])
 def store_products():
     form = store_inputs.ProductsInput(request)
@@ -586,3 +581,18 @@ def store_cancel_reservations():
             'views/store/cancel_reservations.html',
             **params
         )
+
+
+@store.route('/app/<int:app_id>/comprar')
+@route_decorators.is_logged_in
+def app_checkout(app_id):
+    try:
+        store_product = product.Product().get_app_id(app_id)
+    except:
+        store_product = None
+
+    params = {
+        'product': store_product
+    }
+
+    return render_template('views/store/checkout.html', **params)
