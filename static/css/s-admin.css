@@ -864,3 +864,25 @@
 .s-commerce-promotional-request {
     border: 2px dashed #fdb832;
 }
+
+.userrequest-promotion-success{
+    padding: 10px;
+    background-color: #5CB85C;
+    font-size: 23px;
+    border-radius: 2px;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    margin: 5px 0;
+}
+
+.userrequest-promotion-fail{
+    padding: 10px;
+    background-color: #D9534F;
+    font-size: 23px;
+    border-radius: 2px;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    margin: 5px 0;
+}

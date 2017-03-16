@@ -162,52 +162,6 @@
                                     </div>
                                 </div>
                             {% endif %}
-
-                            {% if request['promotion'] %}
-                                <div class="request-assigment">
-                                    <div class="well">
-                                        <strong>Requiere reserva</strong>
-                                    </div>
-                                </div>
-                            {% endif %}
-
-                            {% if request_type == 'A' and request['promotion'] %}
-                                 <div class="request-assigment">
-                                    <div class="well">
-                                        <div class="text text-primary">Titulo de oferta actual: {{ request['promotion']['title'] }}</div>
-
-                                        {% if request['informed'] or request['paid_before_promotion_end_date'] %}
-                                            <div class="request-promotion-info">
-                                                {% if request['paid_before_promotion_end_date'] %}
-                                                    <div class="text text-success">
-                                                        <strong>Pago ingresado antes de finalización de oferta</strong>
-                                                    </div>
-                                                {% elif request['informed'] %}
-                                                    <div class="text text-success">
-                                                        <strong>Reserva presentada</strong>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-
-                                            {% if request['url'] %}
-                                                <a href="/static/userrequests/{{ request['url'] }}" target="_blank">Ver imagen de reserva</a>
-                                            {% endif %}
-                                        {% else %}
-                                            <span class="text text-danger">Reserva no presentada</span>
-                                        {% endif %}
-
-                                        {% if request.get('expiration_date') and request.get('expiration_date') < now %}
-                                            <div class="text text-danger">
-                                                El tiempo para reservar este pedido se ha vencido
-                                            </div>
-                                        {% endif %}
-
-                                        <div class="text text-primary">
-                                            Alerta de reserva vista {{ request['times_seen'] }} veces
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
                         </div>
                     </div>
 
@@ -402,6 +356,54 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            {% if request_type == 'A' and request['promotion'] %}
+                                {% if request['informed'] or request['paid_before_promotion_end_date'] %}
+                                    <div class="userrequest-promotion-success">
+                                        {% if request['paid_before_promotion_end_date'] %}
+                                            Pago ingresado antes de finalización de oferta
+                                        {% elif request['informed'] %}
+                                            Reserva presentada
+                                        {% endif %}
+
+                                        {% if request['url'] %}
+                                            <a href="/static/userrequests/{{ request['url'] }}" target="_blank">Ver imagen de reserva</a>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="userrequest-promotion-fail">
+                                        Reserva no presentada
+                                    </div>
+                                {% endif %}
+
+                                {% if request.get('expiration_date') %}
+                                    {% set expiration_date = request.get('expiration_date') %}
+
+                                    {% if expiration_date < now %}
+                                        {% if not request.get('informed') and not request.get('paid_before_promotion_end_date') %}
+                                            <div class="userrequest-promotion-fail">
+                                                El tiempo para reservar este pedido se ha vencido
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+
+                                <div class="request-assigment">
+                                    <div class="well">
+                                        <div class="text text-primary">Titulo de oferta actual: {{ request['promotion']['title'] }}</div>
+
+                                        {% if request.get('expiration_date') %}
+                                            <div class="text text-danger">
+                                                Fecha de expiración: {{ request.get('expiration_date') }}
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="text text-primary">
+                                            Alerta de reserva vista {{ request['times_seen'] }} veces
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
 
                             {% include "admin/views/history_items.html" %}
 
