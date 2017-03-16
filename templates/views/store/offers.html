@@ -5,10 +5,6 @@
                 {% if promotions|length > 0 %}
                     <span class="s-commerce-offers-title">
                         Ofertas destacadas: {{ promotions[0].title }}
-
-                        {% if promotions[0].ending_date %}
-                            (Finaliza {{ promotions[0].ending_date|date_format }})
-                        {% endif %}
                     </span>
 
                     {% if active_section != 'offers' %}

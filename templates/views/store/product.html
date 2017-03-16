@@ -105,7 +105,8 @@
 
                             {% if product.get('promotion').get('ending_date') or product.get('special_ending_date') %}
                                 <span class="s-commerce-product-offer-date">
-                                    Oferta valida hasta {{ (product.get('special_ending_date') or product.get('promotion').get('ending_date'))|date_format }}
+                                    {% set ending_date = product.get('special_ending_date') or product.get('promotion').get('ending_date') %}
+                                    Esta oferta expira en {{ ending_date|timeuntil }} ({{ ending_date|date_format }})
                                 </span>
                             {% endif %}
                         </div>
