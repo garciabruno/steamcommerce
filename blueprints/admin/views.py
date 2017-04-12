@@ -599,6 +599,7 @@ def admin_sliders_view():
         extension = request.files.get(form.image.name).filename.rsplit('.')[-1]
 
         slider_id = slider.Slider().create(**{
+            'url': form.url.data,
             'extension': extension,
             'title': form.title.data,
             'content': form.content.data,
