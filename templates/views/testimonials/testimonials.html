@@ -107,9 +107,7 @@
                                 <img src="{{ testimonial['user']['avatar_url'] }}">
                             </div>
 
-                            <a href="{% if testimonial['user']['steam'] %}https://steamcommunity.com/profiles/{{ testimonial['user']['steam'] }}/{% endif %}" target="_blank">
-                                @{{ testimonial['user']['username'] }}
-                            </a>
+                            @{{ testimonial['user']['username'] }}
                         </div>
 
                         <div class="s-commerce-testimonial-timestamp">
