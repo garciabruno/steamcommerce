@@ -37,7 +37,9 @@
                                 <th>Commitment Level</th>
                                 <th>ShoppingCartGID</th>
                                 <th>Commited On Bot</th>
-                                <th>Task_id</th>
+                                <th>Task id</th>
+                                <th>Transid</th>
+                                <th>Bitpay Invoice</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -54,6 +56,8 @@
                                     <td>{{ relation.get('shopping_cart_gid') }}</td>
                                     <td>{{ relation.get('commited_on_bot') }}</td>
                                     <td>{{ relation.get('task_id')}}</td>
+                                    <td>{{ relation.get('transid')}}</td>
+                                    <td>{{ relation.get('bitpay_invoice')}}</td>
                                     <td>
                                         <a href="{{ url_for('admin.panel.admin_uncommit_relation', relation_id=relation.get('id'), relation_type=(1 if request.get('userrequest_relations') else 2)) }}" class="btn btn-sm btn-default">
                                             Uncommit
@@ -377,7 +381,7 @@
                                 {% endif %}
 
                                 {% if request.get('expiration_date') %}
-                                    {% set expiration_date = request.get('expiration_date') %}
+                                    {% set expiration_date = request.get('expiration_date')|date_format %}
 
                                     {% if expiration_date < now %}
                                         {% if not request.get('informed') and not request.get('paid_before_promotion_end_date') %}
