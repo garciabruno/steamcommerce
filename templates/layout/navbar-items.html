@@ -24,6 +24,12 @@
         </a>
     </li>
 
+    <li>
+        <a href="{{ url_for('views.store.store_sale') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'on-sale'%}active{% endif %}">
+            Liquidación de Stock
+        </a>
+    </li>
+
     <li class="active">
         <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
             Buscador
@@ -33,12 +39,6 @@
     <li>
         <a href="{{ url_for('views.testimonials.testimonials_root') }}" class="s-commerce-navbar-item {% if active_section == 'testimonials' %}active{% endif %}">
             Testimonios
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ url_for('views.store.store_faqs') }}" class="s-commerce-navbar-item">
-            FAQs
         </a>
     </li>
 
