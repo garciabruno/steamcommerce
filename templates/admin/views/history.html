@@ -381,7 +381,7 @@
                                 {% endif %}
 
                                 {% if request.get('expiration_date') %}
-                                    {% set expiration_date = request.get('expiration_date')|date_format %}
+                                    {% set expiration_date = request.get('expiration_date') %}
 
                                     {% if expiration_date < now %}
                                         {% if not request.get('informed') and not request.get('paid_before_promotion_end_date') %}
@@ -398,7 +398,7 @@
 
                                         {% if request.get('expiration_date') %}
                                             <div class="text text-danger">
-                                                Fecha de expiración: {{ request.get('expiration_date') }}
+                                                Fecha de expiración: {{ request.get('expiration_date')|date_format }}
                                             </div>
                                         {% endif %}
 
