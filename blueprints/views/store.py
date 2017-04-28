@@ -114,6 +114,7 @@ def store_catalog():
         'sections': sections,
         'promotions': promotions,
         'active_section': 'catalog',
+        'show_sections': True,
         'pending_requests_ids': pending_requests_ids,
         'promotion_products': promotion_products,
         'pending_testimonials': pending_testimonials
@@ -228,11 +229,34 @@ def store_offers():
         'sections': promotions,
         'promotions': promotions,
         'active_section': 'offers',
+        'show_sections': True,
         'sliders': sliders,
         'announces': announces,
         'products': promotion_products,
         'pending_requests_ids': pending_requests_ids,
         'pending_testimonials': pending_testimonials
+    }
+
+    return render_template('views/store/catalog.html', **template_params)
+
+
+@store.route('/liquidacion')
+def store_sale():
+    sections = []
+
+    sliders = slider.Slider().get_active()
+    announces = announce.Announce().get_active()
+    products = product.Product().get_products_on_sale()
+
+    template_params = {
+        'page': 1,
+        'products': products,
+        'sections': sections,
+        'sliders': sliders,
+        'announces': announces,
+        'section_id': 1,
+        'show_sections': False,
+        'active_section': 'on-sale',
     }
 
     return render_template('views/store/catalog.html', **template_params)
