@@ -147,13 +147,10 @@ def ajax_paidrequest_generate():
                 'product_type': 1
             })
 
-        invoice.update(
-            {
-                'instant': True,
-                'message': u'\
-Has recibido un nuevo mensaje con tu código de activación'
-            }
-        )
+        invoice.update({
+            'instant': True,
+            'message': u'Has recibido un nuevo mensaje con tu código de activación'
+        })
 
     return invoice
 
