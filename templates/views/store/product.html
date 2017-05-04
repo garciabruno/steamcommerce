@@ -402,6 +402,12 @@
                                     'Debes estar registrado hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días en ExtremeGaming.',
                                     'error'
                                 );
+                            } else if (json_data['status'] == 10) {
+                                swal(
+                                    'Servicio temporalmente fuera de servicio',
+                                    'Esta funcionalidad se encuentra deshabilitada temporalmente. Disculpe las molestias',
+                                    'error'
+                                );
                             }
                         }
                     });
@@ -469,6 +475,12 @@
                                 swal(
                                     'Tu cuenta no está en condiciones de comprar este producto',
                                     'Debes estar registrado hace más de {{ config.VAC_GAMES_TIME_DELTA.days }} días en ExtremeGaming.',
+                                    'error'
+                                );
+                            } else if (json_data['status'] == 10) {
+                                swal(
+                                    'Servicio temporalmente fuera de servicio',
+                                    'Esta funcionalidad se encuentra deshabilitada temporalmente. Disculpe las molestias',
                                     'error'
                                 );
                             }

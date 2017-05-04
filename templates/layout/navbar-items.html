@@ -251,6 +251,12 @@
                             'El sistema no se pudo comunicar con el servicio de terceros para la emisión de boletas. Lamentamos los inconvenientes. Recomendamos intentar nuevamente más tarde.',
                             'error'
                         );
+                    } else if (json_data['status'] == 10) {
+                        swal(
+                            'Servicio temporalmente fuera de servicio',
+                            'Esta funcionalidad se encuentra deshabilitada temporalmente. Disculpe las molestias',
+                            'error'
+                        );
                     }
                 }
             });
