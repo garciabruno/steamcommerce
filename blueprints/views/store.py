@@ -63,6 +63,8 @@ def store_faqs():
 
 @store.route('/')
 def store_catalog():
+    return render_template('views/store/disabled.html')
+
     sliders = slider.Slider().get_active()
     sections = section.Section().get_active()
     products = product.Product().get_by_section(sections[0]['id'], 1)

@@ -1,0 +1,27 @@
+{% extends "layout/base.html" %}
+
+
+{% block title %}ExtremeGaming{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="main">
+			<div id="centered" style="text-align: center; color: white;">
+				<img src="{{ url_for('static', filename='img/logo.svg') }}" alt="">
+
+				<h1>Catálogo temporalmente fuera de servicio</h1>
+
+				<p style="font-size: 23px;">
+					Debido a <a href="http://steamcommunity.com/games/593110/announcements/detail/1301948399254001159?l=spanish" target="_blank">recientes alteraciones en el sistema de regalos</a> de Steam estamos adaptando nuestro sistema a los nuevos cambios.
+
+					<br>
+					Nos estaremos poniendo en contacto con los usuarios que tengan pedidos pendientes para que reciban sus regalos correspondientemente<br>
+				</p>
+
+				<p>
+					Disculpas por las molestias ocasionadas <br>- Staff ExtremeGaming
+				</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}
