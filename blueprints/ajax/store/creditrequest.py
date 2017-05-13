@@ -21,8 +21,7 @@ ajax_creditrequest = Blueprint('ajax.store.creditrequest', __name__)
 @route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_creditrequest_generate():
-    return ({'success': False, 'status': 10}, 500)
-
+    # return ({'success': False, 'status': 10}, 500)
     curr_user = user.User().get_by_id(session.get('user'))
     form = store_inputs.CreditRequestInput(request)
 

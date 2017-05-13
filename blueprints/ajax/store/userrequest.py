@@ -27,7 +27,8 @@ ajax_userrequest = Blueprint('ajax.store.userrequest', __name__)
 @route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_userrequest_generate():
-    return ({'success': False, 'status': 10}, 500)
+    # return ({'success': False, 'status': 10}, 500)
+    # Uncomment to disable generation
 
     curr_user = user.User().get_by_id(session.get('user'))
     form = store_inputs.UserRequestInput(request)
@@ -121,8 +122,7 @@ def ajax_userrequest_generate():
 @route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_userrequest_cart_generate():
-    return ({'success': False, 'status': 10}, 500)
-
+    # return ({'success': False, 'status': 10}, 500)
     curr_user = user.User().get_by_id(session.get('user'))
 
     cart.Cart().process_cart(curr_user['id'])

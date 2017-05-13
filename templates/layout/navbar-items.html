@@ -18,7 +18,7 @@
         </a>
     </li>
 
-    <!-- <li>
+    <li>
         <a href="{{ url_for('views.store.store_offers') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'offers'%}active{% endif %}">
             Ofertas
         </a>
@@ -26,9 +26,9 @@
 
     <li>
         <a href="{{ url_for('views.store.store_sale') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'on-sale'%}active{% endif %}">
-            Liquidación de Stock
+            Liquidación
         </a>
-    </li> -->
+    </li>
 
     <li class="active">
         <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
@@ -42,7 +42,7 @@
         </a>
     </li>
 
-    <!-- {% if g.user %}
+    {% if g.user %}
         <li>
             <a href="{{ url_for('views.store.store_support') }}" class="s-commerce-navbar-item">
                 Soporte
@@ -54,7 +54,7 @@
         <a target="_blank" href="http://wasd.com.ar" class="s-commerce-navbar-item">
             Blog
         </a>
-    </li> -->
+    </li>
 
     {% if g.user and g.user.admin %}
         <li>
