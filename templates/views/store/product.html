@@ -345,7 +345,7 @@
                         },
                         success: function(data){
                             var json_data = data;
-                            var alert_message = '';
+                            var alert_message = 'Una vez que se detecte tu pago en el sistema se te enviará una invitación de amistad en Steam. Una vez aceptada la invitación se te enviarán tus juegos en forma de regalo.';
 
                             {% if product.get('is_promotional') %}
                                 var alert_message = '<br><br><b>¡Por favor recuerda reservar este pedido!</b><br>Este pedido debe ser reservado con una imagen del recibo de pago, a través de nuestro <a href="/reservas" target="_blank">sistema de reservas</a>. Al hacer esto te podemos guardar una copia al precio de oferta, ¡de otra manera nos veremos obligados a devolverte el monto abonado!';
@@ -436,7 +436,7 @@
                             var json_data = data;
 
                             if (!json_data['instant']) {
-                                text_content = 'En las próximas 1hs a 48hs estaremos procesando tu pedido. En caso de que se haya encontrado en "Entrega Inmediata" entonces se creará una nota con tu código/link de activación en tu pedido.';
+                                text_content = 'Dentro de unos momentos se te enviará una invitación de amistad a tu cuenta de Steam. Una vez aceptada la invitación se te enviarán tus juegos en forma de regalo.';
                             } else {
                                 text_content = '¡Tu pedido fue entregado inmediatamente! En el historial de tu pedido podrás encontrar un nuevo mensaje con tu código/link de activación. <strong>También te copiamos el mensaje aquí:<br><br>' + json_data['message'] + '</strong>';
                             }
