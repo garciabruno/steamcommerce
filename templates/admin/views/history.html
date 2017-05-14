@@ -15,13 +15,15 @@
                     {% if level == 0 %}
                         Uncommited
                     {% elif level == 1 %}
-                        Added to cart
+                        AddedToCart
                     {% elif level == 2 %}
                         Purchased
                     {% elif level == 3 %}
-                        Failed to Add to Cart
+                        FailedToAddToCart
                     {% elif level == 4 %}
-                        Pushing to Cart
+                        PushingToCart
+                    {% elif level == 5 %}
+                        WaitingForFriendInviteAccept
                     {% endif %}
 
                     ({{ level }})
