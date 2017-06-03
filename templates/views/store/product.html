@@ -99,7 +99,7 @@
 
                     {% if product.get('promotion') and product.get('is_promotional') %}
                         <div class="s-commerce-offer-hud">
-                            <span class="s-commerce-product-in-offer">
+                            <span class="s-commerce-product-in-offer text text-success">
                                 ¡Producto en oferta!
                             </span>
 
@@ -109,6 +109,18 @@
                                     Esta oferta expira en {{ ending_date|timeuntil }} ({{ ending_date|date_format }})
                                 </span>
                             {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if product.get('price_type') == 2 and product.get('price_active') %}
+                        <div class="s-commerce-offer-hud">
+                            <span class="s-commerce-product-in-offer text text-danger">
+                                ¡Este producto solo se puede abonar con créditos!
+                            </span>
+
+                            <p>
+                                <strong>Para añadir créditos a tu cuenta debes hacer click sobre tu saldo en la barra de navegación</strong>
+                            </p>
                         </div>
                     {% endif %}
 
