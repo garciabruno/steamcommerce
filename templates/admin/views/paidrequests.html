@@ -12,7 +12,7 @@
 
         <tbody>
             {% for request in paidrequests %}
-                <tr>
+                <tr {% if request['promotion'] %}class="s-commerce-promotional-request"{% endif %}>
                     <td>
                         <a href="{{ url_for('admin.views.admin_request', history_identifier=('C-' + request['id']|string)) }}">#C-{{ request['id'] }}</a>
                     </td>
