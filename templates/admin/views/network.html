@@ -85,6 +85,10 @@
 
                                 <td>
                                     {{ parse_bot_status(bot.status) }} ({{ bot.status }})
+
+                                    {% if bot.last_blocked_at %}
+                                        (Last blocked at: {{ bot.last_blocked_at|date_format }} ) ({{ bot.last_blocked_at|timesince }})
+                                    {% endif %}
                                 </td>
 
                                 <td>{{ bot.bot_type }}</td>
