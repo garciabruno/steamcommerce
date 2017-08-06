@@ -28,7 +28,8 @@ ajax_paidrequest = Blueprint('ajax.store.paidrequest', __name__)
 @route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_paidrequest_generate():
-    # return ({'success': False, 'status': 10}, 500)
+    return ({'success': False, 'status': 10}, 500)
+
     user_id = session.get('user')
     form = store_inputs.PaidRequestInput(request)
 
@@ -160,7 +161,8 @@ def ajax_paidrequest_generate():
 @route_decorators.ajax_is_logged_in
 @route_decorators.as_json
 def ajax_paidrequest_cart_generate():
-    # return ({'success': False, 'status': 10}, 500)
+    return ({'success': False, 'status': 10}, 500)
+
     user_id = session.get('user')
 
     cart.Cart().process_cart(user_id)
