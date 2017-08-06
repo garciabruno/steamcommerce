@@ -14,45 +14,7 @@
 <ul class="nav navbar-nav">
     <li class="active">
         <a href="{{ url_for('views.store.store_catalog') }}" class="s-commerce-navbar-item {% if active_section == 'catalog'%}active{% endif %}">
-            Catálogo
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ url_for('views.store.store_offers') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'offers'%}active{% endif %}">
-            Ofertas
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ url_for('views.store.store_sale') }}" class="s-commerce-navbar-item navbar-offers {% if active_section == 'on-sale'%}active{% endif %}">
-            Liquidación
-        </a>
-    </li>
-
-    <li class="active">
-        <a href="{{ url_for('views.store.store_search') }}" class="s-commerce-navbar-item {% if active_section == 'search'%}active{% endif %}">
-            Buscador
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ url_for('views.testimonials.testimonials_root') }}" class="s-commerce-navbar-item {% if active_section == 'testimonials' %}active{% endif %}">
-            Testimonios
-        </a>
-    </li>
-
-    {% if g.user %}
-        <li>
-            <a href="{{ url_for('views.store.store_support') }}" class="s-commerce-navbar-item">
-                Soporte
-            </a>
-        </li>
-    {% endif %}
-
-    <li>
-        <a target="_blank" href="http://wasd.com.ar" class="s-commerce-navbar-item">
-            Blog
+            Inicio
         </a>
     </li>
 
@@ -67,15 +29,6 @@
 
 <ul class="nav navbar-nav navbar-right">
     {% if g.user %}
-        <li>
-            <a class="navbar-credit-button" href="#">
-                <span class="s-commerce-user-nav-wallet">
-                    ${{ (g.user.money + g.user.wallet)|price_format }} <br>
-                    <span class="s-commerce-user-nav-wallet-text">Billetera</span>
-                </span>
-            </a>
-        </li>
-
         <li>
             <a href="{{ url_for('views.user.user_profile') }}">
                 <span class="s-commerce-user-nav-image">
